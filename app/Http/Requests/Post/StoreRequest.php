@@ -17,7 +17,7 @@ class StoreRequest extends FormRequest
             'name' => 'required|string',
             'description' => 'nullable|string',
             'type' => 'nullable|string',
-            'is_active' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
             'post_id' => 'nullable|integer|exists:sdi_posts,id'
         ];
     }

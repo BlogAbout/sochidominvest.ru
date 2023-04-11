@@ -17,7 +17,7 @@ class StoreRequest extends FormRequest
             'name' => 'required|string',
             'email' => 'nullable|string',
             'phone' => 'nullable|string',
-            'is_active' => 'nullable|integer'
+            'is_active' => 'nullable|boolean'
         ];
     }
 

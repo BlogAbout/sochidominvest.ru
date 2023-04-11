@@ -19,7 +19,7 @@ class StoreRequest extends FormRequest
             'style' => 'nullable|string',
             'page' => 'nullable|string',
             'ordering' => 'nullable|integer',
-            'is_active' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
             'items' => 'nullable|array'
         ];
     }

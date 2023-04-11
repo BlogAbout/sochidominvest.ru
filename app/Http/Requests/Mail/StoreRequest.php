@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Document;
+namespace App\Http\Requests\Mail;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -16,11 +16,12 @@ class UpdateRequest extends FormRequest
         return [
             'name' => 'required|string',
             'content' => 'nullable|string',
+            'content_html' => 'nullable|string',
             'type' => 'nullable|string',
+            'status' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
-            'attachment_id' => 'nullable|integer|exists:sdi_attachments,id',
-            'object_id' => 'nullable|integer',
-            'object_type' => 'nullable|string'
+            'recipient_ids' => 'nullable|array',
+            'recipient_ids.*' => 'nullable|integer|exists:sdi_users,id'
         ];
     }
 
@@ -30,12 +31,11 @@ class UpdateRequest extends FormRequest
             'name.required' => 'Это поле обязательно для заполнения',
             'name.string' => 'Значение данного поля должно быть строкой',
             'content.string' => 'Значение данного поля должно быть строкой',
+            'content_html.string' => 'Значение данного поля должно быть строкой',
             'type.string' => 'Значение данного поля должно быть строкой',
+            'status.integer' => 'Значение данного поля должно быть числом',
             'is_active.boolean' => 'Значение данного поля должно быть переключателем',
-            'attachment_id.integer' => 'Значение данного поля должно быть числом',
-            'attachment_id.exists' => 'Изображение отсутствует в базе данных',
-            'object_id.integer' => 'Значение данного поля должно быть числом',
-            'object_type.string' => 'Значение данного поля должно быть строкой'
+            'recipient_ids.array' => 'Значение данного поля должно быть массивом'
         ];
     }
 }

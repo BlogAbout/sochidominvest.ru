@@ -17,7 +17,7 @@ class StoreRequest extends FormRequest
             'name' => 'required|string',
             'content' => 'nullable|string',
             'type' => 'nullable|string',
-            'is_active' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
             'attachment_id' => 'nullable|integer|exists:sdi_attachments,id',
             'object_id' => 'nullable|integer',
             'object_type' => 'nullable|string'

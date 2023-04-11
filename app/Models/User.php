@@ -66,6 +66,11 @@ class User extends Authenticatable
         return DB::table('sdi_business_process_sorting')->where('user_id', '=', $this->id)->get();
     }
 
+    public function getDateLastActiveFormatAttribute(): string
+    {
+        return Carbon::parse($this->last_active)->diffForHumans();
+    }
+
     public function getDateCreatedFormatAttribute(): string
     {
         return Carbon::parse($this->created_at)->diffForHumans();

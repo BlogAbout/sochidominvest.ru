@@ -16,7 +16,7 @@ class UpdateRequest extends FormRequest
         return [
             'name' => 'required|string',
             'phone' => 'nullable|string',
-            'is_active' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
             'avatar_id' => 'nullable|integer|exists:sdi_attachments,id',
             'agent_id' => 'nullable|integer|exists:sdi_agents,id',
             'post_id' => 'nullable|integer|exists:sdi_posts,id'

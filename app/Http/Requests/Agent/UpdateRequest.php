@@ -19,7 +19,7 @@ class UpdateRequest extends FormRequest
             'address' => 'nullable|string',
             'phone' => 'nullable|string',
             'type' => 'nullable|string',
-            'is_active' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
             'avatar_id' => 'nullable|integer'
         ];
     }

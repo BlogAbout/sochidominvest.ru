@@ -24,7 +24,7 @@ class CreateTransactionsTable extends Migration
             $table->unsignedBigInteger('object_id')->nullable();
             $table->string('object_type')->nullable();
             $table->string('duration')->nullable();
-            $table->timestamp('date_paid')->nullable();
+            $table->timestamp('paid_at')->nullable();
 
             $table->timestamps();
 

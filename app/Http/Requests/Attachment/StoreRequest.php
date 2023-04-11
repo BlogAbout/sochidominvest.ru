@@ -19,7 +19,7 @@ class StoreRequest extends FormRequest
             'content' => 'nullable|string',
             'type' => 'nullable|string',
             'extension' => 'nullable|string',
-            'is_active' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
             'poster_id' => 'nullable|integer|exists:sdi_attachments,id'
         ];
     }

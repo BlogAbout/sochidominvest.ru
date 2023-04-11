@@ -28,4 +28,9 @@ class Transaction extends Model
     {
         return Carbon::parse($this->updated_at)->diffForHumans();
     }
+
+    public function getDatePaidFormatAttribute(): string
+    {
+        return Carbon::parse($this->paid_at)->diffForHumans();
+    }
 }
