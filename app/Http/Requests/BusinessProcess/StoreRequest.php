@@ -19,7 +19,7 @@ class StoreRequest extends FormRequest
             'type' => 'nullable|string',
             'step' => 'nullable|string',
             'is_active' => 'nullable|boolean',
-            'responsible_id ' => 'nullable|integer|exists:sdi_users,id'
+            'responsible_id' => 'nullable|integer|exists:sdi_users,id'
         ];
     }
 

@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Http\Resources\ArticleResource;
-use App\Models\Article;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-class ArticleService
+class UserService
 {
     public function store(array $data)
     {
@@ -26,19 +26,19 @@ class ArticleService
                 unset($data['image_ids']);
             }
 
-            $article = Article::firstOrCreate($data);
+            $user = User::firstOrCreate($data);
 
             if (isset($buildingIds)) {
-                $article->buildings()->attach($buildingIds);
+                $user->buildings()->attach($buildingIds);
             }
 
-            if (isset($imageIds)) {
-                $article->images()->attach($imageIds);
+            if (isset($buildingIds)) {
+                $user->images()->attach($imageIds);
             }
 
             DB::commit();
 
-            return (new ArticleResource($article))->response()->setStatusCode(201);
+            return (new UserResource($user))->response()->setStatusCode(201);
         } catch (Exception $e) {
             DB::rollBack();
 
@@ -46,7 +46,7 @@ class ArticleService
         }
     }
 
-    public function update(array $data, Article $article)
+    public function update(array $data, User $user)
     {
         try {
             DB::beginTransaction();
@@ -61,19 +61,19 @@ class ArticleService
                 unset($data['image_ids']);
             }
 
-            $article->update($data);
+            $user->update($data);
 
             if (isset($buildingIds)) {
-                $article->buildings()->sync($buildingIds);
+                $user->buildings()->sync($buildingIds);
             }
 
-            if (isset($imageIds)) {
-                $article->images()->sync($imageIds);
+            if (isset($buildingIds)) {
+                $user->images()->sync($imageIds);
             }
 
             DB::commit();
 
-            return (new ArticleResource($article))->response()->setStatusCode(200);
+            return (new UserResource($user))->response()->setStatusCode(200);
         } catch (\Exception $e) {
             DB::rollBack();
 

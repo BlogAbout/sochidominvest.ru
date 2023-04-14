@@ -22,7 +22,8 @@ class UpdateRequest extends FormRequest
             'name' => 'nullable|string',
             'object_id' => 'nullable|integer',
             'object_type' => 'nullable|string',
-            'is_active' => 'nullable|boolean'
+            'is_active' => 'nullable|boolean',
+            'message_text' => 'nullable|string'
         ];
     }
 
@@ -39,7 +40,8 @@ class UpdateRequest extends FormRequest
             'name.string' => 'Значение данного поля должно быть строкой',
             'object_id.integer' => 'Значение данного поля должно быть числом',
             'object_type.string' => 'Значение данного поля должно быть строкой',
-            'is_active.boolean' => 'Значение данного поля должно быть переключателем'
+            'is_active.boolean' => 'Значение данного поля должно быть переключателем',
+            'message_text.string' => 'Значение данного поля должно быть строкой'
         ];
     }
 }

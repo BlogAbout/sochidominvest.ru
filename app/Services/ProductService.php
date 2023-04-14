@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Http\Resources\ArticleResource;
-use App\Models\Article;
+use App\Http\Resources\ProductResource;
+use App\Models\Product;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-class ArticleService
+class ProductService
 {
     public function store(array $data)
     {
@@ -16,29 +16,29 @@ class ArticleService
 
             $data['author_id'] = auth()->user()->id;
 
-            if (isset($data['building_ids'])) {
-                $buildingIds = $data['building_ids'];
-                unset($data['building_ids']);
-            }
-
             if (isset($data['image_ids'])) {
                 $imageIds = $data['image_ids'];
                 unset($data['image_ids']);
             }
 
-            $article = Article::firstOrCreate($data);
-
-            if (isset($buildingIds)) {
-                $article->buildings()->attach($buildingIds);
+            if (isset($data['video_ids'])) {
+                $videoIds = $data['video_ids'];
+                unset($data['video_ids']);
             }
 
+            $product = Product::firstOrCreate($data);
+
             if (isset($imageIds)) {
-                $article->images()->attach($imageIds);
+                $product->images()->attach($imageIds);
+            }
+
+            if (isset($videoIds)) {
+                $product->videos()->attach($videoIds);
             }
 
             DB::commit();
 
-            return (new ArticleResource($article))->response()->setStatusCode(201);
+            return (new ProductResource($product))->response()->setStatusCode(201);
         } catch (Exception $e) {
             DB::rollBack();
 
@@ -46,34 +46,34 @@ class ArticleService
         }
     }
 
-    public function update(array $data, Article $article)
+    public function update(array $data, Product $product)
     {
         try {
             DB::beginTransaction();
-
-            if (isset($data['building_ids'])) {
-                $buildingIds = $data['building_ids'];
-                unset($data['building_ids']);
-            }
 
             if (isset($data['image_ids'])) {
                 $imageIds = $data['image_ids'];
                 unset($data['image_ids']);
             }
 
-            $article->update($data);
-
-            if (isset($buildingIds)) {
-                $article->buildings()->sync($buildingIds);
+            if (isset($data['video_ids'])) {
+                $videoIds = $data['video_ids'];
+                unset($data['video_ids']);
             }
 
+            $product->update($data);
+
             if (isset($imageIds)) {
-                $article->images()->sync($imageIds);
+                $product->images()->sync($imageIds);
+            }
+
+            if (isset($videoIds)) {
+                $product->videos()->attach($videoIds);
             }
 
             DB::commit();
 
-            return (new ArticleResource($article))->response()->setStatusCode(200);
+            return (new ProductResource($product))->response()->setStatusCode(200);
         } catch (\Exception $e) {
             DB::rollBack();
 

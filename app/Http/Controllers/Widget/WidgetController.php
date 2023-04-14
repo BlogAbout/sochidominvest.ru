@@ -13,9 +13,9 @@ class WidgetController extends Controller
 {
     public $service;
 
-    public function __construct()
+    public function __construct(WidgetService $service)
     {
-        $this->service = new WidgetService();
+        $this->service = $service;
     }
 
     public function index()

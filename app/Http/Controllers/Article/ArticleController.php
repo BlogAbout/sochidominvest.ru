@@ -13,9 +13,9 @@ class ArticleController extends Controller
 {
     public $service;
 
-    public function __construct()
+    public function __construct(ArticleService $service)
     {
-        $this->service = new ArticleService();
+        $this->service = $service;
     }
 
     public function index()
