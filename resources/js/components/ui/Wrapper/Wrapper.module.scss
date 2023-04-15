@@ -1,0 +1,29 @@
+.Wrapper {
+    max-width: 1420px;
+    margin: 0 auto;
+
+    &.full {
+        max-width: 100%;
+        padding: 0 12px 0 60px;
+        height: 100%;
+    }
+}
+
+@media (max-width: 1420px) {
+    .Wrapper {
+        padding: 0 10px;
+
+        &.full {
+            max-width: 100%;
+            padding: 0 12px 0 60px;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .Wrapper {
+        &.full {
+            padding: 30px 12px 0;
+        }
+    }
+}
