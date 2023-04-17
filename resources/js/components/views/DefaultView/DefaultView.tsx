@@ -25,7 +25,7 @@ const DefaultView: React.FC<Props> = (props): React.ReactElement => {
             <Header/>
 
             <main className={classes.main}>
-                {props.children}
+                {/*{props.children}*/}
             </main>
 
             <Footer/>

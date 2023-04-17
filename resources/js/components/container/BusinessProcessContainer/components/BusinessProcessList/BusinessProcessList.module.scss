@@ -1,0 +1,60 @@
+.BusinessProcessList {
+    width: 100%;
+    height: 100%;
+
+    .list {
+        display: flex;
+    }
+
+    .board {
+        width: 250px;
+        flex-shrink: 0;
+        padding: 10px 5px;
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+
+        + .board {
+            margin-left: 20px;
+        }
+
+        &.default {
+            background: #9cd2ff;
+        }
+
+        &.process {
+            background: #f8f8d8;
+        }
+
+        &.discussion {
+            background: #f4e5ff;
+        }
+
+        &.complete {
+            background: #e5f7ff;
+        }
+
+        &.rejected {
+            background: #e9f5d5;
+        }
+
+        &.waitingResponse {
+            background: #ffecde;
+        }
+
+        &.final {
+            background: #f0e0d6;
+        }
+
+        .boardDnd {
+            width: 100%;
+            height: calc(100vh - 178px);
+            flex-grow: 1;
+            overflow-y: scroll;
+        }
+
+        .boardList {
+
+        }
+    }
+}

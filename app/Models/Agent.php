@@ -14,6 +14,8 @@ class Agent extends Model
     protected $table = 'sdi_agents';
     protected $guarded = false;
 
+    protected $with = ['author'];
+
     public function avatar()
     {
         return $this->belongsTo(Attachment::class, 'avatar_id', 'id');

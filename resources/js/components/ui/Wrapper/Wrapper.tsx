@@ -15,7 +15,7 @@ const cx = classNames.bind(classes)
 const Wrapper = (props: Props): React.ReactElement => {
     return (
         <div className={cx({'Wrapper': true, 'full': props.isFull})}>
-            {props.children}
+            {/*{props.children}*/}
         </div>
     )
 }

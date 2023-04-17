@@ -18,10 +18,10 @@ const Contacts: React.FC<Props> = (props): React.ReactElement => {
     return (
         <div className={cx(props.className, {'Contacts': true, [props.align || 'left']: true})}>
             <div className={classes.item}>
-                <a href={configuration.sitePhoneUrl} className={classes.phone}>{configuration.sitePhone}</a>
+                <a href={configuration.sitePhoneUrl}>{configuration.sitePhone}</a>
             </div>
             <div className={classes.item}>
-                <a href={configuration.siteEmailUrl} className={classes.email}>{configuration.siteEmail}</a>
+                <a href={configuration.siteEmailUrl}>{configuration.siteEmail}</a>
             </div>
         </div>
     )

@@ -12,7 +12,7 @@ interface ILayout {
     title: string
 }
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     type: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
     style?: 'left' | 'right' | 'center'
     className?: string

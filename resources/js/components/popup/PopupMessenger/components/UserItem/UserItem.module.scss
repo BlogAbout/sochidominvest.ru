@@ -1,0 +1,43 @@
+.UserItem {
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0 5px 30px;
+    cursor: pointer;
+
+    > div {
+        &:first-child {
+            border-radius: 50%;
+        }
+    }
+
+    .status {
+        margin-top: 2px;
+        font-size: 10px;
+        color: #a90707;
+
+        &.online {
+            color: #7bad17;
+        }
+    }
+
+    .name {
+        margin-top: 2px;
+        text-align: center;
+        color: #075ea5;
+        font-size: 13px;
+    }
+
+    .post {
+        color: #999;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .UserItem {
+        margin-bottom: 20px;
+    }
+}

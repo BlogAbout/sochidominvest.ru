@@ -14,7 +14,7 @@ const GridColumn: React.FC<Props> = (props): React.ReactElement => {
         <div className={classes.GridColumn}
              style={{width: props.width, flexGrow: props.width !== undefined && props.width !== '100%' ? 0 : 1}}
         >
-            {props.children}
+            {/*{props.children}*/}
         </div>
     )
 }

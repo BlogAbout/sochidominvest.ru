@@ -23,7 +23,7 @@ const Grid: React.FC<Props> = (props): React.ReactElement => {
             'vTop': props.isVerticalCenter,
             'hTop': props.isHorizontalCenter
         })}>
-            {props.children}
+            {/*{props.children}*/}
         </div>
     )
 }

@@ -15,6 +15,8 @@ class AgentController extends Controller
     {
         $agents = Agent::all();
 
+//        dd($agents);
+
         return AgentResource::collection($agents)->response()->setStatusCode(200);
     }
 

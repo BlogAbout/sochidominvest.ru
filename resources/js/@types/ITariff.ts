@@ -3,6 +3,6 @@ export interface ITariff {
     name: string
     cost: number
     privileges: string[]
-    created_at: string | null
-    updated_at: string | null
+    created_at?: string | null
+    updated_at?: string | null
 }

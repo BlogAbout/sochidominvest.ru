@@ -22,6 +22,7 @@ class AgentResource extends JsonResource
             'phone' => $this->phone,
             'type' => $this->type,
             'author_id' => $this->author_id,
+            'author' => new UserResource($this->whenLoaded('author')),
             'is_active' => $this->is_active,
             'avatar_id' => $this->avatar_id,
             'created_at' => $this->created_at,

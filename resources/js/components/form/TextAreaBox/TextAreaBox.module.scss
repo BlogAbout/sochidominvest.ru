@@ -1,0 +1,51 @@
+.TextAreaBox {
+    box-sizing: border-box;
+    height: 102px;
+    border: 1px solid #075ea5;
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 10px;
+    padding: 0 5px 0 10px;
+
+    &.ReactMde {
+        padding: 0;
+        display: block;
+        height: auto;
+        min-height: 250px;
+
+        textarea {
+            height: 205px !important;
+        }
+    }
+
+    .icon {
+        margin: 0 5px 0 0;
+        font-size: 14px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+    }
+
+    textarea {
+        max-width: 100%;
+        font-size: 13px;
+        font-family: 'PT Serif', serif;
+        height: 100px !important;
+        line-height: 16px;
+        padding: 5px 10px;
+        flex-grow: 1;
+        border: none;
+        outline: none;
+        resize: none;
+    }
+
+    .reactMde {
+        border: none;
+    }
+
+    .mdeText {
+        line-height: 16px !important;
+    }
+}

@@ -4,7 +4,7 @@ import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import classes from './Button.module.scss'
 
-interface Props extends React.HTMLAttributes<any> {
+interface Props extends React.PropsWithChildren {
     title?: string
     className?: 'default' | 'marginLeft' | 'marginRight'
     type: 'apply' | 'save' | 'cancel' | 'regular'
@@ -55,7 +55,7 @@ const Button: React.FC<Props> = (props) => {
                 </span>
                 : null
             }
-            <span className={classes.text}>{props.children}</span>
+            <span>{props.children}</span>
         </div>
     )
 }

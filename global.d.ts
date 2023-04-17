@@ -31,6 +31,8 @@ interface Window {
     HTMLElement?: any
     StyleMedia?: any
     ym?: any
+    events?: any
+    WS?: any
 }
 
 interface Document {

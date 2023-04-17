@@ -1,24 +1,23 @@
 import {AxiosResponse} from 'axios'
 import API from '../axios.init'
 import {IUser, IUserExternal} from '../@types/IUser'
-import {IAuth} from '../@types/IAuth'
-import {ISignUp} from '../@types/ISignUp'
+import {IAuth, ISignUp} from '../@types/IAuth'
 import {IFilter} from '../@types/IFilter'
 
 export default class UserService {
-    static async authUser(auth: IAuth): Promise<AxiosResponse<any>> {
+    static async authUser(auth: IAuth): Promise<AxiosResponse> {
         return API.post('/auth', auth)
     }
 
-    static async registrationUser(signUp: ISignUp): Promise<AxiosResponse<any>> {
+    static async registrationUser(signUp: ISignUp): Promise<AxiosResponse> {
         return API.post('/registration', signUp)
     }
 
-    // static async forgotPasswordUser(email: string): Promise<AxiosResponse<any>> {
+    // static async forgotPasswordUser(email: string): Promise<AxiosResponse> {
     //     return API.post('/forgot', {email: email})
     // }
     //
-    // static async resetPasswordUser(email: string, password: string): Promise<AxiosResponse<any>> {
+    // static async resetPasswordUser(email: string, password: string): Promise<AxiosResponse> {
     //     return API.post('/reset', {email: email, password: password})
     // }
 
