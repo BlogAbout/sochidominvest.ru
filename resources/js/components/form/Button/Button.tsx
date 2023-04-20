@@ -29,7 +29,6 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const Button: React.FC<Props> = (props) => {
-    // Todo: Рефакторинг
     const userStyle = props.className ? props.className : ''
     const buttonStyle = cx({
         [classes['button']]: true,

@@ -62,54 +62,54 @@ const AppRouter: React.FC = () => {
         <div className={classes.AppRouter}>
             <Routes>
                 <Route path={RouteNames.MAIN} element={<MainPage/>}/>
-                {/*<Route path={RouteNames.ABOUT} element={<AboutPage/>}/>*/}
-                {/*<Route path={RouteNames.POLICY} element={<PolicyPage/>}/>*/}
-                {/*<Route path={RouteNames.FAQ} element={<FaqPage/>}/>*/}
-                {/*<Route path={RouteNames.ARTICLE} element={<ArticlesPage/>}/>*/}
-                {/*<Route path={RouteNames.ARTICLE_ITEM} element={<ArticlePage isPublic/>}/>*/}
-                {/*<Route path={RouteNames.BUILDING} element={<BuildingsPage/>}/>*/}
-                {/*<Route path={RouteNames.BUILDING_ITEM} element={<BuildingPage role={user.role} isPublic/>}/>*/}
-                {/*<Route path={RouteNames.RENT} element={<BuildingsPage isRent/>}/>*/}
-                {/*<Route path={RouteNames.RENT_ITEM} element={<BuildingPage role={user.role} isPublic isRent/>}/>*/}
-                {/*<Route path={RouteNames.STORE_PRODUCTS} element={<StoreProductsPage/>}/>*/}
-                {/*<Route path={RouteNames.STORE_PRODUCT} element={<StoreProductPage/>}/>*/}
+                <Route path={RouteNames.ABOUT} element={<AboutPage/>}/>
+                <Route path={RouteNames.POLICY} element={<PolicyPage/>}/>
+                <Route path={RouteNames.FAQ} element={<FaqPage/>}/>
+                <Route path={RouteNames.ARTICLE} element={<ArticlesPage/>}/>
+                <Route path={RouteNames.ARTICLE_ITEM} element={<ArticlePage isPublic/>}/>
+                <Route path={RouteNames.BUILDING} element={<BuildingsPage/>}/>
+                <Route path={RouteNames.BUILDING_ITEM} element={<BuildingPage role={user.role} isPublic/>}/>
+                <Route path={RouteNames.RENT} element={<BuildingsPage isRent/>}/>
+                <Route path={RouteNames.RENT_ITEM} element={<BuildingPage role={user.role} isPublic isRent/>}/>
+                <Route path={RouteNames.STORE_PRODUCTS} element={<StoreProductsPage/>}/>
+                <Route path={RouteNames.STORE_PRODUCT} element={<StoreProductPage/>}/>
 
-                {/*{isAuth ?*/}
-                {/*    <>*/}
-                {/*        <Route path={RouteNames.P_DESKTOP} element={<DesktopPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_CATALOG} element={<CatalogPage name='Каталоги' type='catalog'/>}/>*/}
-                {/*        <Route path={RouteNames.P_CRM} element={<CatalogPage name='CRM' type='crm'/>}/>*/}
-                {/*        <Route path={RouteNames.P_REPORT} element={<ReportPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_TOOL} element={<ToolPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_ADMINISTRATION} element={<AdministrationPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_SUPPORT} element={<SupportPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_QUESTION} element={<QuestionPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_DEVELOPER} element={<DevelopersPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_DEVELOPER_ITEM} element={<DeveloperPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_AGENT} element={<AgentsPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_AGENT_ITEM} element={<AgentPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_POST} element={<PostsPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_COMPILATION} element={<CompilationsPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_COMPILATION_ITEM} element={<CompilationPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_BOOKING} element={<BookingPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_USER_EXTERNAL} element={<ExternalUsersPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_MAILING} element={<MailingsPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_PAYMENT} element={<PaymentPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_DOCUMENT} element={<DocumentsPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_USER} element={<UsersPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_USER_ITEM} element={<UserPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_BP} element={<BusinessProcessPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_ARTICLE} element={<ArticlePanelPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_BUILDING} element={<BuildingsPanelPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_FAVORITE} element={<FavoritePage/>}/>*/}
-                {/*        <Route path={RouteNames.P_TARIFF} element={<TariffPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_FILE_MANAGER} element={<FilesPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_STORE_CATEGORIES} element={<StoreCategoriesPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_STORE_CATEGORY} element={<StoreCategoryPage/>}/>*/}
-                {/*        <Route path={RouteNames.P_STORE_PRODUCTS} element={<StoreProductsPanelPage/>}/>*/}
-                {/*    </>*/}
-                {/*    : null*/}
-                {/*}*/}
+                {isAuth ?
+                    <>
+                        <Route path={RouteNames.P_DESKTOP} element={<DesktopPage/>}/>
+                        <Route path={RouteNames.P_CATALOG} element={<CatalogPage name='Каталоги' type='catalog'/>}/>
+                        <Route path={RouteNames.P_CRM} element={<CatalogPage name='CRM' type='crm'/>}/>
+                        <Route path={RouteNames.P_REPORT} element={<ReportPage/>}/>
+                        <Route path={RouteNames.P_TOOL} element={<ToolPage/>}/>
+                        <Route path={RouteNames.P_ADMINISTRATION} element={<AdministrationPage/>}/>
+                        <Route path={RouteNames.P_SUPPORT} element={<SupportPage/>}/>
+                        <Route path={RouteNames.P_QUESTION} element={<QuestionPage/>}/>
+                        <Route path={RouteNames.P_DEVELOPER} element={<DevelopersPage/>}/>
+                        <Route path={RouteNames.P_DEVELOPER_ITEM} element={<DeveloperPage/>}/>
+                        <Route path={RouteNames.P_AGENT} element={<AgentsPage/>}/>
+                        <Route path={RouteNames.P_AGENT_ITEM} element={<AgentPage/>}/>
+                        <Route path={RouteNames.P_POST} element={<PostsPage/>}/>
+                        <Route path={RouteNames.P_COMPILATION} element={<CompilationsPage/>}/>
+                        <Route path={RouteNames.P_COMPILATION_ITEM} element={<CompilationPage/>}/>
+                        <Route path={RouteNames.P_BOOKING} element={<BookingPage/>}/>
+                        <Route path={RouteNames.P_USER_EXTERNAL} element={<ExternalUsersPage/>}/>
+                        <Route path={RouteNames.P_MAILING} element={<MailingsPage/>}/>
+                        <Route path={RouteNames.P_PAYMENT} element={<PaymentPage/>}/>
+                        <Route path={RouteNames.P_DOCUMENT} element={<DocumentsPage/>}/>
+                        <Route path={RouteNames.P_USER} element={<UsersPage/>}/>
+                        <Route path={RouteNames.P_USER_ITEM} element={<UserPage/>}/>
+                        <Route path={RouteNames.P_BP} element={<BusinessProcessPage/>}/>
+                        <Route path={RouteNames.P_ARTICLE} element={<ArticlePanelPage/>}/>
+                        <Route path={RouteNames.P_BUILDING} element={<BuildingsPanelPage/>}/>
+                        <Route path={RouteNames.P_FAVORITE} element={<FavoritePage/>}/>
+                        <Route path={RouteNames.P_TARIFF} element={<TariffPage/>}/>
+                        <Route path={RouteNames.P_FILE_MANAGER} element={<FilesPage/>}/>
+                        <Route path={RouteNames.P_STORE_CATEGORIES} element={<StoreCategoriesPage/>}/>
+                        <Route path={RouteNames.P_STORE_CATEGORY} element={<StoreCategoryPage/>}/>
+                        <Route path={RouteNames.P_STORE_PRODUCTS} element={<StoreProductsPanelPage/>}/>
+                    </>
+                    : null
+                }
             </Routes>
 
             <ToastContainer position={'bottom-right'}

@@ -78,7 +78,6 @@ const FileUploader: React.FC<Props> = (props) => {
         })
     }
 
-    // Загрузчик файла
     const uploadFileHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files: FileList | null = e.currentTarget.files
 

@@ -181,11 +181,11 @@ const PopupUserCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <Label text='Должность'/>
 
-                        {/*<PostBox posts={user.post ? [user.post] : []}*/}
-                        {/*         onSelect={(value: number[]) => setUser({...user, post: value[0]})}*/}
-                        {/*         placeHolder='Выберите должность'*/}
-                        {/*         styleType='minimal'*/}
-                        {/*/>*/}
+                        <PostBox posts={user.post_id ? [user.post_id] : []}
+                                 onSelect={(value: number[]) => setUser({...user, post_id: value[0]})}
+                                 placeHolder='Выберите должность'
+                                 styleType='minimal'
+                        />
                     </div>
                     : null
                 }
@@ -194,15 +194,15 @@ const PopupUserCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <Label text='Аватар'/>
 
-                        {/*<AvatarBox avatarId={user.avatarId || null}*/}
-                        {/*           fetching={fetching}*/}
-                        {/*           onSelect={(attachmentId: number | null) => {*/}
-                        {/*               setUser({*/}
-                        {/*                   ...user,*/}
-                        {/*                   avatarId: attachmentId*/}
-                        {/*               })*/}
-                        {/*           }}*/}
-                        {/*/>*/}
+                        <AvatarBox avatarId={user.avatar_id || null}
+                                   fetching={fetching}
+                                   onSelect={(attachmentId: number | null) => {
+                                       setUser({
+                                           ...user,
+                                           avatar_id: attachmentId
+                                       })
+                                   }}
+                        />
                     </div>
                     : null
                 }

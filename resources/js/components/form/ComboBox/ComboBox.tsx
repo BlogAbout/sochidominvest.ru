@@ -49,7 +49,6 @@ const defaultProps: Props = {
 
 const cx = classNames.bind(styles)
 
-// Todo: переделать
 const ComboBox: React.FC<Props> = (props) => {
     let text = null
     let placeHolder = props.placeHolder

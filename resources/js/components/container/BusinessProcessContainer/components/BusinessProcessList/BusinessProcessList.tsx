@@ -74,14 +74,12 @@ const BusinessProcessList: React.FC<Props> = (props) => {
         setBusinessProcesses(prepareBusinessProcesses)
     }, [props.businessProcesses])
 
-    // Стили для перемещаемого элемента
     const getDragItemStyle = (isDragging: boolean, draggableStyle: any) => ({
         userSelect: 'none',
         background: isDragging ? 'lightgreen' : undefined,
         ...draggableStyle
     })
 
-    // Стили для списка перемещаемых элементов
     const getDragListStyle = (isDraggingOver: boolean) => {
         const styles: CSSProperties = {
             background: isDraggingOver ? 'lightblue' : undefined
@@ -90,11 +88,10 @@ const BusinessProcessList: React.FC<Props> = (props) => {
         return styles
     }
 
-    // Обработчик на завершение перемещения элемента (поля), когда отпустили
     const onDragEnd = (result: any) => {
         const {source, destination, draggableId} = result
 
-        if (!destination) { // Бросили по пути
+        if (!destination) {
             return
         }
 
@@ -106,7 +103,7 @@ const BusinessProcessList: React.FC<Props> = (props) => {
 
         let updatedListBusinessProcesses: IBusinessProcessesBySteps
 
-        if (source.droppableId === destination.droppableId) { // Если внутри одного списка
+        if (source.droppableId === destination.droppableId) {
             let prepareBusinessProcess: IBusinessProcess[] = [
                 ...businessProcesses[destination.droppableId].slice(0, source.index),
                 ...businessProcesses[destination.droppableId].slice(source.index + 1)
@@ -122,7 +119,7 @@ const BusinessProcessList: React.FC<Props> = (props) => {
                 ...businessProcesses,
                 [`${destination.droppableId}`]: prepareBusinessProcess
             }
-        } else { // Если разные списки
+        } else {
             updateBusinessProcess.step = destination.droppableId
 
             const sourceBusinessProcesses: IBusinessProcess[] = [

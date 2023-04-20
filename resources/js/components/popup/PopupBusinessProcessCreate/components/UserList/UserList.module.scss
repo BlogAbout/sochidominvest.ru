@@ -74,6 +74,11 @@
         width: 100%;
     }
 
+    .type {
+        flex-shrink: 0;
+        width: 150px;
+    }
+
     .phone {
         flex-shrink: 0;
         width: 150px;

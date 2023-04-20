@@ -95,7 +95,6 @@ const NotificationPanel: React.FC<Props> = (props) => {
         }
     }
 
-    // Обработка клика вне блока
     const handleClickOutside = (event: Event): void => {
         if (refDepartmentItem.current && event.target && !refDepartmentItem.current.contains(event.target as Node)) {
             props.onShow()

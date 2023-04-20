@@ -92,7 +92,7 @@ const UserList: React.FC<Props> = (props) => {
                                  onContextMenu={(e: React.MouseEvent) => onContextMenu(e, user)}
                             >
                                 <div className={classes.name}>{user.name}</div>
-                                {/*<div className={classes.type}>Пользователь</div>*/}
+                                <div className={classes.type}>Пользователь</div>
                                 <div className={classes.phone}>{user.phone}</div>
                             </div>
                         )

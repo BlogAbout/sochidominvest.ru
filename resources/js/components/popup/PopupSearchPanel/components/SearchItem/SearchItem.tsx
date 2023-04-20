@@ -43,7 +43,7 @@ const SearchItem: React.FC<Props> = (props) => {
              }}
         >
             <div className={classes.name}>
-                {/*{'name' in props.item ? props.item.name : 'firstName' in props.item ? props.item.firstName : ''}*/}
+                {'name' in props.item ? props.item.name : ''}
             </div>
 
             <div className={classes.date}>

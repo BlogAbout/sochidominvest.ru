@@ -30,7 +30,7 @@
 }
 
 .box:not(.read_only) .date:hover {
-    //background-image: url('img/calendar_active.png');
+
 }
 
 .show_clear .date {
@@ -57,11 +57,9 @@
 }
 
 .error .required {
-    //background-image: url('img/required_error.png');
 }
 
 .error .validate {
-    //background-image: url('img/validate_error.png');
 }
 
 .error.place_holder .input_style {
@@ -142,11 +140,9 @@
 .cross {
     composes: box_item;
     display: none;
-    //background: url('img/cross.png') no-repeat center;
 }
 
 .cross:hover {
-    //background-image: url('img/cross_active.png');
 }
 
 .arrow {
@@ -155,18 +151,15 @@
 
 .arrow_left {
     composes: box_item;
-    //background: url('img/arrow_left_grey.png') center no-repeat;
     border-left-width: 0;
     border-right: 1px solid #075ea5;
 }
 
 .arrow_right {
     composes: box_item;
-    //background: url('img/arrow_right_grey.png') center no-repeat;
 }
 
 .box_arrow_up {
-    //background: url('img/arrow_up.png') no-repeat center;
     height: 12px;
 }
 
@@ -177,14 +170,12 @@
 
 .required {
     composes: box_item;
-    //background: url('img/required.png') no-repeat center;
     border-color: transparent;
     cursor: default;
 }
 
 .date {
     composes: box_item;
-    //background: url('img/calendar.png') no-repeat left center;
     border-color: transparent;
     background-position-x: center;
     border-left: 1px solid white;
@@ -202,20 +193,17 @@
 
 .validate {
     composes: box_item;
-    //background: url('img/validate_success.png') no-repeat center;
     border-color: transparent;
     cursor: default;
 }
 
 .eye {
     composes: box_item;
-    //background: url('img/eye.png') no-repeat center;
     border-color: transparent;
 }
 
 .eye_active {
     composes: eye;
-    //background-image: url('img/eye_active.png');
 }
 
 .hidden {
@@ -227,11 +215,9 @@
 
 .edit {
     composes: box_item;
-    //background: url('img/edit.png') no-repeat center;
 }
 
 .edit:hover {
-    //background-image: url('img/edit_blue.png');
 }
 
 .minimal {
@@ -279,7 +265,6 @@
 }
 
 .error .edit.minimal {
-    //background-image: url('img/edit_error.png');
 }
 
 .error .input.minimal::placeholder {
@@ -298,17 +283,14 @@
 }
 
 .box:not(.read_only) .edit.minimal:hover {
-    //background-image: url('img/edit_blue.png');
 }
 
 .box_arrow_up.minimal {
-    //background-image: url('img/arrow_minimal_grey.png');
     transform: scale(1, -1);
     border-bottom: none;
 }
 
 .box_arrow_down.minimal {
-    //background-image: url('img/arrow_minimal_grey.png');
     transform: none;
 }
 
@@ -318,7 +300,6 @@
 
 .box_arrow_down.minimal:hover,
 .box_arrow_up.minimal:hover {
-    //background-image: url('img/arrow_blue.png');
 }
 
 .text_hidden {

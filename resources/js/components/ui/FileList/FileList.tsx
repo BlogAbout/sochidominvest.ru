@@ -48,14 +48,12 @@ const FileList: React.FC<Props> = (props) => {
 
     const {role} = useTypedSelector(state => state.userReducer)
 
-    // Стили для перемещаемого элемента
     const getDragItemStyle = (isDragging: boolean, draggableStyle: any) => ({
         userSelect: 'none',
         background: isDragging ? 'lightgreen' : undefined,
         ...draggableStyle
     })
 
-    // Стили для списка перемещаемых элементов
     const getDragListStyle = (isDraggingOver: boolean) => {
         const styles: CSSProperties = {
             background: isDraggingOver ? 'lightblue' : undefined
@@ -133,11 +131,10 @@ const FileList: React.FC<Props> = (props) => {
         openContextMenu(e, menuItems)
     }
 
-    // Обработчик на завершение перемещения элемента (поля), когда отпустили
     const onDragEnd = (result: any) => {
         const {source, destination, draggableId} = result
 
-        if (!destination) { // Бросили по пути
+        if (!destination) {
             return
         }
 

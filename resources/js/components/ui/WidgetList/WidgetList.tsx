@@ -50,7 +50,6 @@ const WidgetList: React.FC<Props> = (props) => {
         }
     }, [props.widgets])
 
-    // Вызов селектора элементов для добавления в виджет
     const addElementHandler = (widget: IWidget) => {
         switch (widget.type) {
             case 'building':
@@ -80,7 +79,6 @@ const WidgetList: React.FC<Props> = (props) => {
         }
     }
 
-    // Удаление элемента из виджета
     const removeElementHandler = (widget: IWidget, index: number) => {
         const widgetData: IWidget = JSON.parse(JSON.stringify(widget))
         const findIndex = widgets.findIndex((item: IWidget) => item.id === widgetData.id)
@@ -97,7 +95,6 @@ const WidgetList: React.FC<Props> = (props) => {
         ])
     }
 
-    // Добавление элемента в виджет
     const addElementToWidget = (widget: IWidget, selectedItem: number) => {
         const widgetData: IWidget = JSON.parse(JSON.stringify(widget))
 
@@ -131,7 +128,6 @@ const WidgetList: React.FC<Props> = (props) => {
         // ])
     }
 
-    // Контекстное меню по клику на элемент внутри виджета
     const onContextMenu = (e: React.MouseEvent, widget: IWidget, index: number) => {
         e.preventDefault()
 
@@ -142,7 +138,6 @@ const WidgetList: React.FC<Props> = (props) => {
         openContextMenu(e, menuItems)
     }
 
-    // Сохранение данных виджета
     const onSaveWidgetHandler = (widget: IWidget) => {
         setFetching(true)
 
@@ -175,84 +170,84 @@ const WidgetList: React.FC<Props> = (props) => {
     }
 
     const renderBuildingList = (widget: IWidget) => {
-        // if (!widget.data.length) {
+        if (!widget.items.length) {
             return <Empty message='Нет элементов'/>
-        // }
+        }
 
-        // return (
-        //     <BlockingElement fetching={props.fetching} className={classes.items}>
-        //         {widget.data.map((item: IWidgetData, index: number) => {
-        //             const itemInfo = buildings.find((building: IBuilding) => building.id === item.objectId)
-        //
-        //             if (!itemInfo) {
-        //                 return null
-        //             }
-        //
-        //             return (
-        //                 <div key={index} className={classes.element}
-        //                      onContextMenu={(e: React.MouseEvent) => onContextMenu(e, widget, index)}
-        //                 >
-        //                     <div className={classes.id}>{index + 1}</div>
-        //                     <div className={classes.name}>{itemInfo.name}</div>
-        //                 </div>
-        //             )
-        //         })}
-        //     </BlockingElement>
-        // )
+        return (
+            <BlockingElement fetching={props.fetching} className={classes.items}>
+                {widget.items.map((item: IWidgetData, index: number) => {
+                    const itemInfo = buildings.find((building: IBuilding) => building.id === item.object_id)
+
+                    if (!itemInfo) {
+                        return null
+                    }
+
+                    return (
+                        <div key={index} className={classes.element}
+                             onContextMenu={(e: React.MouseEvent) => onContextMenu(e, widget, index)}
+                        >
+                            <div className={classes.id}>{index + 1}</div>
+                            <div className={classes.name}>{itemInfo.name}</div>
+                        </div>
+                    )
+                })}
+            </BlockingElement>
+        )
     }
 
     const renderArticleList = (widget: IWidget) => {
-        // if (!widget.data.length) {
+        if (!widget.items.length) {
             return <Empty message='Нет элементов'/>
-        // }
+        }
 
-        // return (
-        //     <BlockingElement fetching={props.fetching} className={classes.items}>
-        //         {widget.data.map((item: IWidgetData, index: number) => {
-        //             const itemInfo = articles.find((article: IArticle) => article.id === item.objectId)
-        //
-        //             if (!itemInfo) {
-        //                 return null
-        //             }
-        //
-        //             return (
-        //                 <div key={index} className={classes.element}
-        //                      onContextMenu={(e: React.MouseEvent) => onContextMenu(e, widget, index)}
-        //                 >
-        //                     <div className={classes.id}>{index + 1}</div>
-        //                     <div className={classes.name}>{itemInfo.name}</div>
-        //                 </div>
-        //             )
-        //         })}
-        //     </BlockingElement>
-        // )
+        return (
+            <BlockingElement fetching={props.fetching} className={classes.items}>
+                {widget.items.map((item: IWidgetData, index: number) => {
+                    const itemInfo = articles.find((article: IArticle) => article.id === item.object_id)
+
+                    if (!itemInfo) {
+                        return null
+                    }
+
+                    return (
+                        <div key={index} className={classes.element}
+                             onContextMenu={(e: React.MouseEvent) => onContextMenu(e, widget, index)}
+                        >
+                            <div className={classes.id}>{index + 1}</div>
+                            <div className={classes.name}>{itemInfo.name}</div>
+                        </div>
+                    )
+                })}
+            </BlockingElement>
+        )
     }
 
     const renderPartnerList = (widget: IWidget) => {
-        // if (!widget.data.length) {
+        if (!widget.items.length) {
             return <Empty message='Нет элементов'/>
-        // }
+        }
 
-        // return (
-        //     <BlockingElement fetching={props.fetching} className={classes.items}>
-        //         {widget.data.map((item: IWidgetData, index: number) => {
-        //             const itemInfo = partners.find((partner: IPartner) => partner.id === item.objectId)
-        //
-        //             if (!itemInfo) {
-        //                 return null
-        //             }
-        //
-        //             return (
-        //                 <div key={index} className={classes.element}
-        //                      onContextMenu={(e: React.MouseEvent) => onContextMenu(e, widget, index)}
-        //                 >
-        //                     <div className={classes.id}>{index + 1}</div>
-        //                     <div className={classes.name}>{itemInfo.name}</div>
-        //                 </div>
-        //             )
-        //         })}
-        //     </BlockingElement>
-        // )
+        return (
+            <BlockingElement fetching={props.fetching} className={classes.items}>
+                {widget.items.map((item: IWidgetData, index: number) => {
+                    const itemInfo = partners.find((partner: IPartner) => partner.id === item.object_id)
+
+                    if (!itemInfo) {
+                        return null
+                    }
+
+                    return (
+                        <div key={index} className={classes.element}
+                             onContextMenu={(e: React.MouseEvent) => onContextMenu(e, widget, index)}
+                        >
+                            <div className={classes.id}>{index + 1}</div>
+                            <div className={classes.name}>{itemInfo.name}</div>
+                        </div>
+                    )
+                })}
+            </BlockingElement>
+        )
     }
 
     return (

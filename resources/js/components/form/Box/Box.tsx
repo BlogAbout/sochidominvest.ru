@@ -8,9 +8,9 @@ interface Props extends React.PropsWithChildren {
     value?: string | number
     type: 'input' | 'picker'
     styleType?: 'standard' | 'minimal' | 'borderDisabled'
-    inputType?: 'password' | 'text' // Для input
-    pickerStyle?: React.CSSProperties, // Для picker
-    pickerClass?: string, // Для picker
+    inputType?: 'password' | 'text'
+    pickerStyle?: React.CSSProperties
+    pickerClass?: string
     eye?: boolean
     find?: number | boolean
     showSelect?: boolean
@@ -72,8 +72,6 @@ const defaultProps: Props = {
 }
 
 const cx = classNames.bind(classes)
-
-// Todo: Рефакторинг
 
 const Box = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
     const [dateActive, setDateActive] = useState(false)
@@ -304,15 +302,14 @@ const Box = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
     }
 
     const renderDate = () => {
-        return null
-        // if (props.showDate) {
-        //     return (
-        //         <div className={classes['date']}
-        //              onMouseOver={() => setDateActive(true)}
-        //              onMouseOut={() => setDateActive(false)}
-        //         />
-        //     )
-        // }
+        if (props.showDate) {
+            return (
+                <div className={classes['date']}
+                     onMouseOver={() => setDateActive(true)}
+                     onMouseOut={() => setDateActive(false)}
+                />
+            )
+        }
     }
 
     const renderValidate = () => {

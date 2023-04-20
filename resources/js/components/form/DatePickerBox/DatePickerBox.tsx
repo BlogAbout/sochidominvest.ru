@@ -63,7 +63,6 @@ const DatePicker: React.FC<Props> = (props) => {
         })
     }
 
-    // Отрисовка контента по типу дней месяца, месяцев года или десятилетия
     const renderContent = () => {
         switch (info.type) {
             case 'year':
@@ -91,7 +90,6 @@ const DatePicker: React.FC<Props> = (props) => {
         }
     }
 
-    // Возвращение текста селектора между стрелочек
     const getSelectorText = () => {
         switch (info.type) {
             case 'year':
@@ -105,7 +103,6 @@ const DatePicker: React.FC<Props> = (props) => {
         }
     }
 
-    // Отрисовка стрелочки влево
     const renderLeft = () => {
         let month = info.month
         let year = info.year
@@ -134,7 +131,6 @@ const DatePicker: React.FC<Props> = (props) => {
         )
     }
 
-    // Отрисовка стрелочки вправо
     const renderRight = () => {
         let month = info.month
         let year = info.year
@@ -163,7 +159,6 @@ const DatePicker: React.FC<Props> = (props) => {
         )
     }
 
-    // Отрисовка заголовка с названиями дней недели
     const renderWeekHeader = () => {
         let days = ['Пн', 'Вт', 'Ск', 'Чт', 'Пт', 'Сб', 'Вс']
 

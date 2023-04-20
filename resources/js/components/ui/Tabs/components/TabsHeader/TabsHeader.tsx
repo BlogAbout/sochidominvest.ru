@@ -41,19 +41,6 @@ const TabsHeader: React.FC<Props> = (props) => {
             [tab.iconActive ? tab.iconActive : '']: tab.iconActive && active
         })
 
-        let marginLeft = 6
-
-        // Todo
-        // if (index === 0) {
-        //     if (props.paddingFirstTab === 'none') {
-        //         marginLeft = 0
-        //     }
-        //
-        //     if (props.paddingFirstTab === 'popup') {
-        //         marginLeft = 15
-        //     }
-        // }
-
         return (
             <div key={tabKey}
                  className={tabStyle}

@@ -4,7 +4,6 @@ import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
 import {IUser} from '../../../../../@types/IUser'
 import Avatar from '../../../../ui/Avatar/Avatar'
 import classes from './UserItem.module.scss'
-import {getFormatDate} from '../../../../../helpers/dateHelper'
 
 interface Props {
     user: IUser
@@ -25,11 +24,15 @@ const UserItem: React.FC<Props> = (props) => {
 
     return (
         <div className={classes.UserItem} onClick={props.onClick}>
-            {/*<Avatar href={props.user.avatar} alt={props.user.firstName} width={70} height={70}/>*/}
+            <Avatar href={props.user.avatar ? props.user.avatar.content : ''}
+                    alt={props.user.name}
+                    width={70}
+                    height={70}
+            />
 
             <div className={classes.name}>{props.user.name}</div>
 
-            {/*<div className={classes.post}>{props.user.postName}</div>*/}
+            <div className={classes.post}>{props.user.post ? props.user.post.name : '-'}</div>
 
             <div className={cx({'status': true, 'online': props.user.id && usersOnline.includes(props.user.id)})}
                  title={props.user.id && usersOnline.includes(props.user.id)

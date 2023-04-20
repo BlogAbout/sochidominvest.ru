@@ -11,8 +11,8 @@ interface Props extends React.PropsWithChildren {
     readOnly?: boolean
     title?: string
     label: string
-    labelSize?: '12px' | '14px' // Размер шрифта
-    labelSide?: 'left' | 'right' | '' // С какой стороны label
+    labelSize?: '12px' | '14px'
+    labelSide?: 'left' | 'right' | ''
     width?: number | string // Ширина label
     margin?: number | string
     flexGrow?: boolean
