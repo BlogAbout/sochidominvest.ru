@@ -11,6 +11,7 @@ import openPopupAlert from '../../popup/PopupAlert/PopupAlert'
 import Empty from '../Empty/Empty'
 import BlockingElement from '../BlockingElement/BlockingElement'
 import classes from './FileList.module.scss'
+import {configuration} from "../../../helpers/utilHelper";
 
 interface Props {
     files: IAttachment[]
@@ -107,14 +108,13 @@ const FileList: React.FC<Props> = (props) => {
         }
     }
 
-    // Открытие контекстного меню на элементе
     const onContextMenu = (e: React.MouseEvent, file: IAttachment) => {
         e.preventDefault()
 
         const menuItems = [{
             text: 'Открыть',
             onClick: () => {
-                window.open(`https://api.sochidominvest.ru/uploads/${file.type}/${file.content}`, '_blank')
+                window.open(`${configuration.apiUrl}uploads/${file.type}/${file.content}`, '_blank')
             }
         }]
 
@@ -162,7 +162,7 @@ const FileList: React.FC<Props> = (props) => {
                      }}
                      onContextMenu={(e: React.MouseEvent) => onContextMenu(e, file)}
                 >
-                    <img src={'https://api.sochidominvest.ru/uploads/image/thumb/' + file.content}
+                    <img src={`${configuration.apiUrl}uploads/image/thumb/${file.content}`}
                          alt={file.name || file.content}/>
                 </div>
             </div>

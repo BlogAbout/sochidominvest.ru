@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames/bind'
 import classes from './ListRow.module.scss'
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     isDisabled?: boolean
     isBlock?: boolean
     className?: string
@@ -28,7 +28,7 @@ const ListRow: React.FC<Props> = (props): React.ReactElement => {
              onContextMenu={props.onContextMenu}
              style={props.style}
         >
-            {/*{props.children}*/}
+            {props.children}
         </div>
     )
 }

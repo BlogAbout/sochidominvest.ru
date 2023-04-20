@@ -25,7 +25,7 @@ const BlockingElement: React.FC<Props> = (props) => {
 
     return (
         <div className={blockingElementStyle} style={{position: 'relative'}} ref={props.innerRef}>
-            {/*{props.children}*/}
+            {props.children}
 
             {props.fetching && <Preloader/>}
         </div>

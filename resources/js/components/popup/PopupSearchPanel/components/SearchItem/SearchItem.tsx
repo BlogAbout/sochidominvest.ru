@@ -8,6 +8,7 @@ import {IAttachment} from '../../../../../@types/IAttachment'
 import {IPartner} from '../../../../../@types/IPartner'
 import {getFormatDate} from '../../../../../helpers/dateHelper'
 import classes from './SearchItem.module.scss'
+import {configuration} from "../../../../../helpers/utilHelper";
 
 interface Props {
     item: IUser | IBuilding | IArticle | IDocument | IDeveloper | IAttachment | IPartner
@@ -32,7 +33,7 @@ const SearchItem: React.FC<Props> = (props) => {
              onClick={() => {
                  if (props.type === 'attachment' && 'content' in props.item) {
                      window.open(
-                         `https://api.sochidominvest.ru/uploads/${props.item.type}/${props.item.content}`,
+                         `${configuration.apiUrl}uploads/${props.item.type}/${props.item.content}`,
                          '_blank'
                      )
                  } else {

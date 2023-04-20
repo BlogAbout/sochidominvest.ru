@@ -257,47 +257,47 @@ const WidgetList: React.FC<Props> = (props) => {
 
     return (
         <div className={classes.WidgetList}>
-            {/*{widgets.length ?*/}
-            {/*    (<BlockingElement fetching={props.fetching} className={classes.list}>*/}
-            {/*        {widgets.map((widget: IWidget) => {*/}
-            {/*            return (*/}
-            {/*                <div key={widget.id}*/}
-            {/*                     // className={cx({'item': true, 'disabled': widget.active === 0})}*/}
-            {/*                >*/}
-            {/*                    <div className={classes.head}>*/}
-            {/*                        <h4>{widget.name}</h4>*/}
-            {/*                        <span className={classes.page}>{getWidgetPageText(widget.page)}</span>*/}
-            {/*                    </div>*/}
+            {widgets.length ?
+                (<BlockingElement fetching={props.fetching} className={classes.list}>
+                    {widgets.map((widget: IWidget) => {
+                        return (
+                            <div key={widget.id}
+                                 className={cx({'item': true, 'disabled': widget.is_active === 0})}
+                            >
+                                <div className={classes.head}>
+                                    <h4>{widget.name}</h4>
+                                    <span className={classes.page}>{getWidgetPageText(widget.page)}</span>
+                                </div>
 
-            {/*                    <div className={classes.content}>*/}
-            {/*                        {renderList(widget)}*/}
-            {/*                    </div>*/}
+                                <div className={classes.content}>
+                                    {renderList(widget)}
+                                </div>
 
-            {/*                    <div className={classes.footer}>*/}
-            {/*                        <span className={classes.info}>Стиль: {getWidgetStyleText(widget.style)}</span>*/}
-            {/*                        <span className={classes.info}>Тип: {getWidgetTypeText(widget.type)}</span>*/}
-            {/*                    </div>*/}
+                                <div className={classes.footer}>
+                                    <span className={classes.info}>Стиль: {getWidgetStyleText(widget.style)}</span>
+                                    <span className={classes.info}>Тип: {getWidgetTypeText(widget.type)}</span>
+                                </div>
 
-            {/*                    <div className={classes.buttons}>*/}
-            {/*                        <Button type='save'*/}
-            {/*                                icon='check'*/}
-            {/*                                onClick={() => onSaveWidgetHandler(widget)}*/}
-            {/*                                disabled={props.fetching || fetching || fetchingBuildings || fetchingArticles || fetchingPartners}*/}
-            {/*                        >Сохранить</Button>*/}
+                                <div className={classes.buttons}>
+                                    <Button type='save'
+                                            icon='check'
+                                            onClick={() => onSaveWidgetHandler(widget)}
+                                            disabled={props.fetching || fetching || fetchingBuildings || fetchingArticles || fetchingPartners}
+                                    >Сохранить</Button>
 
-            {/*                        <Button type='save'*/}
-            {/*                                icon='plus'*/}
-            {/*                                onClick={() => addElementHandler(widget)}*/}
-            {/*                                disabled={props.fetching || fetching || fetchingBuildings || fetchingArticles || fetchingPartners}*/}
-            {/*                                className='marginLeft'*/}
-            {/*                        >Добавить</Button>*/}
-            {/*                    </div>*/}
-            {/*                </div>*/}
-            {/*            )*/}
-            {/*        })}*/}
-            {/*    </BlockingElement>)*/}
-            {/*    : <Empty message='Нет виджетов'/>*/}
-            {/*}*/}
+                                    <Button type='save'
+                                            icon='plus'
+                                            onClick={() => addElementHandler(widget)}
+                                            disabled={props.fetching || fetching || fetchingBuildings || fetchingArticles || fetchingPartners}
+                                            className='marginLeft'
+                                    >Добавить</Button>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </BlockingElement>)
+                : <Empty message='Нет виджетов'/>
+            }
         </div>
     )
 }

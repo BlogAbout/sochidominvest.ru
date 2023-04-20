@@ -37,7 +37,6 @@ const SupportItem: React.FC<Props> = (props) => {
 
     const {role, userId} = useTypedSelector(state => state.userReducer)
 
-    // Удаление заявки
     const removeHandler = () => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${props.feed.title}?`,
@@ -98,7 +97,6 @@ const SupportItem: React.FC<Props> = (props) => {
         })
     }
 
-    // Закрытие заявки
     const closeHandler = () => {
         const updateFeed = {...props.feed}
 
@@ -123,7 +121,6 @@ const SupportItem: React.FC<Props> = (props) => {
             })
     }
 
-    // Открытие контекстного меню на элементе
     const onContextMenu = (e: React.MouseEvent) => {
         e.preventDefault()
 

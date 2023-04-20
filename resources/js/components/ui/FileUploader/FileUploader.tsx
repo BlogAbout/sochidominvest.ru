@@ -117,7 +117,7 @@ const FileUploader: React.FC<Props> = (props) => {
             setFetching(false)
 
             if (inputRef && inputRef.current) {
-                // inputRef.current.value = ''
+                inputRef.current.value = ''
             }
 
             props.onChange(uploadInfo.attachments)
@@ -141,8 +141,7 @@ const FileUploader: React.FC<Props> = (props) => {
                     <div className={classes.info}>
                         <Button type='apply'
                                 icon='upload'
-                                // onClick={() => inputRef.current?.click()}
-                                onClick={() => {}}
+                                onClick={() => inputRef.current?.click()}
                                 disabled={props.disabled || fetching}
                                 title={acceptText}
                         >{props.text}</Button>

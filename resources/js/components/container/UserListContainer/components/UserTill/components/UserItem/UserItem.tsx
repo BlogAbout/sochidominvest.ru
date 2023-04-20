@@ -3,8 +3,6 @@ import classNames from 'classnames/bind'
 import {useTypedSelector} from '../../../../../../../hooks/useTypedSelector'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {IUser} from '../../../../../../../@types/IUser'
-import {getRoleUserText} from '../../../../../../../helpers/userHelper'
-import {getFormatDate} from '../../../../../../../helpers/dateHelper'
 import Indicator from '../../../../../../ui/Indicator/Indicator'
 import Avatar from '../../../../../../ui/Avatar/Avatar'
 import classes from './UserItem.module.scss'
@@ -52,7 +50,8 @@ const UserItem: React.FC<Props> = (props) => {
              onClick={() => props.onClick(props.user)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.user)}
         >
-            {/*<Avatar href={props.user.avatar} alt={props.user.firstName} width={150} height={150}/>*/}
+            <Avatar href={props.user.avatar ? props.user.avatar.content : null} alt={props.user.name} width={150}
+                    height={150}/>
 
             <div className={classes.itemContent}>
                 <h2>
@@ -64,12 +63,12 @@ const UserItem: React.FC<Props> = (props) => {
 
                 <div className={classes.row} title='Роль'>
                     <FontAwesomeIcon icon='user-check'/>
-                    {/*<span>{getRoleUserText(props.user.role)}</span>*/}
+                    <span>{props.user.role ? props.user.role.name : ''}</span>
                 </div>
 
                 <div className={classes.row} title='Должность'>
                     <FontAwesomeIcon icon='id-card'/>
-                    {/*<span>{props.user.postName || '-'}</span>*/}
+                    <span>{props.user.post ? props.user.post.name : '-'}</span>
                 </div>
 
                 <div className={classes.row} title='E-mail'>

@@ -35,7 +35,6 @@ const CompilationList: React.FC<Props> = (props): React.ReactElement => {
 
     const [fetching, setFetching] = useState(props.fetching)
 
-    // Редактирование элемента
     const updateHandler = (compilation: ICompilation) => {
         openPopupCompilationCreate(document.body, {
             compilation: compilation,
@@ -43,7 +42,6 @@ const CompilationList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Удаление элемента
     const removeHandler = (compilation: ICompilation) => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить подборку "${compilation.name}"? Все объекты из нее также будут удалены!`,
@@ -75,7 +73,6 @@ const CompilationList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Открытие контекстного меню на элементе
     const onContextMenu = (compilation: ICompilation, e: React.MouseEvent) => {
         e.preventDefault()
 

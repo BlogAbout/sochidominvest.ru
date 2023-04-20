@@ -105,13 +105,14 @@ const ComboBox: React.FC<Props> = (props) => {
 
     return (
         <Box {...props}
-             value={text}
+             value={text || ''}
              title={title}
              placeHolder={placeHolder}
              pickerClass={pickerClass}
              type='picker'
              onChange={onChangeHandler.bind(this)}
              onClear={onClearHandler.bind(this)}
+             onSelect={undefined}
              showArrow
              styleType={props.styleType}
         />

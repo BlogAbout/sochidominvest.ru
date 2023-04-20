@@ -170,7 +170,7 @@ const SidebarLeft: React.FC<Props> = (props) => {
 
                 {props.filters && props.filters.length ?
                     <BlockingElement fetching={false} className={classes.list}>
-                        {/*{props.filters.map((filter: IFilterContent, index: number) => renderFilterItem(filter, index))}*/}
+                        {props.filters.map((filter: IFilterContent, index: number) => renderFilterItem(filter, index))}
                     </BlockingElement>
                     :
                     <Empty message='Нет доступных фильтров'/>

@@ -15,6 +15,7 @@ import openPopupAlert from '../../../../popup/PopupAlert/PopupAlert'
 import openContextMenu from '../../../../ui/ContextMenu/ContextMenu'
 import openPopupDocumentCreate from '../../../../../components/popup/PopupDocumentCreate/PopupDocumentCreate'
 import classes from './DocumentList.module.scss'
+import {configuration} from "../../../../../helpers/utilHelper";
 
 interface Props {
     list: IDocument[]
@@ -103,7 +104,7 @@ const DocumentList: React.FC<Props> = (props): React.ReactElement => {
                     switch (documentInfo.type) {
                         case 'file':
                             window.open(
-                                `https://api.sochidominvest.ru/uploads/${documentInfo.type}/${documentInfo.content}`,
+                                `${configuration.apiUrl}uploads/${documentInfo.type}/${documentInfo.content}`,
                                 '_blank'
                             )
                             break

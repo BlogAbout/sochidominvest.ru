@@ -1,3 +1,6 @@
+import {IPost} from './IPost'
+import {IAttachment} from './IAttachment'
+
 export interface IUser {
     id: number | null
     name: string
@@ -7,8 +10,12 @@ export interface IUser {
     is_active?: number
     is_block?: number
     settings?: IUserSetting | null
+    role_id?: number | null
+    role?: IRole | null
     avatar_id?: number | null
+    avatar?: IAttachment | null
     post_id?: number | null
+    post?: IPost | null
     tariff_id?: number | null
     tariff_expired?: string | null
     last_active?: string | null
@@ -39,4 +46,9 @@ export interface IUserExternal {
     updated_at?: string | null
     date_created?: string | null
     date_updated?: string | null
+}
+
+export interface IRole {
+    id: number | null
+    name: string
 }

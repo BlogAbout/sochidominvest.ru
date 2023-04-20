@@ -13,6 +13,7 @@ import {
 } from 'video-react'
 import 'video-react/styles/scss/video-react.scss'
 import classes from './MediaPlayer.module.scss'
+import {configuration} from "../../../helpers/utilHelper";
 
 interface Props {
     source: string
@@ -34,7 +35,7 @@ const MediaPlayer: React.FC<Props> = (props) => {
 
     const renderVideoPlayer = () => {
         return (
-            <Player poster={props.poster ? `https://api.sochidominvest.ru/uploads/image/full/${props.poster}` : ''}
+            <Player poster={props.poster ? `${configuration.apiUrl}uploads/image/full/${props.poster}` : ''}
                     src={props.source}
                     height='100%'
             >

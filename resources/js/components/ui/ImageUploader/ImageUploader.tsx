@@ -7,6 +7,7 @@ import Button from '../../form/Button/Button'
 import Preloader from '../Preloader/Preloader'
 import Empty from '../Empty/Empty'
 import classes from './ImageUploader.module.scss'
+import {configuration} from "../../../helpers/utilHelper";
 
 interface Props {
     images: IImageDb[]
@@ -76,7 +77,7 @@ const ImageUploader: React.FC<Props> = (props) => {
         }
 
         if (inputRef && inputRef.current) {
-            // inputRef.current.value = ''
+            inputRef.current.value = ''
         }
 
         props.onChange(props.images, [...props.newImages, ...imagesList])
@@ -124,7 +125,7 @@ const ImageUploader: React.FC<Props> = (props) => {
                                          }
                                      }}
                                 >
-                                    <img src={'https://api.sochidominvest.ru' + image.value} alt={image.name}/>
+                                    <img src={configuration.apiUrl + image.value} alt={image.name}/>
                                 </div>
 
                                 <div className={classes.remove}
@@ -183,8 +184,7 @@ const ImageUploader: React.FC<Props> = (props) => {
 
                 <Button type='apply'
                         icon='upload'
-                        // onClick={() => inputRef.current?.click()}
-                        onClick={() => {}}
+                        onClick={() => inputRef.current?.click()}
                         disabled={props.disabled || props.fetching}
                         title={acceptText}
                 >{props.text}</Button>

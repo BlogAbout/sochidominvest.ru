@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import NotificationService from '../../../api/NotificationService'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-// import NotificationPanel from '../../../components/ui/NotificationPanel/NotificationPanel'
-// import openPopupMessenger from '../../../components/popup/PopupMessenger/PopupMessenger'
+import NotificationPanel from '../../../components/ui/NotificationPanel/NotificationPanel'
+import openPopupMessenger from '../../../components/popup/PopupMessenger/PopupMessenger'
 import classes from './ToolsPanel.module.scss'
 
 const ToolsPanel: React.FC = () => {
@@ -12,13 +12,13 @@ const ToolsPanel: React.FC = () => {
     useEffect(() => {
         getCountNewNotification()
 
-        // window.events.addListener('messengerCountNotificationsIncrease', countNewNotificationIncrease)
-        // window.events.addListener('messengerCountNewNotificationUpdate', countNewNotificationUpdate)
-        //
-        // return () => {
-        //     window.events.removeListener('messengerCountNotificationsIncrease', countNewNotificationIncrease)
-        //     window.events.removeListener('messengerCountNewNotificationUpdate', countNewNotificationUpdate)
-        // }
+        window.events.addListener('messengerCountNotificationsIncrease', countNewNotificationIncrease)
+        window.events.addListener('messengerCountNewNotificationUpdate', countNewNotificationUpdate)
+
+        return () => {
+            window.events.removeListener('messengerCountNotificationsIncrease', countNewNotificationIncrease)
+            window.events.removeListener('messengerCountNewNotificationUpdate', countNewNotificationUpdate)
+        }
     }, [countNewNotification])
 
     // Получение количества новых уведомлений
@@ -42,7 +42,7 @@ const ToolsPanel: React.FC = () => {
             <aside className={classes.ToolsPanel}>
                 <div className={classes.icon}
                      title='Мессенджер'
-                     // onClick={() => openPopupMessenger(document.body, {})}
+                     onClick={() => openPopupMessenger(document.body, {})}
                 >
                     <FontAwesomeIcon icon='message'/>
                 </div>
@@ -57,8 +57,8 @@ const ToolsPanel: React.FC = () => {
                 </div>
             </aside>
 
-            {/*{isShowNotification &&*/}
-            {/*<NotificationPanel isShow={isShowNotification} onShow={() => setIsShowNotification(false)}/>}*/}
+            {isShowNotification &&
+            <NotificationPanel isShow={isShowNotification} onShow={() => setIsShowNotification(false)}/>}
         </>
     )
 }

@@ -31,7 +31,6 @@ const defaultProps: Props = {
 }
 
 const AddressBox: React.FC<Props> = (props) => {
-    // Обработчик клика на поле
     const clickHandler = (e: React.MouseEvent) => {
         openPopupAddressSelector(document.body, {
             address: props.address || '',
@@ -42,7 +41,6 @@ const AddressBox: React.FC<Props> = (props) => {
         })
     }
 
-    // Обработчик сброса выбора
     const resetHandler = () => {
         props.onSelect('', '')
     }

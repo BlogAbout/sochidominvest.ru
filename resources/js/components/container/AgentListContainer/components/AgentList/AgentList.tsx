@@ -44,17 +44,17 @@ const AgentList: React.FC<Props> = (props) => {
             </div>
 
             <BlockingElement fetching={props.fetching} className={classes.list}>
-                {/*{props.agents.map((agent: IAgent) => {*/}
-                {/*    return (*/}
-                {/*        <AgentItem key={agent.id}*/}
-                {/*                   agent={agent}*/}
-                {/*                   onClick={props.onClick}*/}
-                {/*                   onEdit={props.onEdit}*/}
-                {/*                   onRemove={props.onRemove}*/}
-                {/*                   onContextMenu={props.onContextMenu}*/}
-                {/*        />*/}
-                {/*    )*/}
-                {/*})}*/}
+                {props.agents.map((agent: IAgent) => {
+                    return (
+                        <AgentItem key={agent.id}
+                                   agent={agent}
+                                   onClick={props.onClick}
+                                   onEdit={props.onEdit}
+                                   onRemove={props.onRemove}
+                                   onContextMenu={props.onContextMenu}
+                        />
+                    )
+                })}
             </BlockingElement>
         </div>
     )

@@ -1,12 +1,11 @@
 import React from 'react'
 import ReactMde from 'react-mde'
-import * as Showdown from 'showdown'
 import classNames from 'classnames/bind'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
+import {converter} from '../../../helpers/utilHelper'
 import classes from './TextAreaBox.module.scss'
 import 'react-mde/lib/styles/css/react-mde-all.css'
-import {converter} from "../../../helpers/utilHelper";
 
 interface Props {
     value?: string

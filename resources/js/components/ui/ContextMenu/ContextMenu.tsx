@@ -53,7 +53,7 @@ const ContextMenu: React.FC<Props> = (props) => {
     }
 
     const renderList = () => {
-        const id = Date.now() // Для генерации уникального key, чтоб небыло ошибок от реакта о использовании массива элементов
+        const id = Date.now()
         const hasMenuClassMame = props.menuItems.filter(item => item.className && item.className !== 'separator').length > 0
 
         const handleClick = (e: any) => {

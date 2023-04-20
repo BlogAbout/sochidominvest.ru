@@ -3,6 +3,7 @@ import DefaultView from '../../views/DefaultView/DefaultView'
 import Title from '../../ui/Title/Title'
 import Wrapper from '../../ui/Wrapper/Wrapper'
 import classes from './PolicyPage.module.scss'
+import {configuration} from "../../../helpers/utilHelper";
 
 const PolicyPage: React.FC = (): React.ReactElement => {
     return (
@@ -28,7 +29,7 @@ const PolicyPage: React.FC = (): React.ReactElement => {
                     <li>
                         1.2. Настоящая политика Оператора в отношении обработки персональных данных (далее –
                         Политика) применяется ко всей информации, которую Оператор может получить о посетителях
-                        веб-сайта https://sochidominvest.ru.
+                        веб-сайта {configuration.siteUrl}.
                     </li>
                 </ol>
 
@@ -47,7 +48,7 @@ const PolicyPage: React.FC = (): React.ReactElement => {
                     <li>
                         2.3. Веб-сайт – совокупность графических и информационных материалов, а также программ
                         для ЭВМ и баз данных, обеспечивающих их доступность в сети интернет по сетевому адресу
-                        https://sochidominvest.ru.
+                        {configuration.siteUrl}.
                     </li>
                     <li>
                         2.4. Информационная система персональных данных — совокупность содержащихся в базах
@@ -76,7 +77,7 @@ const PolicyPage: React.FC = (): React.ReactElement => {
                     </li>
                     <li>
                         2.8. Персональные данные – любая информация, относящаяся прямо или косвенно к
-                        определенному или определяемому Пользователю веб-сайта https://sochidominvest.ru.
+                        определенному или определяемому Пользователю веб-сайта {configuration.siteUrl}.
                     </li>
                     <li>
                         2.9. Персональные данные, разрешенные субъектом персональных данных для распространения,
@@ -85,7 +86,7 @@ const PolicyPage: React.FC = (): React.ReactElement => {
                         субъектом персональных данных для распространения в порядке, предусмотренном Законом о
                         персональных данных (далее - персональные данные, разрешенные для распространения).
                     </li>
-                    <li>2.10. Пользователь – любой посетитель веб-сайта https://sochidominvest.ru.</li>
+                    <li>2.10. Пользователь – любой посетитель веб-сайта {configuration.siteUrl}.</li>
                     <li>
                         2.11. Предоставление персональных данных – действия, направленные на раскрытие
                         персональных данных определенному лицу или определенному кругу лиц.
@@ -320,7 +321,7 @@ const PolicyPage: React.FC = (): React.ReactElement => {
                     <li>
                         – предоставление доступа Пользователю к сервисам, информации и/или материалам,
                         содержащимся
-                        на веб-сайте https://sochidominvest.ru.
+                        на веб-сайте {configuration.siteUrl}.
                     </li>
                     <li>
                         7.2. Также Оператор имеет право направлять Пользователю уведомления о новых продуктах и
@@ -359,7 +360,7 @@ const PolicyPage: React.FC = (): React.ReactElement => {
                         заполнения
                         и/или
                         отправки Пользователем самостоятельно через специальные формы, расположенные на сайте
-                        https://sochidominvest.ru или направленные Оператору посредством электронной почты.
+                        {configuration.siteUrl} или направленные Оператору посредством электронной почты.
                         Заполняя
                         соответствующие формы и/или отправляя свои персональные данные Оператору, Пользователь
                         выражает свое
@@ -596,7 +597,7 @@ const PolicyPage: React.FC = (): React.ReactElement => {
                     <li>
                         14.3. Актуальная версия Политики в свободном доступе расположена в сети Интернет по
                         адресу
-                        https://sochidominvest.ru/policy.
+                        ${configuration.siteUrl}policy.
                     </li>
                 </ol>
             </Wrapper>

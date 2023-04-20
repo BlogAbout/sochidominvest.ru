@@ -17,32 +17,32 @@ const defaultProps: Props = {
 }
 
 const NotificationList: React.FC<Props> = (props) => {
-    // const {readNotification, removeNotification} = useActions()
-    //
-    // const onReadMessageHandler = (notification: INotification) => {
-    //     if (notification.id) {
-    //         readNotification(notification.id)
-    //     }
-    // }
-    //
-    // const onRemoveMessageHandler = (notification: INotification) => {
-    //     if (notification.id) {
-    //         removeNotification(notification.id)
-    //     }
-    // }
+    const {readNotification, removeNotification} = useActions()
+
+    const onReadMessageHandler = (notification: INotification) => {
+        if (notification.id) {
+            readNotification(notification.id)
+        }
+    }
+
+    const onRemoveMessageHandler = (notification: INotification) => {
+        if (notification.id) {
+            removeNotification(notification.id)
+        }
+    }
 
     if (props.notifications && props.notifications.length) {
         return (
             <BlockingElement fetching={props.fetching} className={classes.content}>
-                {/*{props.notifications.map((notification: INotification) => {*/}
-                {/*    return (*/}
-                {/*        <NotificationItem key={notification.id}*/}
-                {/*                          notification={notification}*/}
-                {/*                          readMessage={onReadMessageHandler.bind(this)}*/}
-                {/*                          removeMessage={onRemoveMessageHandler.bind(this)}*/}
-                {/*        />*/}
-                {/*    )*/}
-                {/*})}*/}
+                {props.notifications.map((notification: INotification) => {
+                    return (
+                        <NotificationItem key={notification.id}
+                                          notification={notification}
+                                          readMessage={onReadMessageHandler.bind(this)}
+                                          removeMessage={onRemoveMessageHandler.bind(this)}
+                        />
+                    )
+                })}
             </BlockingElement>
         )
     } else {

@@ -1,8 +1,7 @@
 import React from 'react'
 import classNames from 'classnames/bind'
-import {getBuildingTypesText, getDistrictText, getPassedText} from '../../../../../../../helpers/buildingHelper'
+import {getBuildingTypesText} from '../../../../../../../helpers/buildingHelper'
 import {IBuilding} from '../../../../../../../@types/IBuilding'
-import {useTypedSelector} from '../../../../../../../hooks/useTypedSelector'
 import classes from './BuildingItem.module.scss'
 
 interface Props {
@@ -50,12 +49,6 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const BuildingItem: React.FC<Props> = (props) => {
-    const {tags} = useTypedSelector(state => state.tagReducer)
-
-    const buildingType = getBuildingTypesText(props.building.type)
-    const passedInfo = getPassedText(props.building.passed)
-    const districtText = getDistrictText(props.building.district, props.building.districtZone)
-
     return (
         <div className={cx({'BuildingItem': true, 'disabled': !props.building.active})}
              onClick={() => props.onClick(props.building)}
@@ -63,7 +56,7 @@ const BuildingItem: React.FC<Props> = (props) => {
         >
             <div className={classes.name}>{props.building.name}</div>
             <div className={classes.author}>{props.building.authorName || ''}</div>
-            <div className={classes.type}>{buildingType}</div>
+            <div className={classes.type}>{getBuildingTypesText(props.building.type)}</div>
             <div className={classes.views}>{props.building.views}</div>
         </div>
     )

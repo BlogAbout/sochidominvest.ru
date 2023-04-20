@@ -5,7 +5,7 @@ import classes from './CheckBox.module.scss'
 
 const cx = classNames.bind(classes)
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     type?: 'classic' | 'modern' | 'custom' | 'stars' // classic - стандартный с галочкой, modern - современный с переключателем, custom - со своими стилями
     checked: boolean
     readOnly?: boolean

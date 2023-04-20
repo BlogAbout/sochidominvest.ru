@@ -50,7 +50,6 @@ const UserBox: React.FC<Props> = (props) => {
         updateSelectedInfo()
     }, [users, props.users])
 
-    // Обработчик клика на поле
     const clickHandler = (e: React.MouseEvent) => {
         openPopupUserSelector(document.body, {
             multi: props.multi,
@@ -61,12 +60,10 @@ const UserBox: React.FC<Props> = (props) => {
         })
     }
 
-    // Обработчик сброса выбора
     const resetHandler = (e: React.MouseEvent) => {
         props.onSelect([], e)
     }
 
-    // Обновление отображаемого текста в поле по выбранному значению
     const updateSelectedInfo = () => {
         let tmpText = ''
         let tmpTitle = ''

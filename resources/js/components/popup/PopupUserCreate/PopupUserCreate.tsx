@@ -72,7 +72,6 @@ const PopupUserCreate: React.FC<Props> = (props) => {
         }
     }, [props.userId])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
@@ -81,7 +80,6 @@ const PopupUserCreate: React.FC<Props> = (props) => {
         return user.name.trim() === '' || user.email.trim() === '' || !is.email(user.email) || user.phone.trim() === '' || (user.password && user.password.length < 6) || (!user.id && user.password === '')
     }
 
-    // Сохранение изменений
     const saveHandler = (isClose?: boolean) => {
         if (checkFormValidation()) {
             return
@@ -114,7 +112,6 @@ const PopupUserCreate: React.FC<Props> = (props) => {
             })
     }
 
-    // Автогенерация пароля
     const generatePasswordHandler = () => {
         setUser({...user, password: generatePassword(8, true, true, true, true)})
     }

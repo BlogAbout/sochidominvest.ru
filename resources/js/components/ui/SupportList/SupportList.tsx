@@ -41,16 +41,16 @@ const SupportList: React.FC<Props> = (props) => {
                 }
             </div>
 
-            {/*{props.feeds.length ?*/}
-            {/*    (<BlockingElement fetching={props.fetching} className={classes.list}>*/}
-            {/*        {props.feeds.map((feed: IFeed) => {*/}
-            {/*            return (*/}
-            {/*                <SupportItem key={feed.id} feed={feed} onSave={props.onSave.bind(this)}/>*/}
-            {/*            )*/}
-            {/*        })}*/}
-            {/*    </BlockingElement>)*/}
-            {/*    : <Empty message='Нет заявок'/>*/}
-            {/*}*/}
+            {props.feeds.length ?
+                (<BlockingElement fetching={props.fetching} className={classes.list}>
+                    {props.feeds.map((feed: IFeed) => {
+                        return (
+                            <SupportItem key={feed.id} feed={feed} onSave={props.onSave.bind(this)}/>
+                        )
+                    })}
+                </BlockingElement>)
+                : <Empty message='Нет заявок'/>
+            }
         </div>
     )
 }

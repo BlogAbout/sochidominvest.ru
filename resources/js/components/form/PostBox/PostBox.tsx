@@ -41,7 +41,6 @@ const PostBox: React.FC<Props> = (props) => {
     const {posts} = useTypedSelector(state => state.postReducer)
     const {fetchPostList} = useActions()
 
-    // Если в store нет должностей, пробуем их загрузить и обновить текст в поле
     useEffect(() => {
         if (!posts.length) {
             updatePostListStore()
@@ -58,12 +57,10 @@ const PostBox: React.FC<Props> = (props) => {
         updateSelectedInfo()
     }, [posts])
 
-    // Обновление списка объектов недвижимости в store
     const updatePostListStore = async () => {
         await fetchPostList({active: [0, 1]})
     }
 
-    // Обработчик клика на поле
     const clickHandler = (e: React.MouseEvent) => {
         openPopupPostSelector(document.body, {
             exclude: props.excludePosts,
@@ -77,12 +74,10 @@ const PostBox: React.FC<Props> = (props) => {
         })
     }
 
-    // Обработчик сброса выбора
     const resetHandler = (e: React.MouseEvent) => {
         props.onSelect([], e)
     }
 
-    // Обновление отображаемого текста в поле по выбранному значению
     const updateSelectedInfo = () => {
         let tmpText = ''
         let tmpTitle = ''

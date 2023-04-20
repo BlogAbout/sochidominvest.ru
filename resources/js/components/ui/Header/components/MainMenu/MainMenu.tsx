@@ -11,12 +11,10 @@ const cx = classNames.bind(classes)
 const MainMenu: React.FC = (): React.ReactElement => {
     const [showMobileMenu, setShowMobileMenu] = useState(false)
 
-    // Показать/скрыть мобильное меню
     const onToggleMobileMenuHandler = () => {
         setShowMobileMenu(!showMobileMenu)
     }
 
-    // Скрыть мобильного меню
     const onHideMobileMenuHandler = () => {
         setShowMobileMenu(false)
     }

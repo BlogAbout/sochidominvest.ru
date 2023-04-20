@@ -4,6 +4,7 @@ import {IAttachment} from '../../../@types/IAttachment'
 import ImageCarousel from '../ImageCarousel/ImageCarousel'
 import Preloader from '../Preloader/Preloader'
 import classes from './Gallery.module.scss'
+import {configuration} from "../../../helpers/utilHelper";
 
 interface Props {
     images?: IAttachment[]
@@ -39,7 +40,7 @@ const Gallery: React.FC<Props> = (props) => {
                                    avatar={props.avatar}
                                    fancy
                     />
-                    : <img src='https://api.sochidominvest.ru/uploads/no-image.jpg' alt={props.alt}/>
+                    : <img src={`${configuration.apiUrl}uploads/no-image.jpg`} alt={props.alt}/>
                 }
             </div>
         </div>

@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames/bind'
 import classes from './Label.module.scss'
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     text: string
     title?: string
     style?: 'light' | 'dark'
@@ -25,7 +25,7 @@ const Label: React.FC<Props> = (props): React.ReactElement => {
         >
             <span className={classes.text} dangerouslySetInnerHTML={{__html: props.text}}/>
 
-            {/*{props.children}*/}
+            {props.children}
         </div>
     )
 }

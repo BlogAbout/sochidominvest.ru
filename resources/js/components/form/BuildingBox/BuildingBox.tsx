@@ -41,7 +41,6 @@ const BuildingBox: React.FC<Props> = (props) => {
     const {buildings} = useTypedSelector(state => state.buildingReducer)
     const {fetchBuildingList} = useActions()
 
-    // Если в store нет объектов недвижимости, пробуем их загрузить и обновить текст в поле
     useEffect(() => {
         if (!buildings.length) {
             updateBuildingListStore()
@@ -58,12 +57,10 @@ const BuildingBox: React.FC<Props> = (props) => {
         updateSelectedInfo()
     }, [buildings])
 
-    // Обновление списка объектов недвижимости в store
     const updateBuildingListStore = async () => {
         await fetchBuildingList({active: [0, 1]})
     }
 
-    // Обработчик клика на поле
     const clickHandler = (e: React.MouseEvent) => {
         openPopupBuildingSelector(document.body, {
             multi: props.multi,
@@ -75,12 +72,10 @@ const BuildingBox: React.FC<Props> = (props) => {
         })
     }
 
-    // Обработчик сброса выбора
     const resetHandler = (e: React.MouseEvent) => {
         props.onSelect([], e)
     }
 
-    // Обновление отображаемого текста в поле по выбранному значению
     const updateSelectedInfo = () => {
         let tmpText = ''
         let tmpTitle = ''

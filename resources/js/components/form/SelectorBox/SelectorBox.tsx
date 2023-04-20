@@ -43,7 +43,6 @@ const SelectorBox: React.FC<Props> = (props) => {
         updateSelectedInfo()
     }, [props.items, props.selected])
 
-    // Обработчик клика на поле
     const clickHandler = () => {
         openPopupSelector(document.body, {
             title: props.title || 'Выбрать',
@@ -56,12 +55,10 @@ const SelectorBox: React.FC<Props> = (props) => {
         })
     }
 
-    // Обработчик сброса выбора
     const resetHandler = () => {
         props.onSelect([])
     }
 
-    // Обновление отображаемого текста в поле по выбранному значению
     const updateSelectedInfo = () => {
         let tmpText = ''
         let tmpTitle = ''

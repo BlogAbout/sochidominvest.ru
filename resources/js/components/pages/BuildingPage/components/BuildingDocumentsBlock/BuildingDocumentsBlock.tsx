@@ -8,6 +8,7 @@ import Empty from '../../../../../components/ui/Empty/Empty'
 import Title from '../../../../ui/Title/Title'
 import openPopupAlert from '../../../../popup/PopupAlert/PopupAlert'
 import classes from './BuildingDocumentsBlock.module.scss'
+import {configuration} from "../../../../../helpers/utilHelper";
 
 interface Props {
     building: IBuilding
@@ -58,7 +59,7 @@ const BuildingDocumentsBlock: React.FC<Props> = (props): React.ReactElement => {
                     if (document.type === 'file') {
                         return (
                             <p key={document.id}>
-                                <a href={`https://api.sochidominvest.ru/uploads/document/${document.url}`}
+                                <a href={`${configuration.apiUrl}uploads/document/${document.url}`}
                                    target='_blank'
                                 >{document.name}</a>
                             </p>

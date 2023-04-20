@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames/bind'
 import classes from './Wrapper.module.scss'
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     isFull?: boolean
 }
 
@@ -15,7 +15,7 @@ const cx = classNames.bind(classes)
 const Wrapper = (props: Props): React.ReactElement => {
     return (
         <div className={cx({'Wrapper': true, 'full': props.isFull})}>
-            {/*{props.children}*/}
+            {props.children}
         </div>
     )
 }

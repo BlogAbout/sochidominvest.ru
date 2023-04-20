@@ -38,7 +38,7 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const DocumentItem: React.FC<Props> = (props) => {
-    const {buildings, fetching} = useTypedSelector(state => state.buildingReducer)
+    const {buildings} = useTypedSelector(state => state.buildingReducer)
     const {fetchBuildingList} = useActions()
 
     useEffect(() => {

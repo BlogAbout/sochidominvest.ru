@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames/bind'
 import classes from './Grid.module.scss'
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     isWrap?: boolean
     isVerticalCenter?: boolean
     isHorizontalCenter?: boolean
@@ -23,7 +23,7 @@ const Grid: React.FC<Props> = (props): React.ReactElement => {
             'vTop': props.isVerticalCenter,
             'hTop': props.isHorizontalCenter
         })}>
-            {/*{props.children}*/}
+            {props.children}
         </div>
     )
 }

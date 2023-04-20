@@ -36,7 +36,6 @@ const DistrictBox: React.FC<Props> = (props) => {
         updateSelectedInfo()
     }, [props.selected])
 
-    // Обработчик клика на поле
     const clickHandler = (e: React.MouseEvent) => {
         openPopupDistrictSelector(document.body, {
             selected: props.selected,
@@ -46,12 +45,10 @@ const DistrictBox: React.FC<Props> = (props) => {
         })
     }
 
-    // Обработчик сброса выбора
     const resetHandler = () => {
         props.onSelect([])
     }
 
-    // Обновление отображаемого текста в поле по выбранному значению
     const updateSelectedInfo = () => {
         let tmpText = ''
         let tmpTitle = ''

@@ -3,7 +3,7 @@ import {round} from '../../../helpers/numberHelper'
 import {sliceLastSymbol} from '../../../helpers/stringHelper'
 import Box from '../Box/Box'
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     value?: string | number
     styleType?: 'standard' | 'minimal' | 'borderDisabled'
     showArrows?: boolean
@@ -14,6 +14,7 @@ interface Props extends React.PropsWithChildren<any> {
     placeHolder?: string
     title?: string
     readOnly?: boolean
+    errorText?: string
     error?: boolean
     showValidate?: boolean
     showRequired?: boolean
@@ -27,9 +28,9 @@ interface Props extends React.PropsWithChildren<any> {
     showMaxAfterOverflow?: boolean // Показывать максимум, если число превышает максимум. По умолчанию true
     transform?: boolean
 
-    onChange(e: React.ChangeEvent<HTMLInputElement>, value?: string | number, up?: any): void
+    onChange(e: any, value?: string | number, up?: any): void
 
-    onBlur?(e: React.ChangeEvent<HTMLInputElement>): void
+    onBlur?(e: any): void
 }
 
 const defaultProps: Props = {
@@ -42,7 +43,7 @@ const defaultProps: Props = {
     showArrows: true,
     styleType: 'standard',
     showMaxAfterOverflow: true,
-    onChange(e: React.ChangeEvent<HTMLInputElement>, value?: string | number, up?: any): void {
+    onChange(e: any, value?: string | number, up?: any): void {
         console.info('NumberBox onChange', e, value, up)
     }
 }
@@ -126,7 +127,7 @@ const NumberBox: React.FC<Props> = (props) => {
         }
     }
 
-    const onClearHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onClearHandler = (e: React.MouseEvent) => {
         props.onChange(e, '')
     }
 
@@ -147,7 +148,7 @@ const NumberBox: React.FC<Props> = (props) => {
         onTransformHandler(false)
     }
 
-    const onArrowHandler = (up: boolean, e: React.ChangeEvent<HTMLInputElement>) => {
+    const onArrowHandler = (up: boolean, e: any) => {
         let value = +(props.value || 0)
 
         value += up ? (props.step || 1) : -(props.step || 1)

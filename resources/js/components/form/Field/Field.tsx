@@ -3,7 +3,7 @@ import classNames from 'classnames/bind'
 import Label from '../../ui/Label/Label'
 import classes from './Field.module.scss'
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     label?: string
     title?: string
     style?: 'light' | 'dark'
@@ -32,7 +32,7 @@ const Field: React.FC<Props> = (props): React.ReactElement => {
                 : null
             }
 
-            {/*{props.children}*/}
+            {props.children}
         </div>
     )
 }

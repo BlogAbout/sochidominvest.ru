@@ -2,8 +2,6 @@ import React from 'react'
 import classNames from 'classnames/bind'
 import {useTypedSelector} from '../../../../../../../hooks/useTypedSelector'
 import {IUser} from '../../../../../../../@types/IUser'
-import {getRoleUserText} from '../../../../../../../helpers/userHelper'
-import {getFormatDate} from '../../../../../../../helpers/dateHelper'
 import Indicator from '../../../../../../ui/Indicator/Indicator'
 import classes from './UserItem.module.scss'
 
@@ -57,10 +55,10 @@ const UserItem: React.FC<Props> = (props) => {
 
                 <span>{props.user.name}</span>
             </div>
-            {/*<div className={classes.post}>{props.user.postName || '-'}</div>*/}
+            <div className={classes.post}>{props.user.post ? props.user.post.name : '-'}</div>
             <div className={classes.email}>{props.user.email}</div>
             <div className={classes.phone}>{props.user.phone}</div>
-            {/*<div className={classes.role}>{getRoleUserText(props.user.role)}</div>*/}
+            <div className={classes.role}>{props.user.post ? props.user.post.name : '-'}</div>
         </div>
     )
 }

@@ -5,7 +5,7 @@ import Header from '../../ui/Header/Header'
 import Footer from '../../ui/Footer/Footer'
 import classes from './DefaultView.module.scss'
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     isMain?: boolean
     pageTitle?: string
     pageDescription?: string
@@ -25,7 +25,7 @@ const DefaultView: React.FC<Props> = (props): React.ReactElement => {
             <Header/>
 
             <main className={classes.main}>
-                {/*{props.children}*/}
+                {props.children}
             </main>
 
             <Footer/>

@@ -23,7 +23,7 @@ interface Props extends React.PropsWithChildren {
 
     onChange(value: string): void
 
-    onBlur?(e: React.ChangeEvent<HTMLInputElement>): void
+    onBlur?(e: any): void
 }
 
 const defaultProps: Props = {
@@ -38,22 +38,19 @@ const defaultProps: Props = {
 const TextBox: React.FC<Props> = ((props): React.ReactElement => {
     const [password, setPassword] = useState(props.password)
 
-    // Изменение значения поля
-    const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChangeHandler = (e: any) => {
         props.onChange(e.target.value)
     }
 
-    // Очистка поля
     const onClearHandler = () => {
         props.onChange('')
     }
 
-    // Скрыть/показать пароль
-    const onClickPasswordEye = () => {
+    const onClickPasswordEye = (): void => {
         setPassword(!password)
     }
 
-    const onBlurHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onBlurHandler = (e: any) => {
         if (props.onBlur) {
             props.onBlur(e)
         } else {
@@ -74,8 +71,8 @@ const TextBox: React.FC<Props> = ((props): React.ReactElement => {
              onBlur={onBlurHandler.bind(this)}
              autoFocus={props.autoFocus}
              inputType={password ? 'password' : 'text'}
-             eye={props.password ? !password : null}
-             onPasswordEye={props.password ? onClickPasswordEye.bind(this) : null}
+             eye={props.password ? !password : false}
+             onPasswordEye={props.password ? onClickPasswordEye.bind(this) : undefined}
         />
     )
 })

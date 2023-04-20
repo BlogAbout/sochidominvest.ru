@@ -1,9 +1,9 @@
-import React, {MouseEventHandler, useState} from 'react'
+import React, {useState} from 'react'
 import classNames from 'classnames/bind'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import classes from './SearchBox.module.scss'
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     value?: string
     className?: string
     width?: string | number
@@ -19,7 +19,7 @@ interface Props extends React.PropsWithChildren<any> {
     countFind?: number | null // Количесво найденных объектов
     ignoreKeyDown?: boolean // Игнорируем нажатие Enter
 
-    onChange(value: string, e: React.ChangeEvent<HTMLInputElement> | MouseEventHandler): string  // Функция отправляющая значение инпута
+    onChange(value: string): void  // Функция отправляющая значение инпута
 
     onBlur?(e: React.ChangeEvent<HTMLInputElement>): void // Функция, вызываемая при потери фокуса
 
@@ -40,8 +40,8 @@ const defaultProps: Props = {
     showClear: false,
     disableTitle: false,
     ignoreKeyDown: false,
-    onChange(value: string, e: React.ChangeEvent<HTMLInputElement>): string {
-        return e.target.value
+    onChange(value: string): void {
+        console.info('SearchBox onChange', value)
     }
 }
 
@@ -53,9 +53,9 @@ const SearchBox = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
         value: ''
     })
 
-    const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChangeHandler = (e: any) => {
         if (props.autoResult) {
-            props.onChange(e.target.value, e)
+            props.onChange(e.target.value)
         } else {
             setSearch({...search, value: e.target.value})
         }
@@ -63,7 +63,7 @@ const SearchBox = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
 
     const onClearHandler = (e: any) => {
         if (props.autoResult) {
-            props.onChange('', e)
+            props.onChange('')
         } else {
             setSearch({...search, value: ''})
             changeActive(false, e)
@@ -114,7 +114,7 @@ const SearchBox = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
             title={title || ''}
         >
             <div className={classes['ico_search']}>
-                <FontAwesomeIcon icon='magnifying-glass' />
+                <FontAwesomeIcon icon='magnifying-glass'/>
             </div>
 
             <input className={classes['input_search']}

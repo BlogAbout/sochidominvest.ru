@@ -4,11 +4,11 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import classes from './Box.module.scss'
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     value?: string | number
     type: 'input' | 'picker'
     styleType?: 'standard' | 'minimal' | 'borderDisabled'
-    inputType: 'password' | 'text' // Для input
+    inputType?: 'password' | 'text' // Для input
     pickerStyle?: React.CSSProperties, // Для picker
     pickerClass?: string, // Для picker
     eye?: boolean
@@ -37,7 +37,7 @@ interface Props extends React.PropsWithChildren<any> {
 
     onEdit?(e: React.MouseEvent): void
 
-    onChange(e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent): string
+    onChange(e: any): void
 
     onBlur?(e: React.ChangeEvent<HTMLInputElement>): void
 
@@ -47,7 +47,7 @@ interface Props extends React.PropsWithChildren<any> {
     onArrow?(e: React.MouseEvent): void // Метод по клику на стрелку вниз
     onPasswordEye?(): void,
 
-    onArrows?(value: boolean, e: React.MouseEvent): void
+    onArrows?(value: boolean, e: any): void
 }
 
 const defaultProps: Props = {
@@ -66,8 +66,8 @@ const defaultProps: Props = {
     showRequired: false,
     showClear: false,
     disableTitle: false,
-    onChange(e: React.ChangeEvent<HTMLInputElement>): string {
-        return e.target.value
+    onChange(e: any): void {
+        console.info('Box onChange', e)
     }
 }
 

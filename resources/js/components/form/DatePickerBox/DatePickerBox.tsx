@@ -55,7 +55,6 @@ const DatePicker: React.FC<Props> = (props) => {
         return moment().year(info.year).month(info.month).startOf('month')
     }
 
-    // Обработка выбора ячейки года
     const handlerYearCellClick = (year: number) => {
         setInfo({
             ...info,
@@ -77,11 +76,10 @@ const DatePicker: React.FC<Props> = (props) => {
         }
     }
 
-    // Обработка клика в селектор
     const handlerHeaderClick = () => {
         switch (info.type) {
             case 'year':
-                //this.setState({type: 'day'})
+                setInfo({...info, type: 'day'})
                 break
             case 'month':
                 setInfo({...info, type: 'year'})
@@ -413,15 +411,15 @@ interface DatePickerBoxProps extends PopupProps {
     margin?: string | number
     selectType?: 'month' | 'day' | 'year'
 
-    onSelect(date: string, e?: React.MouseEvent): void
+    onSelect(date: string): void
 }
 
 const defaultDatePickerBoxProps: DatePickerBoxProps = {
     placeHolder: 'Выберите дату',
     hideIcon: false,
     selectType: 'day',
-    onSelect: (date: string, e?: React.MouseEvent) => {
-        console.info('DatePickerBox onSelect', date, e)
+    onSelect: (date: string) => {
+        console.info('DatePickerBox onSelect', date)
     }
 }
 
@@ -434,22 +432,23 @@ const DatePickerBox: React.FC<DatePickerBoxProps> = (props) => {
     }
 
     const onClearHandler = (e: React.MouseEvent) => {
-        props.onSelect('', e)
+        props.onSelect('')
     }
 
-    const handlerOnChange = (date: string, e: React.MouseEvent) => {
-        props.onSelect(date, e)
+    const handlerOnChange = (date: string) => {
+        props.onSelect(date)
     }
 
     return (
         <Box {...props}
-             value={props.date ? moment(props.date).format('L') : null}
+             value={props.date ? moment(props.date).format('L') : undefined}
              styleType={props.styleType}
-             showArrow={props.styleType === 'minimal'}
+             showArrow={props.styleType && props.styleType === 'minimal'}
              fontSize={props.fontSize}
              type='picker'
              onChange={handlerClick.bind(this)}
              onClear={onClearHandler.bind(this)}
+             onSelect={undefined}
              showDate={!props.hideIcon}
         />
     )
@@ -464,7 +463,7 @@ const PopupDatePicker: React.FC<DatePickerBoxProps> = (props) => {
     }
 
     const handlerOnSelect = (date: string, e: React.MouseEvent) => {
-        props.onSelect(date, e)
+        props.onSelect(date)
         close()
     }
 

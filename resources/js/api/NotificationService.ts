@@ -23,11 +23,11 @@ export default class NotificationService {
         return API.delete(`/notification/${notificationId}`)
     }
 
-    // static async readNotification(notificationId: number): Promise<AxiosResponse> {
-    //     return API.get(`/notification/${notificationId}/read`)
-    // }
-    //
-    // static async readNotificationAll(): Promise<AxiosResponse> {
-    //     return API.get('/notification/read')
-    // }
+    static async readNotification(notificationId: number): Promise<AxiosResponse> {
+        return API.get(`/notification/${notificationId}/read`)
+    }
+
+    static async readNotificationAll(): Promise<AxiosResponse> {
+        return API.get('/notification/read')
+    }
 }

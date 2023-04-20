@@ -42,7 +42,6 @@ const CompilationBox: React.FC<Props> = (props) => {
     const {compilations} = useTypedSelector(state => state.compilationReducer)
     const {fetchCompilationList} = useActions()
 
-    // Если в store нет подборок, пробуем их загрузить и обновить текст в поле
     useEffect(() => {
         if (!compilations.length) {
             updateCompilationListStore()
@@ -59,12 +58,10 @@ const CompilationBox: React.FC<Props> = (props) => {
         updateSelectedInfo()
     }, [compilations])
 
-    // Обновление списка подборок в store
     const updateCompilationListStore = async () => {
         await fetchCompilationList()
     }
 
-    // Обработчик клика на поле
     const clickHandler = (e: React.MouseEvent) => {
         openPopupCompilationSelector(document.body, {
             exclude: props.excludeCompilations,
@@ -76,12 +73,10 @@ const CompilationBox: React.FC<Props> = (props) => {
         })
     }
 
-    // Обработчик сброса выбора
     const resetHandler = (e: React.MouseEvent) => {
         props.onSelect([], e)
     }
 
-    // Обновление отображаемого текста в поле по выбранному значению
     const updateSelectedInfo = () => {
         let tmpText = ''
         let tmpTitle = ''

@@ -4,7 +4,7 @@ import Navigation from '../../ui/Navigation/Navigation'
 import ToolsPanel from '../../ui/ToolsPanel/ToolsPanel'
 import classes from './PanelView.module.scss'
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     pageTitle?: string
     pageDescription?: string
 }
@@ -19,7 +19,7 @@ const PanelView: React.FC<Props> = (props): React.ReactElement => {
             <Navigation/>
 
             <main className={classes.main}>
-                {/*{props.children}*/}
+                {props.children}
             </main>
 
             <ToolsPanel/>

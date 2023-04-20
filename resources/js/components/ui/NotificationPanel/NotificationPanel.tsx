@@ -22,7 +22,7 @@ const defaultProps: Props = {
 }
 
 const NotificationPanel: React.FC<Props> = (props) => {
-    // const refDepartmentItem = useRef<HTMLDivElement>(null)
+    const refDepartmentItem = useRef<HTMLDivElement>(null)
 
     const [isUpdate, setIsUpdate] = useState(true)
     const [countNotification, setCountNotification] = useState(0)
@@ -31,7 +31,7 @@ const NotificationPanel: React.FC<Props> = (props) => {
 
     const {role} = useTypedSelector(state => state.userReducer)
     const {notifications, fetching} = useTypedSelector(state => state.notificationReducer)
-    // const {fetchNotificationList, readNotificationAll} = useActions()
+    const {fetchNotificationList, readNotificationAll} = useActions()
 
     useEffect(() => {
         document.addEventListener('click', handleClickOutside, true)
@@ -46,7 +46,7 @@ const NotificationPanel: React.FC<Props> = (props) => {
     useEffect(() => {
         if (isUpdate || !notifications.length) {
             filter()
-            // fetchNotificationList()
+            fetchNotificationList()
         }
 
         setIsUpdate(false)
@@ -87,7 +87,7 @@ const NotificationPanel: React.FC<Props> = (props) => {
                 setFilteredNotification(notifications.filter((notification: INotification) => notification.status === 'new'))
                 break
             case 'system':
-                setFilteredNotification(notifications.filter((notification: INotification) => ['system', 'feed'].includes(notification.type) ))
+                setFilteredNotification(notifications.filter((notification: INotification) => ['system', 'feed'].includes(notification.type)))
                 break
             default:
                 setFilteredNotification([])
@@ -97,14 +97,14 @@ const NotificationPanel: React.FC<Props> = (props) => {
 
     // Обработка клика вне блока
     const handleClickOutside = (event: Event): void => {
-        // if (refDepartmentItem.current && event.target && !refDepartmentItem.current.contains(event.target as Node)) {
-        //     props.onShow()
-        // }
+        if (refDepartmentItem.current && event.target && !refDepartmentItem.current.contains(event.target as Node)) {
+            props.onShow()
+        }
     }
 
     return (
         <div className={classes.NotificationPanel}
-            // ref={refDepartmentItem}
+             ref={refDepartmentItem}
         >
             <Header title={'Уведомления' + (countNotification > 0 ? ` (${countNotification})` : '')}
                     popupId=''
@@ -165,8 +165,7 @@ const NotificationPanel: React.FC<Props> = (props) => {
                     {countNotification > 0 &&
                     <Button type='apply'
                             icon='check'
-                        // onClick={() => readNotificationAll()}
-                            onClick={() => {}}
+                            onClick={() => readNotificationAll()}
                             disabled={fetching}
                             className='marginLeft'
                     >Прочитать все</Button>}

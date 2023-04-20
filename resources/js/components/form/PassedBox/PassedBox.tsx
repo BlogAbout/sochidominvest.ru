@@ -39,7 +39,6 @@ const PassedBox: React.FC<Props> = (props) => {
         updateSelectedInfo()
     }, [props.selected])
 
-    // Обработчик клика на поле
     const clickHandler = () => {
         openPopupPassedSelector(document.body, {
             selected: props.selected,
@@ -49,12 +48,10 @@ const PassedBox: React.FC<Props> = (props) => {
         })
     }
 
-    // Обработчик сброса выбора
     const resetHandler = () => {
         props.onChange(null)
     }
 
-    // Обновление отображаемого текста в поле по выбранному значению
     const updateSelectedInfo = () => {
         let tmpText = ''
 

@@ -6,7 +6,7 @@ import 'swiper/css/navigation'
 import 'swiper/css/scrollbar'
 import classes from './Carousel.module.scss'
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     slidesPerView: number
     navigation: boolean
     items: React.ReactElement[]

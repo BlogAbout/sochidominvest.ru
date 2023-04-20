@@ -40,7 +40,6 @@ const TagBox: React.FC<Props> = (props) => {
     const {tags} = useTypedSelector(state => state.tagReducer)
     const {fetchTagList} = useActions()
 
-    // Если в store нет тегов, пробуем их загрузить и обновить текст в поле
     useEffect(() => {
         if (!tags.length) {
             updateTagListStore()
@@ -57,12 +56,10 @@ const TagBox: React.FC<Props> = (props) => {
         updateSelectedInfo()
     }, [tags])
 
-    // Обновление списка тегов в store
     const updateTagListStore = async () => {
         await fetchTagList()
     }
 
-    // Обработчик клика на поле
     const clickHandler = (e: React.MouseEvent) => {
         openPopupTagSelector(document.body, {
             multi: props.multi,
@@ -73,12 +70,10 @@ const TagBox: React.FC<Props> = (props) => {
         })
     }
 
-    // Обработчик сброса выбора
     const resetHandler = (e: React.MouseEvent) => {
         props.onSelect([], e)
     }
 
-    // Обновление отображаемого текста в поле по выбранному значению
     const updateSelectedInfo = () => {
         let tmpText = ''
         let tmpTitle = ''

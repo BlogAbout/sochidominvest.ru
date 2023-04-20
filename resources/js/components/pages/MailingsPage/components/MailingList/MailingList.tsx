@@ -33,7 +33,6 @@ const defaultProps: Props = {
 const MailingList: React.FC<Props> = (props): React.ReactElement => {
     const [fetching, setFetching] = useState(props.fetching)
 
-    // Редактирование
     const onEditHandler = (mailing: IMailing) => {
         openPopupMailingCreate(document.body, {
             mailing: mailing,
@@ -41,7 +40,6 @@ const MailingList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Удаление
     const onRemoveHandler = (mailing: IMailing) => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить "${mailing.name}"?`,
@@ -103,7 +101,6 @@ const MailingList: React.FC<Props> = (props): React.ReactElement => {
             })
     }
 
-    // Контекстное меню
     const onContextMenuHandler = (mailing: IMailing, e: React.MouseEvent) => {
         e.preventDefault()
 

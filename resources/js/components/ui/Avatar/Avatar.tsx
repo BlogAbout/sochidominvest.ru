@@ -3,7 +3,7 @@ import classNames from 'classnames/bind'
 import {configuration} from '../../../helpers/utilHelper'
 import classes from './Avatar.module.scss'
 
-interface Props extends React.PropsWithChildren<any> {
+interface Props extends React.PropsWithChildren {
     href: string | null | undefined
     alt: string
     width?: number | string
@@ -34,7 +34,7 @@ const Avatar: React.FC<Props> = (props): React.ReactElement => {
                     : null
                 }
 
-                {/*{props.children ? props.children : null}*/}
+                {props.children ? props.children : null}
             </div>
         )
     }

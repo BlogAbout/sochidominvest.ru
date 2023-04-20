@@ -19,7 +19,6 @@ import BuildingTill from '../BuildingsPanelPage/components/BuildingTill/Building
 import openPopupBuildingCreate from '../../../components/popup/PopupBuildingCreate/PopupBuildingCreate'
 import openPopupAlert from '../../../components/popup/PopupAlert/PopupAlert'
 import openContextMenu from '../../ui/ContextMenu/ContextMenu'
-import FavoriteService from '../../../api/FavoriteService'
 import CompilationService from '../../../api/CompilationService'
 import BuildingMap from '../BuildingsPanelPage/components/BuildingMap/BuildingMap'
 import classes from './AgentPage.module.scss'
