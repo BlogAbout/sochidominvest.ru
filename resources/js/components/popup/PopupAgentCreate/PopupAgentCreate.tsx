@@ -47,9 +47,8 @@ const PopupAgentCreate: React.FC<Props> = (props) => {
         description: '',
         address: '',
         phone: '',
-        author: null,
         type: 'agent',
-        active: !props.isDisable ? 1 : 0
+        is_active: !props.isDisable ? 1 : 0
     })
 
     const [contacts, setContacts] = useState<IContact[]>([])
@@ -182,12 +181,12 @@ const PopupAgentCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Аватар'/>
 
-                    <AvatarBox avatarId={agent.avatarId || null}
+                    <AvatarBox avatarId={agent.avatar_id || null}
                                fetching={fetchingAgent}
                                onSelect={(attachmentId: number | null) => {
                                    setAgent({
                                        ...agent,
-                                       avatarId: attachmentId
+                                       avatar_id: attachmentId
                                    })
                                }}
                     />
@@ -211,10 +210,10 @@ const PopupAgentCreate: React.FC<Props> = (props) => {
                     <CheckBox label='Активен'
                               type='modern'
                               width={110}
-                              checked={!!agent.active}
+                              checked={!!agent.is_active}
                               onChange={(e: React.MouseEvent, value: boolean) => setAgent({
                                   ...agent,
-                                  active: value ? 1 : 0
+                                  is_active: value ? 1 : 0
                               })}
                               readOnly={props.isDisable}
                     />

@@ -76,14 +76,10 @@ const SupportItem: React.FC<Props> = (props) => {
 
         const businessProcess: IBusinessProcess = {
             id: null,
-            ticketId: props.feed.id,
-            author: userId,
-            responsible: userId,
-            active: 1,
-            type: 'feed',
-            step: 'default',
             name: props.feed.title,
             description: '',
+            type: 'feed',
+            step: 'default',
             relations: [
                 {objectId: props.feed.id, objectType: 'feed'}
             ]

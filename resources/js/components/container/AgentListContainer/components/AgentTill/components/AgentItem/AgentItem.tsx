@@ -3,7 +3,6 @@ import classNames from 'classnames/bind'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {IAgent} from '../../../../../../../@types/IAgent'
 import {getAgentTypeText} from '../../../../../../../helpers/agentHelper'
-import {getFormatDate} from '../../../../../../../helpers/dateHelper'
 import Avatar from '../../../../../../ui/Avatar/Avatar'
 import classes from './AgentItem.module.scss'
 
@@ -39,18 +38,22 @@ const cx = classNames.bind(classes)
 
 const AgentItem: React.FC<Props> = (props) => {
     return (
-        <div className={cx({'AgentItem': true, 'disabled': !props.agent.active})}
+        <div className={cx({'AgentItem': true, 'disabled': !props.agent.is_active})}
              onClick={() => props.onClick(props.agent)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.agent)}
         >
-            <Avatar href={props.agent.avatar} alt={props.agent.name} width={150} height={150}/>
+            <Avatar href={props.agent.avatar ? props.agent.avatar.content : ''}
+                    alt={props.agent.name}
+                    width={150}
+                    height={150}
+            />
 
             <div className={classes.itemContent}>
                 <h2>{props.agent.name}</h2>
 
                 <div className={classes.row} title='Дата публикации'>
                     <FontAwesomeIcon icon='calendar'/>
-                    <span>{getFormatDate(props.agent.dateCreated)}</span>
+                    <span>{props.agent.date_created}</span>
                 </div>
 
                 <div className={classes.row} title='Тип'>

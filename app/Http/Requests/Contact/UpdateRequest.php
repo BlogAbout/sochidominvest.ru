@@ -19,7 +19,7 @@ class UpdateRequest extends FormRequest
             'is_active' => 'nullable|boolean',
             'avatar_id' => 'nullable|integer|exists:sdi_attachments,id',
             'agent_id' => 'nullable|integer|exists:sdi_agents,id',
-            'post_id' => 'nullable|integer|exists:sdi_posts,id'
+            'post' => 'nullable|string'
         ];
     }
 
@@ -34,8 +34,7 @@ class UpdateRequest extends FormRequest
             'avatar_id.exists' => 'Изображение отсутствует в базе данных',
             'agent_id.integer' => 'Значение данного поля должно быть числом',
             'agent_id.exists' => 'Агентство отсутствует в базе данных',
-            'post_id.integer' => 'Значение данного поля должно быть числом',
-            'post_id.exists' => 'Должность отсутствует в базе данных',
+            'post.string' => 'Значение данного поля должно быть строкой',
         ];
     }
 }

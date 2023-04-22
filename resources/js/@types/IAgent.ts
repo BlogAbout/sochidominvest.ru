@@ -1,29 +1,41 @@
+import {IUser} from './IUser'
+import {IAttachment} from './IAttachment'
+import {IBuilding} from './IBuilding'
+import {IPost} from './IPost'
+
 export interface IAgent {
     id: number | null
     name: string
     description?: string
     address: string
     phone: string
-    author: number | null
-    authorName?: string | null
     type: string
-    dateCreated?: string | null
-    dateUpdate?: string | null
-    active: number
-    avatarId?: number | null
-    avatar?: string | null
-    buildings?: number[]
+    author_id?: number | null
+    author?: IUser | null
+    is_active?: number
+    avatar_id?: number | null
+    avatar?: IAttachment | null
+    contacts?: IContact[] | null
+    buildings?: IBuilding[] | null
+    created_at?: string | null
+    updated_at?: string | null
+    date_created?: string | null
+    date_updated?: string | null
 }
 
 export interface IContact {
     id: number | null
-    agentId: number
     name: string
-    post: string
     phone: string
-    author: number | null
-    authorName?: string | null
-    dateCreated?: string | null
-    dateUpdate?: string | null
-    active: number
+    agent_id: number
+    agent?: IAgent | null
+    post?: string
+    author_id?: number | null
+    author?: IUser | null
+    buildings?: IBuilding[] | null
+    is_active?: number
+    created_at?: string | null
+    updated_at?: string | null
+    date_created?: string | null
+    date_updated?: string | null
 }

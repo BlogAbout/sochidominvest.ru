@@ -3,7 +3,6 @@ import {useNavigate} from 'react-router-dom'
 import {RouteNames} from '../../../../../helpers/routerHelper'
 import {IBooking} from '../../../../../@types/IBooking'
 import {IBusinessProcess} from '../../../../../@types/IBusinessProcess'
-import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
 import {getBookingStatusText} from '../../../../../helpers/bookingHelper'
 import {allowForRole} from '../../../../../helpers/accessHelper'
 import {getFormatDate} from '../../../../../helpers/dateHelper'
@@ -42,8 +41,6 @@ const BookingList: React.FC<Props> = (props): React.ReactElement => {
 
     const [fetching, setFetching] = useState(props.fetching)
 
-    const {user} = useTypedSelector(state => state.userReducer)
-
     // Отправка заявки в обработку
     const onProcessHandler = (booking: IBooking) => {
         if (!booking.id) {
@@ -52,14 +49,10 @@ const BookingList: React.FC<Props> = (props): React.ReactElement => {
 
         const businessProcess: IBusinessProcess = {
             id: null,
-            ticketId: null,
-            author: user.id,
-            responsible: user.id,
-            active: 1,
-            type: 'booking',
-            step: 'default',
             name: `Бронь #${booking.id}: ${booking.buildingName}`,
             description: `Бронь на аренду недвижимости ${booking.buildingName} с ${getFormatDate(booking.dateStart, 'date')} по ${getFormatDate(booking.dateFinish, 'date')}`,
+            type: 'booking',
+            step: 'default',
             relations: [
                 {objectId: booking.id, objectType: 'booking'}
             ]
@@ -93,15 +86,15 @@ const BookingList: React.FC<Props> = (props): React.ReactElement => {
 
                         setFetching(true)
 
-                        // BookingService.saveBooking(booking)
-                        //     .then(() => props.onSave())
-                        //     .catch((error: any) => {
-                        //         openPopupAlert(document.body, {
-                        //             title: 'Ошибка!',
-                        //             text: error.data.data
-                        //         })
-                        //     })
-                        //     .finally(() => setFetching(false))
+                        BookingService.saveBooking(booking)
+                            .then(() => props.onSave())
+                            .catch((error: any) => {
+                                openPopupAlert(document.body, {
+                                    title: 'Ошибка!',
+                                    text: error.data.data
+                                })
+                            })
+                            .finally(() => setFetching(false))
                     }
                 },
                 {text: 'Отмена'}

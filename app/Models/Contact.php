@@ -19,11 +19,6 @@ class Contact extends Model
         return $this->belongsTo(Agent::class, 'agent_id', 'id');
     }
 
-    public function post()
-    {
-        return $this->belongsTo(Post::class, 'post_id', 'id');
-    }
-
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id', 'id');

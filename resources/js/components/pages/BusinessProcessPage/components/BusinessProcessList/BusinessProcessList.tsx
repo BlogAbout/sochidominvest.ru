@@ -231,7 +231,7 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
                                             <div className={classes.boardList}>
                                                 {businessProcesses[step] && businessProcesses[step].length ?
                                                     businessProcesses[step].map((businessProcess: IBusinessProcess, index: number) => {
-                                                        if (businessProcess.author !== userId && businessProcess.responsible !== userId) {
+                                                        if (businessProcess.author_id !== userId && businessProcess.responsible_id !== userId) {
                                                             return null
                                                         }
 
@@ -259,7 +259,7 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
                                                                                 <div
                                                                                     className={classes.id}>#{businessProcess.id}</div>
                                                                                 <div
-                                                                                    className={classes.dateCreated}>{getFormatDate(businessProcess.dateCreated)}</div>
+                                                                                    className={classes.dateCreated}>{businessProcess.date_created}</div>
                                                                             </div>
                                                                             <div
                                                                                 className={classes.name}>{businessProcess.name}</div>
@@ -270,7 +270,7 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
                                                                             <div className={classes.info}
                                                                                  title='Ответственный'>
                                                                                 <FontAwesomeIcon icon='user'/>
-                                                                                <span>{getUserName(users, businessProcess.responsible)}</span>
+                                                                                <span>{businessProcess.responsible ? businessProcess.responsible.name : ''}</span>
                                                                             </div>
                                                                         </div>
                                                                     </div>

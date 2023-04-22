@@ -83,14 +83,10 @@ const FeedList: React.FC<Props> = (props): React.ReactElement => {
 
         const businessProcess: IBusinessProcess = {
             id: null,
-            ticketId: feed.id,
-            author: user.id,
-            responsible: user.id,
-            active: 1,
-            type: 'feed',
-            step: 'default',
             name: feed.title,
             description: '',
+            type: 'feed',
+            step: 'default',
             relations: [
                 {objectId: feed.id, objectType: 'feed'}
             ]

@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react'
-import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import withStore from '../../hoc/withStore'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
 import {IBusinessProcess, IBusinessProcessRelation} from '../../../@types/IBusinessProcess'
 import {ITab} from '../../../@types/ITab'
+import {IUser} from '../../../@types/IUser'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
 import {bpTypes, getBpStepsList} from '../../../helpers/businessProcessHelper'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
@@ -38,23 +38,28 @@ const defaultProps: Props = {
 }
 
 const PopupBusinessProcessCreate: React.FC<Props> = (props) => {
-    const {userId} = useTypedSelector(state => state.userReducer)
-
     const [businessProcess, setBusinessProcess] = useState<IBusinessProcess>(props.businessProcess || {
         id: null,
-        ticketId: null,
-        author: userId,
-        responsible: null,
-        active: 1,
+        name: '',
+        description: '',
         type: 'feed',
         step: 'default',
-        name: '',
-        description: ''
+        responsible: null
     })
 
     const [fetching, setFetching] = useState(false)
 
     useEffect(() => {
+        if (businessProcess && businessProcess.attendees) {
+            const attendee_ids: number[] = []
+            businessProcess.attendees.forEach((attendee: IUser) => {
+                if (attendee.id) {
+                    attendee_ids.push(attendee.id)
+                }
+            })
+            setBusinessProcess({...businessProcess, attendee_ids: attendee_ids})
+        }
+
         return () => {
             removePopup(props.blockId ? props.blockId : '')
         }
@@ -112,11 +117,11 @@ const PopupBusinessProcessCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Ответственный'/>
 
-                    <UserBox users={businessProcess.responsible ? [businessProcess.responsible] : []}
+                    <UserBox users={businessProcess.responsible_id ? [businessProcess.responsible_id] : []}
                              onSelect={(value: number[]) => {
                                  setBusinessProcess({
                                      ...businessProcess,
-                                     responsible: value.length ? value[0] : null
+                                     responsible_id: value.length ? value[0] : null
                                  })
                              }}
                              placeHolder='Выберите ответственного'
@@ -175,11 +180,11 @@ const PopupBusinessProcessCreate: React.FC<Props> = (props) => {
                     <CheckBox label='Активен'
                               type='modern'
                               width={110}
-                              checked={!!businessProcess.active}
+                              checked={!!businessProcess.is_active}
                               onChange={(e: React.MouseEvent, value: boolean) => {
                                   setBusinessProcess({
                                       ...businessProcess,
-                                      active: value ? 1 : 0
+                                      is_active: value ? 1 : 0
                                   })
                               }}
                     />
@@ -204,8 +209,8 @@ const PopupBusinessProcessCreate: React.FC<Props> = (props) => {
     const renderAttendeesTab = () => {
         return (
             <div key='attendees' className={classes.tabContent}>
-                <UserList selected={businessProcess.attendees || []}
-                          onSelect={(value: number[]) => setBusinessProcess({...businessProcess, attendees: value})}
+                <UserList selected={businessProcess.attendee_ids || []}
+                          onSelect={(value: number[]) => setBusinessProcess({...businessProcess, attendee_ids: value})}
                 />
             </div>
         )

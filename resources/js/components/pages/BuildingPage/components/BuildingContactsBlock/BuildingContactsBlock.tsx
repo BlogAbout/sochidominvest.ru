@@ -110,7 +110,7 @@ const BuildingContactsBlock: React.FC<Props> = (props): React.ReactElement | nul
                             <span>{contact.name}</span>
                         </span>
 
-                        {contact.post.trim() !== '' && <span className={classes.post}>{contact.post}</span>}
+                        {contact.post && <span className={classes.post}>{contact.post}</span>}
 
                         <span><a href={`tel:${contact.phone}`}>{contact.phone}</a></span>
                     </div>

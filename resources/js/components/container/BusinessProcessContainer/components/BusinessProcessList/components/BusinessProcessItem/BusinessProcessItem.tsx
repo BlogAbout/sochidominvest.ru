@@ -1,15 +1,11 @@
 import React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {IBusinessProcess} from '../../../../../../../@types/IBusinessProcess'
-import {IUser} from '../../../../../../../@types/IUser'
 import {getBpTypesText} from '../../../../../../../helpers/businessProcessHelper'
-import {getFormatDate} from '../../../../../../../helpers/dateHelper'
-import {getUserName} from '../../../../../../../helpers/userHelper'
 import classes from './BusinessProcessItem.module.scss'
 
 interface Props {
     businessProcess: IBusinessProcess
-    users: IUser[]
     fetching: boolean
 
     onClick(businessProcess: IBusinessProcess): void
@@ -23,7 +19,6 @@ interface Props {
 
 const defaultProps: Props = {
     businessProcess: {} as IBusinessProcess,
-    users: [],
     fetching: false,
     onClick: (businessProcess: IBusinessProcess) => {
         console.info('BusinessProcessItem onClick', businessProcess)
@@ -47,7 +42,7 @@ const BusinessProcessItem: React.FC<Props> = (props) => {
         >
             <div className={classes.meta}>
                 <div className={classes.id}>#{props.businessProcess.id}</div>
-                <div className={classes.dateCreated}>{getFormatDate(props.businessProcess.dateCreated)}</div>
+                <div className={classes.dateCreated}>{props.businessProcess.date_created}</div>
             </div>
             <div className={classes.name}>{props.businessProcess.name}</div>
             <div className={classes.info} title='Тип'>
@@ -56,7 +51,7 @@ const BusinessProcessItem: React.FC<Props> = (props) => {
             </div>
             <div className={classes.info} title='Ответственный'>
                 <FontAwesomeIcon icon='user'/>
-                <span>{getUserName(props.users, props.businessProcess.responsible)}</span>
+                <span>{props.businessProcess.responsible ? props.businessProcess.responsible.name : ''}</span>
             </div>
         </div>
     )

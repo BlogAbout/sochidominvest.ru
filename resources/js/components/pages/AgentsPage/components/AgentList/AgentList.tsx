@@ -47,7 +47,7 @@ const AgentList: React.FC<Props> = (props): React.ReactElement => {
                             <ListRow key={agent.id}
                                      onContextMenu={(e: React.MouseEvent) => props.onContextMenu(agent, e)}
                                      onClick={() => props.onClick(agent)}
-                                     isDisabled={!agent.active}
+                                     isDisabled={!agent.is_active}
                                      isCompact={props.isCompact}
                             >
                                 <ListCell className={classes.name}>{agent.name}</ListCell>

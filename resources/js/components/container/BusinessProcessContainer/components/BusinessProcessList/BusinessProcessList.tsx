@@ -172,7 +172,7 @@ const BusinessProcessList: React.FC<Props> = (props) => {
                                             <div className={classes.boardList}>
                                                 {businessProcesses[step] && businessProcesses[step].length ?
                                                     businessProcesses[step].map((businessProcess: IBusinessProcess, index: number) => {
-                                                        if (businessProcess.author !== userId && businessProcess.responsible !== userId) {
+                                                        if (businessProcess.author_id !== userId && businessProcess.responsible_id !== userId) {
                                                             return null
                                                         }
 
@@ -193,7 +193,6 @@ const BusinessProcessList: React.FC<Props> = (props) => {
                                                                     >
                                                                         <BusinessProcessItem
                                                                             businessProcess={businessProcess}
-                                                                            users={props.users}
                                                                             fetching={props.fetching}
                                                                             onClick={props.onClick}
                                                                             onEdit={props.onEdit}

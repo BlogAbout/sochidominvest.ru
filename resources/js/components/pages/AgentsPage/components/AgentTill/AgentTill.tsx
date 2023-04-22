@@ -35,12 +35,12 @@ const AgentTill: React.FC<Props> = (props): React.ReactElement => {
                         return (
                             <Card key={agent.id}
                                   title={agent.name}
-                                  avatar={agent.avatar || ''}
-                                  date={agent.dateCreated || undefined}
+                                  avatar={agent.avatar ? agent.avatar.content : ''}
+                                  date={agent.date_created || undefined}
                                   type={getAgentTypeText(agent.type)}
                                   phone={agent.phone}
                                   countBuildings={agent.buildings ? agent.buildings.length : 0}
-                                  isDisabled={!agent.active}
+                                  isDisabled={!agent.is_active}
                                   onContextMenu={(e: React.MouseEvent) => props.onContextMenu(agent, e)}
                                   onClick={() => props.onClick(agent)}
                             />

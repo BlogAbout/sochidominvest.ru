@@ -31,12 +31,9 @@ const defaultProps: Props = {
 const PopupContactCreate: React.FC<Props> = (props) => {
     const [contact, setContact] = useState<IContact>(props.contact || {
         id: null,
-        agentId: props.agentId || 0,
         name: '',
-        post: '',
         phone: '',
-        author: null,
-        active: 1
+        agent_id: props.agentId || 0
     })
 
     const [fetching, setFetching] = useState(false)
@@ -132,10 +129,10 @@ const PopupContactCreate: React.FC<Props> = (props) => {
                         <CheckBox label='Активен'
                                   type='modern'
                                   width={110}
-                                  checked={!!contact.active}
+                                  checked={!!contact.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setContact({
                                       ...contact,
-                                      active: value ? 1 : 0
+                                      is_active: value ? 1 : 0
                                   })}
                         />
                     </div>
