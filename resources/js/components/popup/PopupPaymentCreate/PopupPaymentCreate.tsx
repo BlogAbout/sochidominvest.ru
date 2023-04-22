@@ -67,7 +67,7 @@ const PopupPaymentCreate: React.FC<Props> = (props) => {
         TransactionService.savePayment(payment, sendLink)
             .then((response: any) => {
                 setFetching(false)
-                setPayment(response.data)
+                setPayment(response.data.data)
 
                 props.onSave()
 
@@ -78,7 +78,7 @@ const PopupPaymentCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
 
                 setFetching(false)

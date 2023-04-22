@@ -23,7 +23,7 @@ export const CompilationActionCreators = {
             const response = await CompilationService.fetchCompilations()
 
             if (response.status === 200) {
-                dispatch(CompilationActionCreators.setCompilations(response.data))
+                dispatch(CompilationActionCreators.setCompilations(response.data.data))
             } else {
                 dispatch(CompilationActionCreators.setError('Ошибка загрузки данных'))
             }

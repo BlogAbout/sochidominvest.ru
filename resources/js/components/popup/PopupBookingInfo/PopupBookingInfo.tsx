@@ -59,13 +59,13 @@ const PopupBookingInfo: React.FC<Props> = (props) => {
 
             // BookingService.fetchBookingById(props.bookingId)
             //     .then((response: any) => {
-            //         setBooking(response.data)
+            //         setBooking(response.data.data)
             //     })
             //     .catch((error: any) => {
             //         console.error('Ошибка загрузки данных!', error)
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data
+            //             text: error.data.data
             //         })
             //     })
             //     .finally(() => {

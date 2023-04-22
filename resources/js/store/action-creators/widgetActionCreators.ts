@@ -24,7 +24,7 @@ export const WidgetActionCreators = {
             const response = await WidgetService.fetchWidgets(filter)
 
             if (response.status === 200) {
-                dispatch(WidgetActionCreators.setWidgets(response.data))
+                dispatch(WidgetActionCreators.setWidgets(response.data.data))
             } else {
                 dispatch(WidgetActionCreators.setError('Ошибка загрузки данных'))
             }

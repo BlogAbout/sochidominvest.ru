@@ -78,13 +78,13 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
 
             FeedService.fetchFeedById(props.feedId)
                 .then((response: any) => {
-                    setFeed(response.data)
+                    setFeed(response.data.data)
                 })
                 .catch((error: any) => {
                     console.error('Ошибка загрузки данных!', error)
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data
+                        text: error.data.data
                     })
                 })
                 .finally(() => {
@@ -98,12 +98,12 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
             if (feed.objectType === 'building') {
                 BuildingService.fetchBuildingById(feed.objectId)
                     .then((response: any) => {
-                        setInfo({...info, objectName: response.data.name})
+                        setInfo({...info, objectName: response.data.data.name})
                     })
                     .catch((error: any) => {
                         openPopupAlert(document.body, {
                             title: 'Ошибка!',
-                            text: error.data
+                            text: error.data.data
                         })
                     })
             }
@@ -123,14 +123,14 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
 
         FeedService.saveFeed(updateFeed)
             .then((response: any) => {
-                setFeed(response.data)
+                setFeed(response.data.data)
 
                 props.onSave()
             })
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => {
@@ -155,7 +155,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
 
         FeedService.saveFeed(updateFeed)
             .then((response: any) => {
-                setFeed(response.data)
+                setFeed(response.data.data)
                 setMessage({
                     id: null,
                     feedId: null,
@@ -170,7 +170,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetching(false))

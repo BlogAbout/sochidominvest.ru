@@ -71,7 +71,7 @@ const PopupBusinessProcessCreate: React.FC<Props> = (props) => {
 
         BusinessProcessService.saveBusinessProcess(businessProcess)
             .then((response: any) => {
-                setBusinessProcess(response.data)
+                setBusinessProcess(response.data.data)
 
                 props.onSave()
 
@@ -82,7 +82,7 @@ const PopupBusinessProcessCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => {

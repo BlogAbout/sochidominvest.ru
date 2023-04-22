@@ -101,7 +101,7 @@ class PopupMessenger extends React.Component<Props, State> {
     //
     //     UserService.fetchUsers({} as IFilter)
     //         .then((response: any) => {
-    //             this.setState({users: response.data})
+    //             this.setState({users: response.data.data})
     //         })
     //         .catch((error: any) => {
     //             console.error('Произошла ошибка загрузки данных', error)
@@ -116,7 +116,7 @@ class PopupMessenger extends React.Component<Props, State> {
     //
     //     MessengerService.fetchMessengers({} as IFilter)
     //         .then((response: any) => {
-    //             this.setState({messengers: response.data})
+    //             this.setState({messengers: response.data.data})
     //
     //             if (this.state.currentMemberId) {
     //                 const user = findUser(this.state.users, this.state.currentMemberId)
@@ -140,7 +140,7 @@ class PopupMessenger extends React.Component<Props, State> {
     //
     //     MessengerService.fetchMessages(currentMessengerId)
     //         .then((response: any) => {
-    //             this.setState({currentMessengerInfo: response.data}, this.submitReadHandler)
+    //             this.setState({currentMessengerInfo: response.data.data}, this.submitReadHandler)
     //         })
     //         .catch((error: any) => {
     //             console.error('Произошла ошибка загрузки данных', error)

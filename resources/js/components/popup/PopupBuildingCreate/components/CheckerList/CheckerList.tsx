@@ -34,12 +34,12 @@ const CheckerList: React.FC<Props> = (props) => {
             CheckerService.fetchCheckers(props.buildingId)
                 .then((response: any) => {
                     setFetching(false)
-                    setCheckers(response.data)
+                    setCheckers(response.data.data)
                 })
                 .catch((error: any) => {
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data
+                        text: error.data.data
                     })
 
                     setFetching(false)
@@ -104,7 +104,7 @@ const CheckerList: React.FC<Props> = (props) => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data
+                                        text: error.data.data
                                     })
                                 })
                                 .finally(() => {

@@ -2,7 +2,6 @@ import React from 'react'
 import classNames from 'classnames/bind'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {getFormatDate} from '../../../../../../../helpers/dateHelper'
 import {getArticleTypeText} from '../../../../../../../helpers/articleHelper'
 import {IArticle} from '../../../../../../../@types/IArticle'
 import Avatar from '../../../../../../ui/Avatar/Avatar'
@@ -53,11 +52,15 @@ const ArticleItem: React.FC<Props> = (props) => {
     }
 
     return (
-        <div className={cx({'ArticleItem': true, 'disabled': !props.article.active})}
+        <div className={cx({'ArticleItem': true, 'disabled': !props.article.is_active})}
              onClick={() => props.onClick(props.article)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.article)}
         >
-            <Avatar href={props.article.avatar} alt={props.article.name} width={150} height={150}/>
+            <Avatar href={props.article.avatar ? props.article.avatar.content : ''}
+                    alt={props.article.name}
+                    width={150}
+                    height={150}
+            />
 
             <div className={classes.itemContent}>
                 <h2>{props.article.name}</h2>
@@ -69,13 +72,13 @@ const ArticleItem: React.FC<Props> = (props) => {
 
                 <div className={classes.row} title='Дата публикации'>
                     <FontAwesomeIcon icon='calendar'/>
-                    <span>{getFormatDate(props.article.dateCreated)}</span>
+                    <span>{props.article.date_created}</span>
                 </div>
 
-                {props.article.authorName ?
+                {props.article.author ?
                     <div className={classes.row} title='Автор'>
                         <FontAwesomeIcon icon='user'/>
-                        <span>{props.article.authorName}</span>
+                        <span>{props.article.author.name}</span>
                     </div>
                     : null}
 

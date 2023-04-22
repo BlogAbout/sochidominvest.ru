@@ -54,7 +54,7 @@ const InfoItem: React.FC<Props> = (props) => {
         //                         .catch((error: any) => {
         //                             openPopupAlert(document.body, {
         //                                 title: 'Ошибка!',
-        //                                 text: error.data
+        //                                 text: error.data.data
         //                             })
         //                         })
         //                         .finally(() => {
@@ -94,7 +94,7 @@ const InfoItem: React.FC<Props> = (props) => {
                  onContextMenu={(e: React.MouseEvent) => onContextMenu(e)}
             >
                 <div className={classes.name}>{props.article.name}</div>
-                <div className={classes.date}>{props.article.dateCreated}</div>
+                <div className={classes.date}>{props.article.date_created}</div>
             </div>
         )
     }

@@ -46,10 +46,10 @@ const ArticleList: React.FC<Props> = (props): React.ReactElement => {
                             <ListRow key={article.id}
                                      onContextMenu={(e: React.MouseEvent) => props.onContextMenu(article, e)}
                                      onClick={() => props.onClick(article)}
-                                     isDisabled={!article.active}
+                                     isDisabled={!article.is_active}
                             >
                                 <ListCell className={classes.name}>{article.name}</ListCell>
-                                <ListCell className={classes.author}>{article.authorName || ''}</ListCell>
+                                <ListCell className={classes.author}>{article.author ? article.author.name : ''}</ListCell>
                                 <ListCell className={classes.type}>{getArticleTypeText(article.type)}</ListCell>
                                 <ListCell className={classes.views}>{article.views}</ListCell>
                             </ListRow>

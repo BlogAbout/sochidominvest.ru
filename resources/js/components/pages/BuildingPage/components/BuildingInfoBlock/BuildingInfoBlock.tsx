@@ -73,7 +73,7 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
         }
 
         // FavoriteService.fetchFavorites()
-        //     .then((response: any) => setFavorites(response.data))
+        //     .then((response: any) => setFavorites(response.data.data))
         //     .catch((error: any) => {
         //         console.error('Ошибка загрузки избранного', error)
         //     })
@@ -99,13 +99,13 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
     const addBuildingToFavorite = () => {
         if (props.building.id) {
             // FavoriteService.addFavorite(props.building.id)
-            //     .then((response: any) => setFavorites(response.data))
+            //     .then((response: any) => setFavorites(response.data.data))
             //     .catch((error: any) => {
             //         console.error('Ошибка добавления в избранное', error)
             //
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data
+            //             text: error.data.data
             //         })
             //     })
         }
@@ -115,13 +115,13 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
     const removeBuildingFromFavorite = () => {
         if (props.building.id) {
             // FavoriteService.removeFavorite(props.building.id)
-            //     .then((response: any) => setFavorites(response.data))
+            //     .then((response: any) => setFavorites(response.data.data))
             //     .catch((error: any) => {
             //         console.error('Ошибка удаления из избранного', error)
             //
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data
+            //             text: error.data.data
             //         })
             //     })
         }

@@ -53,7 +53,7 @@ const DevelopersPage: React.FC = (): React.ReactElement => {
         // }
 
         DeveloperService.fetchDevelopers(filter)
-            .then((response: any) => setDevelopers(response.data))
+            .then((response: any) => setDevelopers(response.data.data))
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)
             })
@@ -116,7 +116,7 @@ const DevelopersPage: React.FC = (): React.ReactElement => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data
+                                        text: error.data.data
                                     })
                                 })
                                 .finally(() => setFetching(false))

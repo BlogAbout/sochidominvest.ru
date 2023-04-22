@@ -50,7 +50,7 @@ const PopupAuth: React.FC<Props> = (props): React.ReactElement => {
     }
 
     return (
-        <Popup>
+        <Popup className={classes.PopupAuth}>
             <BlockingElement fetching={false} className={classes.content}>
                 {renderForm()}
             </BlockingElement>

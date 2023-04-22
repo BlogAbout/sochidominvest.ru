@@ -76,7 +76,7 @@ export const UserActionCreators = {
             const response = await UserService.fetchUsers(filter)
 
             if (response.status === 200) {
-                dispatch(UserActionCreators.setUsers(response.data))
+                dispatch(UserActionCreators.setUsers(response.data.data))
             } else {
                 dispatch(UserActionCreators.setError('Ошибка загрузки данных'))
             }
@@ -92,7 +92,7 @@ export const UserActionCreators = {
             const response = await UserService.fetchUsersExternal(filter)
 
             if (response.status === 200) {
-                dispatch(UserActionCreators.setUsersExternal(response.data))
+                dispatch(UserActionCreators.setUsersExternal(response.data.data))
             } else {
                 dispatch(UserActionCreators.setError('Ошибка загрузки данных'))
             }

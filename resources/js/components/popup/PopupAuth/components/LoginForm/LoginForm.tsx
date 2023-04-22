@@ -73,7 +73,7 @@ const LoginForm: React.FC<Props> = (props): React.ReactElement => {
 
             UserService.authUser(auth)
                 .then((response: any) => {
-                    setUserAuth(response.data)
+                    setUserAuth(response.data.data)
 
                     setInfo({
                         fetching: false,
@@ -85,7 +85,7 @@ const LoginForm: React.FC<Props> = (props): React.ReactElement => {
                 .catch((error: any) => {
                     setInfo({
                         fetching: false,
-                        error: error.data
+                        error: error.data.data
                     })
                 })
         }

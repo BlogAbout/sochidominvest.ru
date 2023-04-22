@@ -24,7 +24,7 @@ export const QuestionActionCreators = {
             const response = await QuestionService.fetchQuestions(filter)
 
             if (response.status === 200) {
-                dispatch(QuestionActionCreators.setQuestions(response.data))
+                dispatch(QuestionActionCreators.setQuestions(response.data.data))
             } else {
                 dispatch(QuestionActionCreators.setError('Ошибка загрузки данных'))
             }

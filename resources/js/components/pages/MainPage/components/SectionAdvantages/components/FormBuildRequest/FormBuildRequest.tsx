@@ -53,7 +53,7 @@ const FormBuildRequest: React.FC = (): React.ReactElement => {
                 })
             })
             .catch((error: any) => {
-                console.error(error.data)
+                console.error(error.data.data)
                 openPopupAlert(document.body, {
                     text: 'Произошла ошибка отправки Вашей заявки. Обновите страницу или попробуйте позже.'
                 })

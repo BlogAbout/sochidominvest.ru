@@ -69,12 +69,12 @@ const UserList: React.FC<Props> = (props) => {
 
         AgentService.fetchContacts({id: props.selectedContacts, agentId: props.selectedAgents, active: [0, 1]})
             .then((response: any) => {
-                setSelectedContacts(response.data)
+                setSelectedContacts(response.data.data)
             })
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetchingContactList(false))

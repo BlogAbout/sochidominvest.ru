@@ -66,7 +66,7 @@ const PopupCategoryCreate: React.FC<Props> = (props) => {
 
         StoreService.saveCategory(category)
             .then((response: any) => {
-                setCategory(response.data)
+                setCategory(response.data.data)
 
                 props.onSave()
 
@@ -77,7 +77,7 @@ const PopupCategoryCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetching(false))

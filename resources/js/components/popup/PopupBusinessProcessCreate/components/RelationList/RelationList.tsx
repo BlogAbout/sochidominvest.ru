@@ -58,7 +58,7 @@ const RelationList: React.FC<Props> = (props) => {
 
                 BuildingService.fetchBuildings({active: [0, 1], id: buildingsIds})
                     .then((response: any) => {
-                        setSelectedBuildings(response.data)
+                        setSelectedBuildings(response.data.data)
                     })
                     .catch((error: any) => {
                         console.error('Ошибка', error)
@@ -73,7 +73,7 @@ const RelationList: React.FC<Props> = (props) => {
 
                 FeedService.fetchFeeds({active: [0, 1], id: feedsIds})
                     .then((response: any) => {
-                        setSelectedFeeds(response.data)
+                        setSelectedFeeds(response.data.data)
                     })
                     .catch((error: any) => {
                         console.error('Ошибка', error)
@@ -88,7 +88,7 @@ const RelationList: React.FC<Props> = (props) => {
 
                 // BookingService.fetchBookings({active: [0, 1], id: bookingIds})
                 //     .then((response: any) => {
-                //         setSelectedBookings(response.data)
+                //         setSelectedBookings(response.data.data)
                 //     })
                 //     .catch((error: any) => {
                 //         console.error('Ошибка', error)

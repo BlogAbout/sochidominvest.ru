@@ -54,13 +54,13 @@ const PopupUserExternalCreate: React.FC<Props> = (props) => {
         if (props.userId) {
             UserService.fetchUserExternalById(props.userId)
                 .then((response: any) => {
-                    setUser(response.data)
+                    setUser(response.data.data)
                 })
                 .catch((error: any) => {
                     console.error('error', error)
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data
+                        text: error.data.data
                     })
                 })
         }
@@ -86,7 +86,7 @@ const PopupUserExternalCreate: React.FC<Props> = (props) => {
         UserService.saveUserExternal(user)
             .then((response: any) => {
                 setFetching(false)
-                setUser(response.data)
+                setUser(response.data.data)
 
                 props.onSave()
 
@@ -97,7 +97,7 @@ const PopupUserExternalCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
 
                 setFetching(false)

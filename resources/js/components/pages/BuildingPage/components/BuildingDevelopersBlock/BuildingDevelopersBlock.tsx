@@ -43,11 +43,11 @@ const BuildingDevelopersBlock: React.FC<Props> = (props): React.ReactElement => 
         }
 
         DeveloperService.fetchDevelopers(filter)
-            .then((response: any) => setDevelopers(response.data))
+            .then((response: any) => setDevelopers(response.data.data))
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetching(false))

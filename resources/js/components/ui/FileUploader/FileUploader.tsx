@@ -96,7 +96,7 @@ const FileUploader: React.FC<Props> = (props) => {
                     setUploadInfo({
                         ...uploadInfo,
                         counter: uploadInfo.counter + 1,
-                        attachments: [response.data, ...uploadInfo.attachments]
+                        attachments: [response.data.data, ...uploadInfo.attachments]
                     })
                 })
                 .catch((error) => {
@@ -105,7 +105,7 @@ const FileUploader: React.FC<Props> = (props) => {
 
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data
+                        text: error.data.data
                     })
                 })
                 .finally(() => {

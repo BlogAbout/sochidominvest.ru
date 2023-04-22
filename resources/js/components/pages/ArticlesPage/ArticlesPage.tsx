@@ -39,7 +39,7 @@ const ArticlesPage: React.FC = (): React.ReactElement => {
 
         ArticleService.fetchArticles({active: [1], publish: 1})
             .then((response: any) => {
-                setArticles(response.data)
+                setArticles(response.data.data)
             })
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)
@@ -62,39 +62,38 @@ const ArticlesPage: React.FC = (): React.ReactElement => {
     }
 
     // Массив кнопок для фильтра
-    const filterBaseButtons: IFilterBase[] = []
-    // const filterBaseButtons: IFilterBase[] = useMemo(() => {
-    //     return [
-    //         {
-    //             key: 'all',
-    //             title: 'Все',
-    //             icon: 'bookmark',
-    //             active: selectedType.includes('all'),
-    //             onClick: () => setSelectedType('all')
-    //         },
-    //         {
-    //             key: 'news',
-    //             title: 'Новости',
-    //             icon: 'bolt',
-    //             active: selectedType.includes('news'),
-    //             onClick: () => setSelectedType('news')
-    //         },
-    //         {
-    //             key: 'action',
-    //             title: 'Акции',
-    //             icon: 'percent',
-    //             active: selectedType.includes('action'),
-    //             onClick: () => setSelectedType('action')
-    //         },
-    //         {
-    //             key: 'article',
-    //             title: 'Статьи',
-    //             icon: 'star',
-    //             active: selectedType.includes('article'),
-    //             onClick: () => setSelectedType('article')
-    //         }
-    //     ]
-    // }, [selectedType])
+    const filterBaseButtons: IFilterBase[] = useMemo((): IFilterBase[] => {
+        return [
+            {
+                key: 'all',
+                title: 'Все',
+                icon: 'bookmark',
+                active: selectedType.includes('all'),
+                onClick: () => setSelectedType('all')
+            },
+            {
+                key: 'news',
+                title: 'Новости',
+                icon: 'bolt',
+                active: selectedType.includes('news'),
+                onClick: () => setSelectedType('news')
+            },
+            {
+                key: 'action',
+                title: 'Акции',
+                icon: 'percent',
+                active: selectedType.includes('action'),
+                onClick: () => setSelectedType('action')
+            },
+            {
+                key: 'article',
+                title: 'Статьи',
+                icon: 'star',
+                active: selectedType.includes('article'),
+                onClick: () => setSelectedType('article')
+            }
+        ]
+    }, [selectedType])
 
     return (
         <DefaultView pageTitle='Статьи'>
@@ -110,11 +109,11 @@ const ArticlesPage: React.FC = (): React.ReactElement => {
                                 return (
                                     <BlockItem key={article.id}
                                                title={article.name}
-                                               avatar={article.avatar || ''}
+                                               avatar={article.avatar ? article.avatar.content : ''}
                                                description={article.description}
-                                               date={article.dateCreated || undefined}
+                                               date={article.date_created || undefined}
                                                type={getArticleTypeText(article.type)}
-                                               isDisabled={!article.active}
+                                               isDisabled={!article.is_active}
                                                onContextMenu={() => {
                                                }}
                                                onClick={() => navigate(`${RouteNames.ARTICLE}/${article.id}`)}

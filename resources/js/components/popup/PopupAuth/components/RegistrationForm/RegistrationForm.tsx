@@ -93,7 +93,7 @@ const RegistrationForm: React.FC<Props> = (props): React.ReactElement => {
 
             UserService.registrationUser(signUp)
                 .then((response: any) => {
-                    setUserAuth(response.data)
+                    setUserAuth(response.data.data)
 
                     setInfo({
                         fetching: false,
@@ -105,7 +105,7 @@ const RegistrationForm: React.FC<Props> = (props): React.ReactElement => {
                 .catch((error: any) => {
                     setInfo({
                         fetching: false,
-                        error: error.data
+                        error: error.data.data
                     })
                 })
         }

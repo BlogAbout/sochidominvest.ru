@@ -24,7 +24,7 @@ export const AgentActionCreators = {
             const response = await AgentService.fetchAgents(filter)
 
             if (response.status === 200) {
-                dispatch(AgentActionCreators.setAgents(response.data))
+                dispatch(AgentActionCreators.setAgents(response.data.data))
             } else {
                 dispatch(AgentActionCreators.setError('Ошибка загрузки данных'))
             }

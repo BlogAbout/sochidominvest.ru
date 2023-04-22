@@ -73,7 +73,7 @@ const UserPage: React.FC = (): React.ReactElement => {
         setFetchingBuildings(true)
 
         BuildingService.fetchBuildings({active: [1], author: [user.id]})
-            .then((response: any) => setBuildings(response.data))
+            .then((response: any) => setBuildings(response.data.data))
             .catch((error: any) => {
                 console.error(error)
             })
@@ -88,7 +88,7 @@ const UserPage: React.FC = (): React.ReactElement => {
         setFetchingArticles(true)
 
         ArticleService.fetchArticles({active: [1], author: [user.id]})
-            .then((response: any) => setArticles(response.data))
+            .then((response: any) => setArticles(response.data.data))
             .catch((error: any) => {
                 console.error(error)
             })
@@ -103,7 +103,7 @@ const UserPage: React.FC = (): React.ReactElement => {
         // setFetchingLogs(true)
         //
         // UtilService.fetchLogs({active: [1], userId: [user.id]})
-        //     .then((response: any) => setLogs(response.data))
+        //     .then((response: any) => setLogs(response.data.data))
         //     .catch((error: any) => {
         //         console.error(error)
         //     })

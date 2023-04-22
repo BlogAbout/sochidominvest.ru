@@ -24,7 +24,7 @@ export const DocumentActionCreators = {
             const response = await DocumentService.fetchDocuments(filter)
 
             if (response.status === 200) {
-                dispatch(DocumentActionCreators.setDocuments(response.data))
+                dispatch(DocumentActionCreators.setDocuments(response.data.data))
             } else {
                 dispatch(DocumentActionCreators.setError('Ошибка загрузки данных'))
             }

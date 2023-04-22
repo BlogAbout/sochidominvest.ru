@@ -61,7 +61,7 @@ const ImageCarousel: React.FC<Props> = (props) => {
         return (
             <SwiperSlide key={attachment.id} className={classes.video}>
                 <MediaPlayer source={`${configuration.apiUrl}uploads/${attachment.type}/${attachment.content}`}
-                             poster={attachment.posterUrl}
+                             poster={attachment.poster ? attachment.poster.content : undefined}
                 />
             </SwiperSlide>
         )

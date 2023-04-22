@@ -30,7 +30,7 @@ const BuildingCheckersBlock: React.FC<Props> = (props): React.ReactElement | nul
 
             CheckerService.fetchCheckers(props.building.id)
                 .then((response) => {
-                    setCheckers(response.data)
+                    setCheckers(response.data.data)
                 })
                 .catch((error: any) => {
                     console.error('Ошибка загрузки квартир объекта недвижимости', error)

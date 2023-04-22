@@ -65,7 +65,7 @@ const PopupPartnerCreate: React.FC<Props> = (props) => {
 
         PartnerService.savePartner(partner)
             .then((response: any) => {
-                setPartner(response.data)
+                setPartner(response.data.data)
 
                 props.onSave()
 
@@ -76,7 +76,7 @@ const PopupPartnerCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => {

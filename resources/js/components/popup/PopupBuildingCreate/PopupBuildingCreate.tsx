@@ -117,7 +117,7 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 setFetchingImages(true)
                 AttachmentService.fetchAttachments({active: [0, 1], id: building.images, type: 'image'})
                     .then((response: any) => {
-                        setImages(sortAttachments(response.data, building.images))
+                        setImages(sortAttachments(response.data.data, building.images))
                     })
                     .finally(() => setFetchingImages(false))
             }
@@ -126,7 +126,7 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 setFetchingVideos(true)
                 AttachmentService.fetchAttachments({active: [0, 1], id: building.videos, type: 'video'})
                     .then((response: any) => {
-                        setVideos(sortAttachments(response.data, building.videos))
+                        setVideos(sortAttachments(response.data.data, building.videos))
                     })
                     .finally(() => setFetchingVideos(false))
             }
@@ -154,7 +154,7 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
 
         BuildingService.saveBuilding(building)
             .then((response: any) => {
-                setBuilding(response.data)
+                setBuilding(response.data.data)
 
                 props.onSave()
 
@@ -166,7 +166,7 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 console.error('error', error)
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => {
@@ -176,21 +176,23 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
 
     // Добавление файла
     const addAttachmentHandler = (attachment: IAttachment) => {
-        switch (attachment.type) {
-            case 'image':
-                setBuilding({
-                    ...building,
-                    images: [attachment.id, ...building.images]
-                })
-                setImages([attachment, ...images])
-                break
-            case 'video':
-                setBuilding({
-                    ...building,
-                    videos: [attachment.id, ...building.videos]
-                })
-                setVideos([attachment, ...images])
-                break
+        if (attachment.id) {
+            switch (attachment.type) {
+                case 'image':
+                    setBuilding({
+                        ...building,
+                        images: [attachment.id, ...building.images]
+                    })
+                    setImages([attachment, ...images])
+                    break
+                case 'video':
+                    setBuilding({
+                        ...building,
+                        videos: [attachment.id, ...building.videos]
+                    })
+                    setVideos([attachment, ...images])
+                    break
+            }
         }
     }
 
@@ -216,13 +218,23 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
     }
 
     const onUpdateOrderingImagesHandler = (files: IAttachment[]) => {
-        const ids: number[] = files.map((attachment: IAttachment) => attachment.id)
+        const ids: number[] = []
+        files.forEach((attachment: IAttachment) => {
+            if (attachment.id) {
+                ids.push(attachment.id)
+            }
+        })
         setImages(sortAttachments(files, ids))
         setBuilding({...building, images: ids})
     }
 
     const onUpdateOrderingVideosHandler = (files: IAttachment[]) => {
-        const ids: number[] = files.map((attachment: IAttachment) => attachment.id)
+        const ids: number[] = []
+        files.map((attachment: IAttachment) => {
+            if (attachment.id) {
+                ids.push(attachment.id)
+            }
+        })
         setVideos(sortAttachments(files, ids))
         setBuilding({...building, videos: ids})
     }

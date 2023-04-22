@@ -98,7 +98,7 @@ const AgentPage: React.FC = (): React.ReactElement => {
 
             AgentService.fetchAgentById(parseInt(params.id))
                 .then((response: any) => {
-                    setAgent(response.data)
+                    setAgent(response.data.data)
                 })
                 .catch((error: any) => {
                     console.error('Ошибка загрузки данных агентства', error)
@@ -170,7 +170,7 @@ const AgentPage: React.FC = (): React.ReactElement => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data
+                                        text: error.data.data
                                     })
                                 })
                                 .finally(() => setFetching(false))
@@ -192,7 +192,7 @@ const AgentPage: React.FC = (): React.ReactElement => {
             //
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data
+            //             text: error.data.data
             //         })
             //     })
         }
@@ -208,7 +208,7 @@ const AgentPage: React.FC = (): React.ReactElement => {
             //
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data
+            //             text: error.data.data
             //         })
             //     })
         }

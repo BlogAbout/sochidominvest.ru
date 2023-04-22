@@ -26,7 +26,7 @@ const FaqPage: React.FC = (): React.ReactElement => {
 
             QuestionService.fetchQuestions({active: [1]})
                 .then((response: any) => {
-                    setQuestions(response.data)
+                    setQuestions(response.data.data)
                 })
                 .catch((error: any) => {
                     console.error('Произошла ошибка загрузки данных', error)

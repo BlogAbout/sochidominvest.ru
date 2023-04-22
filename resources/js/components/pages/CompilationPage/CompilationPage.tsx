@@ -105,7 +105,7 @@ const CompilationPage: React.FC = (): React.ReactElement => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data
+                                        text: error.data.data
                                     })
                                 })
                                 .finally(() => {
@@ -131,7 +131,7 @@ const CompilationPage: React.FC = (): React.ReactElement => {
             //
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data
+            //             text: error.data.data
             //         })
             //     })
         }
@@ -149,7 +149,7 @@ const CompilationPage: React.FC = (): React.ReactElement => {
             //
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data
+            //             text: error.data.data
             //         })
             //     })
         }

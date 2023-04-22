@@ -18,6 +18,7 @@ class TagResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'author_id' => $this->author_id,
+            'author' => new UserResource($this->whenLoaded('author')),
             'is_active' => $this->is_active,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

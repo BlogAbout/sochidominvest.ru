@@ -59,7 +59,7 @@ const CompilationList: React.FC<Props> = (props): React.ReactElement => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data,
+                                        text: error.data.data,
                                     })
                                 })
                                 .finally(() => {

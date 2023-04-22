@@ -2,10 +2,10 @@ import React, {useEffect, useState} from 'react'
 import withStore from '../../hoc/withStore'
 import classNames from 'classnames/bind'
 import ArticleService from '../../../api/ArticleService'
-import AttachmentService from '../../../api/AttachmentService'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
 import {IArticle} from '../../../@types/IArticle'
 import {IAttachment} from '../../../@types/IAttachment'
+import {IBuilding} from '../../../@types/IBuilding'
 import {articleTypes} from '../../../helpers/articleHelper'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
@@ -45,17 +45,15 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
         id: null,
         name: '',
         description: '',
-        author: null,
         type: 'article',
-        active: 1,
-        publish: 0,
-        buildings: [],
-        images: []
+        is_active: 1,
+        is_publish: 0,
+        image_ids: [],
+        video_ids: [],
+        building_ids: []
     })
 
     const [fetching, setFetching] = useState(false)
-    const [fetchingImages, setFetchingImages] = useState(false)
-    const [images, setImages] = useState<IAttachment[]>([])
 
     useEffect(() => {
         return () => {
@@ -65,36 +63,59 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
 
     useEffect(() => {
         if (article.id) {
+            const image_ids: number[] = []
+            const video_ids: number[] = []
+            const building_ids: number[] = []
+
             if (article.images && article.images.length) {
-                setFetchingImages(true)
-                AttachmentService.fetchAttachments({active: [0, 1], id: article.images, type: 'image'})
-                    .then((response: any) => {
-                        setImages(response.data)
-                    })
-                    .finally(() => setFetchingImages(false))
+                article.images.map((image: IAttachment) => {
+                    if (image.id) {
+                        image_ids.push(image.id)
+                    }
+                })
             }
+
+            if (article.videos && article.videos.length) {
+                article.videos.map((video: IAttachment) => {
+                    if (video.id) {
+                        video_ids.push(video.id)
+                    }
+                })
+            }
+
+            if (article.buildings && article.buildings.length) {
+                article.buildings.map((building: IBuilding) => {
+                    if (building.id) {
+                        building_ids.push(building.id)
+                    }
+                })
+            }
+
+            setArticle({
+                ...article,
+                image_ids: image_ids,
+                video_ids: video_ids,
+                building_ids: building_ids
+            })
         }
-    }, [article])
+    }, [article.id])
 
     useEffect(() => {
-        if (images && images.length) {
+        if (article.images && article.images.length) {
             checkAvatar()
         }
-    }, [images])
+    }, [article.images])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Сохранение изменений
     const saveHandler = (isClose?: boolean) => {
         setFetching(true)
 
         ArticleService.saveArticle(article)
             .then((response: any) => {
-                setFetching(false)
-                setArticle(response.data)
+                setArticle(response.data.data)
 
                 props.onSave()
 
@@ -105,51 +126,70 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
-
-                setFetching(false)
             })
+            .finally(() => setFetching(false))
     }
 
     // Добавление файла
     const addAttachmentHandler = (attachment: IAttachment) => {
-        switch (attachment.type) {
-            case 'image':
-                setArticle({
-                    ...article,
-                    images: [attachment.id, ...article.images]
-                })
-                setImages([attachment, ...images])
-                break
+        if (attachment.id) {
+            switch (attachment.type) {
+                case 'image':
+                    const image_ids = article.image_ids ? [...article.image_ids] : []
+                    const images = article.images ? [...article.images] : []
+                    setArticle({
+                        ...article,
+                        image_ids: [attachment.id, ...image_ids],
+                        images: [attachment, ...images]
+                    })
+                    break
+                case 'video':
+                    const video_ids = article.video_ids ? [...article.video_ids] : []
+                    const videos = article.videos ? [...article.videos] : []
+                    setArticle({
+                        ...article,
+                        video_ids: [attachment.id, ...video_ids],
+                        videos: [attachment, ...videos]
+                    })
+                    break
+            }
         }
     }
 
     // Смена главного изображения
     const selectImageAvatarHandler = (attachment: IAttachment) => {
-        setArticle({...article, avatarId: attachment.id, avatar: attachment.content})
+        setArticle({...article, avatar_id: attachment.id, avatar: attachment})
     }
 
     // Проверка наличия главного изображения
     const checkAvatar = () => {
-        if (article.images && article.images.length && images && images.length) {
-            if (!article.avatarId || !article.images.includes(article.avatarId)) {
-                selectImageAvatarHandler(images[0])
+        if (article.image_ids && article.image_ids.length && article.images && article.images.length) {
+            if (!article.avatar_id || !article.image_ids.includes(article.avatar_id)) {
+                selectImageAvatarHandler(article.images[0])
             }
         } else {
-            setArticle({...article, avatarId: null, avatar: null})
+            setArticle({...article, avatar_id: null, avatar: null})
         }
     }
 
     const onUpdateOrderingImagesHandler = (files: IAttachment[]) => {
-        const ids: number[] = files.map((attachment: IAttachment) => attachment.id)
-        setImages(sortAttachments(files, ids))
-        setArticle({...article, images: ids})
+        const ids: number[] = []
+        files.forEach((attachment: IAttachment) => {
+            if (attachment.id) {
+                ids.push(attachment.id)
+            }
+        })
+        setArticle({...article, image_ids: ids, images: sortAttachments(files, ids)})
     }
 
     const removeSelectedImageHandler = (file: IAttachment) => {
-        setArticle({...article, images: article.images.filter((id: number) => id !== file.id)})
-        setImages([...images.filter((attachment: IAttachment) => attachment.id !== file.id)])
+        setArticle({
+            ...article,
+            image_ids: article.image_ids ? article.image_ids.filter((id: number) => id !== file.id) : [],
+            images: article.images ? article.images.filter((attachment: IAttachment) => attachment.id !== file.id) : []
+        })
     }
 
     const renderContentBlock = () => {
@@ -202,10 +242,10 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
                     <CheckBox label='Публичный'
                               type='modern'
                               width={110}
-                              checked={!!article.publish}
+                              checked={!!article.is_publish}
                               onChange={(e: React.MouseEvent, value: boolean) => setArticle({
                                   ...article,
-                                  publish: value ? 1 : 0
+                                  is_publish: value ? 1 : 0
                               })}
                     />
                 </div>
@@ -214,10 +254,10 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
                     <CheckBox label='Активен'
                               type='modern'
                               width={110}
-                              checked={!!article.active}
+                              checked={!!article.is_active}
                               onChange={(e: React.MouseEvent, value: boolean) => setArticle({
                                   ...article,
-                                  active: value ? 1 : 0
+                                  is_active: value ? 1 : 0
                               })}
                     />
                 </div>
@@ -225,7 +265,7 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
         )
     }
 
-    // Вкладка галереии
+    // Вкладка галереи
     const renderGalleryBlock = () => {
         return (
             <div key='gallery' className={classes.blockContent}>
@@ -238,19 +278,22 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
                             icon='arrow-pointer'
                             onClick={() => openPopupFileManager(document.body, {
                                 type: 'image',
-                                selected: article.images,
+                                selected: article.image_ids || [],
                                 onSelect: (selected: number[], attachments: IAttachment[]) => {
-                                    setArticle({...article, images: selected})
-                                    setImages(attachments)
+                                    setArticle({
+                                        ...article,
+                                        image_ids: selected,
+                                        images: attachments
+                                    })
                                 },
                                 multi: true
                             })}
                             disabled={fetching}
                     >Выбрать / Загрузить</Button>
 
-                    <FileList files={images}
-                              selected={article.avatarId ? [article.avatarId] : []}
-                              fetching={fetchingImages}
+                    <FileList files={article.images || []}
+                              selected={article.avatar_id ? [article.avatar_id] : []}
+                              fetching={fetching}
                               onSave={addAttachmentHandler.bind(this)}
                               onSelect={selectImageAvatarHandler.bind(this)}
                               onRemove={removeSelectedImageHandler.bind(this)}
@@ -270,8 +313,8 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Недвижимость'/>
 
-                    <BuildingBox buildings={article.buildings}
-                                 onSelect={(value: number[]) => setArticle({...article, buildings: value})}
+                    <BuildingBox buildings={article.building_ids || []}
+                                 onSelect={(value: number[]) => setArticle({...article, building_ids: value})}
                                  placeHolder='Выберите объекты недвижимости'
                                  styleType='minimal'
                                  multi
@@ -289,10 +332,10 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Meta Title'/>
 
-                    <TextBox value={article.metaTitle || ''}
+                    <TextBox value={article.meta_title || ''}
                              onChange={(value: string) => setArticle({
                                  ...article,
-                                 metaTitle: value
+                                 meta_title: value
                              })}
                              placeHolder='Введите Meta Title'
                              styleType='minimal'
@@ -302,10 +345,10 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
                 <div className={cx({'field': true, 'fieldWrap': true})}>
                     <Label text='Meta Description'/>
 
-                    <TextAreaBox value={article.metaDescription || ''}
+                    <TextAreaBox value={article.meta_description || ''}
                                  onChange={(value: string) => setArticle({
                                      ...article,
-                                     metaDescription: value
+                                     meta_description: value
                                  })}
                                  placeHolder='Введите Meta Description'
                                  width='100%'

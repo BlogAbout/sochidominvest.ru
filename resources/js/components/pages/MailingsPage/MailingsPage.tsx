@@ -35,7 +35,7 @@ const MailingsPage: React.FC = (): React.ReactElement => {
         setFetching(true)
 
         MailingService.fetchMailings({active: [0, 1]})
-            .then((response: any) => setMailings(response.data))
+            .then((response: any) => setMailings(response.data.data))
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)
             })

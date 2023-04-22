@@ -24,7 +24,7 @@ export const PostActionCreators = {
             const response = await PostService.fetchPosts(filter)
 
             if (response.status === 200) {
-                dispatch(PostActionCreators.setPosts(response.data))
+                dispatch(PostActionCreators.setPosts(response.data.data))
             } else {
                 dispatch(PostActionCreators.setError('Ошибка загрузки данных'))
             }

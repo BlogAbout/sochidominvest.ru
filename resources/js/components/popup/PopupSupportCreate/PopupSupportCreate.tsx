@@ -78,7 +78,7 @@ const PopupSupportCreate: React.FC<Props> = (props): React.ReactElement => {
         // FeedService.saveFeed(updateFeed)
         //     .then((response: any) => {
         //         setFetching(false)
-        //         setFeed(response.data)
+        //         setFeed(response.data.data)
         //
         //         props.onSave()
         //         closePopup()
@@ -86,7 +86,7 @@ const PopupSupportCreate: React.FC<Props> = (props): React.ReactElement => {
         //     .catch((error: any) => {
         //         openPopupAlert(document.body, {
         //             title: 'Ошибка!',
-        //             text: error.data
+        //             text: error.data.data
         //         })
         //
         //         setFetching(false)

@@ -24,7 +24,7 @@ export const BusinessProcessActionCreators = {
             const response = await BusinessProcessService.fetchBusinessProcesses(filter)
 
             if (response.status === 200) {
-                dispatch(BusinessProcessActionCreators.setBusinessProcesses(response.data))
+                dispatch(BusinessProcessActionCreators.setBusinessProcesses(response.data.data))
             } else {
                 dispatch(BusinessProcessActionCreators.setError('Ошибка загрузки данных'))
             }

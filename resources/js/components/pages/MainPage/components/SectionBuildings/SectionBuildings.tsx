@@ -26,7 +26,7 @@ const SectionBuildings: React.FC = (): React.ReactElement => {
     //
     //         BuildingService.fetchBuildings({active: [1], publish: 1})
     //             .then((response: any) => {
-    //                 setBuildings(response.data)
+    //                 setBuildings(response.data.data)
     //             })
     //             .catch((error: any) => {
     //                 console.error('Произошла ошибка загрузки данных', error)

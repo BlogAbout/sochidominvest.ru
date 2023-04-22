@@ -35,7 +35,7 @@ const PostsPage: React.FC = (): React.ReactElement => {
 
         PostService.fetchPosts({active: [0, 1]})
             .then((response: any) => {
-                setPosts(response.data)
+                setPosts(response.data.data)
             })
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)

@@ -24,7 +24,7 @@ export const PartnerActionCreators = {
             const response = await PartnerService.fetchPartners(filter)
 
             if (response.status === 200) {
-                dispatch(PartnerActionCreators.setPartners(response.data))
+                dispatch(PartnerActionCreators.setPartners(response.data.data))
             } else {
                 dispatch(PartnerActionCreators.setError('Ошибка загрузки данных'))
             }

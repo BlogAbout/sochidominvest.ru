@@ -82,7 +82,7 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
             //
             // TransactionService.fetchLinkPayment(payment.id)
             //     .then((response: any) => {
-            //         if (response.data.status) {
+            //         if (response.data.data.status) {
             //             window.location.href = response.data.data
             //         } else {
             //             openPopupAlert(document.body, {
@@ -117,7 +117,7 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetching(false))

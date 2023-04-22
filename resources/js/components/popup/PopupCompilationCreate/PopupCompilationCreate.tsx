@@ -58,7 +58,7 @@ const PopupCompilationCreate: React.FC<Props> = (props) => {
 
         CompilationService.saveCompilation(compilation)
             .then((response: any) => {
-                setCompilation(response.data)
+                setCompilation(response.data.data)
 
                 props.onSave()
                 if (isClose) {
@@ -68,7 +68,7 @@ const PopupCompilationCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetching(false))

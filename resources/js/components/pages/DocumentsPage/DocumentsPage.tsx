@@ -45,7 +45,7 @@ const DocumentPage: React.FC = (): React.ReactElement => {
         // }
 
         DocumentService.fetchDocuments(filter)
-            .then((response: any) => setDocuments(response.data))
+            .then((response: any) => setDocuments(response.data.data))
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)
             })

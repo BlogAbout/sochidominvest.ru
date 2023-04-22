@@ -57,7 +57,7 @@ const MailingList: React.FC<Props> = (props): React.ReactElement => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data
+                                        text: error.data.data
                                     })
                                 })
                                 .finally(() => {
@@ -81,7 +81,7 @@ const MailingList: React.FC<Props> = (props): React.ReactElement => {
             .then((response: any) => {
                 props.onSave()
 
-                const newMailing: IMailing = response.data
+                const newMailing: IMailing = response.data.data
                 if (newMailing.status === 1) {
                     openPopupAlert(document.body, {
                         title: 'Рассылка запущена',
@@ -92,7 +92,7 @@ const MailingList: React.FC<Props> = (props): React.ReactElement => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
 
             })

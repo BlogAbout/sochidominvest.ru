@@ -47,7 +47,7 @@ const FilesPage: React.FC = (): React.ReactElement => {
         // }
 
         AttachmentService.fetchAttachments(filter)
-            .then((response: any) => setFiles(response.data))
+            .then((response: any) => setFiles(response.data.data))
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)
             })

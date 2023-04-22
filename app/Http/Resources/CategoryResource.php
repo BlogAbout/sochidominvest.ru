@@ -9,7 +9,7 @@ class CategoryResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function toArray($request): array
@@ -19,8 +19,11 @@ class CategoryResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'author_id' => $this->author_id,
+            'author' => new UserResource($this->whenLoaded('author')),
             'is_active' => $this->is_active,
             'avatar_id' => $this->avatar_id,
+            'avatar' => new AttachmentResource($this->whenLoaded('avatar')),
+            'products' => ProductResource::collection($this->whenLoaded('products')),
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
             'fields' => $this->fields,

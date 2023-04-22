@@ -2,16 +2,9 @@ import React, {useEffect, useMemo, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {converter} from '../../../helpers/utilHelper'
-import {sortAttachments} from '../../../helpers/attachmentHelper'
-import {getFormatDate} from '../../../helpers/dateHelper'
-import {IFilter} from '../../../@types/IFilter'
 import {IArticle} from '../../../@types/IArticle'
-import {IAttachment} from '../../../@types/IAttachment'
 import {IBuilding} from '../../../@types/IBuilding'
 import ArticleService from '../../../api/ArticleService'
-import UtilService from '../../../api/UtilService'
-import BuildingService from '../../../api/BuildingService'
-import AttachmentService from '../../../api/AttachmentService'
 import Wrapper from '../../ui/Wrapper/Wrapper'
 import Title from '../../ui/Title/Title'
 import DefaultView from '../../views/DefaultView/DefaultView'
@@ -39,26 +32,12 @@ const ArticlePage: React.FC<Props> = (props): React.ReactElement => {
     const navigate = useNavigate()
 
     const [fetchingArticle, setFetchingArticle] = useState(false)
-    const [fetchingImages, setFetchingImages] = useState(false)
-    const [fetchingBuildings, setFetchingBuildings] = useState(false)
     const [article, setArticle] = useState<IArticle>({} as IArticle)
-    const [images, setImages] = useState<IAttachment[]>([])
-    const [buildings, setBuildings] = useState<IBuilding[]>([])
-    const [views, setViews] = useState<number>(0)
 
     useEffect(() => {
         onFetchArticle()
     }, [params.id])
 
-    useEffect(() => {
-        onUpdateViews()
-
-        onFetchBuildings()
-
-        onFetchImages()
-    }, [article])
-
-    // Загрузка данных статьи
     const onFetchArticle = (): void => {
         if (params.id) {
             const articleId = parseInt(params.id)
@@ -66,89 +45,19 @@ const ArticlePage: React.FC<Props> = (props): React.ReactElement => {
             setFetchingArticle(true)
 
             ArticleService.fetchArticleById(articleId)
-                .then((response: any) => {
-                    setArticle(response.data)
-                })
-                .catch((error: any) => {
-                    console.error('Ошибка загрузки статьи', error)
-                })
-                .finally(() => {
-                    setFetchingArticle(false)
-                })
-        }
-    }
-
-    // Загрузка связанных объектов недвижимости
-    const onFetchBuildings = (): void => {
-        if (article.buildings && article.buildings.length) {
-            const filter: IFilter = {
-                active: [0, 1],
-                id: article.buildings
-            }
-
-            if (props.isPublic) {
-                filter.publish = 1
-            }
-
-            setFetchingBuildings(true)
-
-            BuildingService.fetchBuildings(filter)
-                .then((response: any) => {
-                    setBuildings(response.data)
-                })
-                .catch((error: any) => {
-                    console.error('Ошибка загрузки связанных объектов недвижимости', error)
-                })
-                .finally(() => {
-                    setFetchingBuildings(false)
-                })
-        }
-    }
-
-    // Загрузка фотогалереи статьи
-    const onFetchImages = (): void => {
-        if (article.images && article.images.length) {
-            setFetchingImages(true)
-
-            const filter: IFilter = {
-                active: [0, 1],
-                id: article.images,
-                type: 'image'
-            }
-
-            AttachmentService.fetchAttachments(filter)
-                .then((response: any) => {
-                    setImages(sortAttachments(response.data, article.images))
-                })
-                .catch((error: any) => {
-                    console.error('Ошибка загрузки фотогалереи статьи', error)
-                })
-                .finally(() => {
-                    setFetchingImages(false)
-                })
-        }
-    }
-
-    // Обновление счетчика просмотров
-    const onUpdateViews = (): void => {
-        if (article.id) {
-            // UtilService.updateViews('article', article.id)
-            //     .then(() => {
-            //         setViews(article.views ? article.views + 1 : 1)
-            //     })
-            //     .catch((error: any) => {
-            //         console.error('Ошибка регистрации количества просмотров', error)
-            //     })
+                .then((response: any) => setArticle(response.data.data))
+                .catch((error: any) => console.error('Ошибка загрузки статьи', error))
+                .finally(() => setFetchingArticle(false))
         }
     }
 
     const pageTitle = useMemo(() => {
-        return !article ? 'Статьи' : !article.metaTitle ? article.name : article.metaTitle
+        return !article ? 'Статьи' : !article.meta_title ? article.name : article.meta_title
     }, [article])
 
     // Отображение списка связанных объектов недвижимости
     const renderBuildingsList = (): React.ReactElement | null => {
-        if (!article.buildings || !article.buildings.length || !buildings || !buildings.length) {
+        if (!article.buildings || !article.buildings.length) {
             return null
         }
 
@@ -156,15 +65,19 @@ const ArticlePage: React.FC<Props> = (props): React.ReactElement => {
             <div className={classes.relations}>
                 <Title type='h2'>Связанные объекты</Title>
 
-                <BlockingElement fetching={fetchingArticle || fetchingBuildings} className={classes.list}>
-                    {/*{buildings.map((building: IBuilding) => {*/}
-                    {/*    return (*/}
-                    {/*        <BuildingItem key={building.id}*/}
-                    {/*                      building={building}*/}
-                    {/*                      onClick={() => navigate(`/building/${building.id}`)}*/}
-                    {/*        />*/}
-                    {/*    )*/}
-                    {/*})}*/}
+                <BlockingElement fetching={fetchingArticle} className={classes.list}>
+                    {article.buildings.map((building: IBuilding) => {
+                        if (!building.publish) {
+                            return null
+                        }
+
+                        return (
+                            <BuildingItem key={building.id}
+                                          building={building}
+                                          onClick={() => navigate(`/building/${building.id}`)}
+                            />
+                        )
+                    })}
                 </BlockingElement>
             </div>
         )
@@ -173,12 +86,12 @@ const ArticlePage: React.FC<Props> = (props): React.ReactElement => {
     // Вывод содержимого статьи
     const renderArticleContent = (): React.ReactElement => {
         return (
-            <BlockingElement fetching={fetchingArticle || fetchingBuildings} className={classes.block}>
+            <BlockingElement fetching={fetchingArticle} className={classes.block}>
                 <Gallery alt={article.name}
-                         images={images}
+                         images={article.images || []}
                          type='carousel'
-                         fetching={fetchingImages}
-                         avatar={article.avatarId}
+                         fetching={fetchingArticle}
+                         avatar={article.avatar_id}
                          className={classes.gallery}
                 />
 
@@ -192,27 +105,28 @@ const ArticlePage: React.FC<Props> = (props): React.ReactElement => {
 
                 <div className={classes.information}>
                     <div className={classes.icon}
-                         title={`Просмотры: ${views}`}
+                         title={`Просмотры: ${article.views}`}
                     >
                         <FontAwesomeIcon icon='eye'/>
-                        <span>{views}</span>
+                        <span>{article.views}</span>
                     </div>
 
                     <div className={classes.icon}
-                         title={`Дата публикации: ${getFormatDate(article.dateCreated)}`}
+                         title={`Дата публикации: ${article.date_created}`}
                     >
                         <FontAwesomeIcon icon='calendar'/>
-                        <span>{getFormatDate(article.dateCreated)}</span>
+                        <span>{article.date_created}</span>
                     </div>
 
-                    {article.authorName ?
+                    {article.author ?
                         <div className={classes.icon}
-                             title={`Автор: ${article.authorName}`}
+                             title={`Автор: ${article.author.name}`}
                         >
                             <FontAwesomeIcon icon='user'/>
-                            <span>{article.authorName}</span>
+                            <span>{article.author.name}</span>
                         </div>
-                        : null}
+                        : null
+                    }
                 </div>
             </BlockingElement>
         )

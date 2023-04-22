@@ -29,7 +29,7 @@ const ExternalUsersPage: React.FC = (): React.ReactElement => {
 
         UserService.fetchUsersExternal({active: [0, 1]})
             .then((response: any) => {
-                setExternalUsers(response.data)
+                setExternalUsers(response.data.data)
             })
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)

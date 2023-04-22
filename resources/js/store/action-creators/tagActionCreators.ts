@@ -23,7 +23,7 @@ export const TagActionCreators = {
             const response = await TagService.fetchTags()
 
             if (response.status === 200) {
-                dispatch(TagActionCreators.setTags(response.data))
+                dispatch(TagActionCreators.setTags(response.data.data))
             } else {
                 dispatch(TagActionCreators.setError('Ошибка загрузки данных'))
             }

@@ -1,8 +1,8 @@
-import * as Showdown from 'showdown'
-import {ISetting} from "../@types/ISetting";
+import {ISetting} from '../@types/ISetting'
+const showdown = require('showdown')
 
 export const configuration = {
-    apiPath: 'http://sochidominvest/api',
+    apiPath: 'http://127.0.0.1:8000/api',
     // apiPath: 'https://api.sochidominvest.ru/api/v1',
     webSocketPath: 'ws://127.0.0.1:8081',
     // webSocketPath: 'wss://api.sochidominvest.ru:8081',
@@ -19,7 +19,7 @@ export const configuration = {
     apiYandexMapIcon: 'islands#blueIcon'
 }
 
-export const converter = new Showdown.Converter({
+export const converter = new showdown.Converter({
     tables: true,
     simplifiedAutoLink: true,
     strikethrough: true,

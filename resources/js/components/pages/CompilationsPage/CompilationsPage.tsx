@@ -28,7 +28,7 @@ const CompilationsPage: React.FC = (): React.ReactElement => {
 
         CompilationService.fetchCompilations()
             .then((response: any) => {
-                setCompilations(response.data)
+                setCompilations(response.data.data)
             })
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)

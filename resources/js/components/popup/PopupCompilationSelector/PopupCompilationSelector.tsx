@@ -161,7 +161,7 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data,
+                                        text: error.data.data,
                                         onOk: close.bind(this)
                                     })
                                 })

@@ -23,7 +23,7 @@ export const NotificationActionCreators = {
             const response = await NotificationService.fetchNotifications()
 
             if (response.status === 200) {
-                dispatch(NotificationActionCreators.setNotifications(response.data))
+                dispatch(NotificationActionCreators.setNotifications(response.data.data))
             } else {
                 dispatch(NotificationActionCreators.setError('Ошибка загрузки данных'))
             }
@@ -39,7 +39,7 @@ export const NotificationActionCreators = {
             const response = await NotificationService.readNotification(notificationId)
 
             if (response.status === 200) {
-                dispatch(NotificationActionCreators.setNotifications(response.data))
+                dispatch(NotificationActionCreators.setNotifications(response.data.data))
             } else {
                 dispatch(NotificationActionCreators.setError('Ошибка обновления данных'))
             }
@@ -55,7 +55,7 @@ export const NotificationActionCreators = {
             const response = await NotificationService.readNotificationAll()
 
             if (response.status === 200) {
-                dispatch(NotificationActionCreators.setNotifications(response.data))
+                dispatch(NotificationActionCreators.setNotifications(response.data.data))
             } else {
                 dispatch(NotificationActionCreators.setError('Ошибка обновления данных'))
             }
@@ -71,7 +71,7 @@ export const NotificationActionCreators = {
             const response = await NotificationService.removeNotification(notificationId)
 
             if (response.status === 200) {
-                dispatch(NotificationActionCreators.setNotifications(response.data))
+                dispatch(NotificationActionCreators.setNotifications(response.data.data))
             } else {
                 dispatch(NotificationActionCreators.setError('Ошибка обновления данных'))
             }

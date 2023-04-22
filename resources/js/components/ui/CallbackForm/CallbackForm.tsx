@@ -64,10 +64,10 @@ const CallbackForm: React.FC<Props> = (props) => {
                     })
                 })
                 .catch((error: any) => {
-                    console.error(error.data)
+                    console.error(error.data.data)
                     setResultResponse({
                         success: '',
-                        error: error.data
+                        error: error.data.data
                     })
                 })
                 .finally(() => {

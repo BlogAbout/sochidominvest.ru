@@ -19,6 +19,8 @@ class CompilationResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'author_id' => $this->author_id,
+            'author' => new UserResource($this->whenLoaded('author')),
+            'buildings' => BuildingResource::collection($this->whenLoaded('buildings')),
             'is_active' => $this->is_active,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

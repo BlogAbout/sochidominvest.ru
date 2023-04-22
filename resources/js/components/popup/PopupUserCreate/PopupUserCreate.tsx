@@ -60,13 +60,13 @@ const PopupUserCreate: React.FC<Props> = (props) => {
         if (props.userId) {
             UserService.fetchUserById(props.userId)
                 .then((response: any) => {
-                    setUser(response.data)
+                    setUser(response.data.data)
                 })
                 .catch((error: any) => {
                     console.error('error', error)
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data
+                        text: error.data.data
                     })
                 })
         }
@@ -90,10 +90,10 @@ const PopupUserCreate: React.FC<Props> = (props) => {
         UserService.saveUser(user)
             .then((response: any) => {
                 setFetching(false)
-                setUser(response.data)
+                setUser(response.data.data)
 
-                if (props.userId && props.userId === response.data.id) {
-                    localStorage.setItem('settings', response.data.settings ? JSON.stringify(response.data.settings) : '')
+                if (props.userId && props.userId === response.data.data.id) {
+                    localStorage.setItem('settings', response.data.data.settings ? JSON.stringify(response.data.data.settings) : '')
                 }
 
                 props.onSave()
@@ -105,7 +105,7 @@ const PopupUserCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
 
                 setFetching(false)

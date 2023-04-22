@@ -43,12 +43,12 @@ const PopupMailingInfo: React.FC<Props> = (props) => {
 
             MailingService.fetchMailingById(props.mailing.id)
                 .then((response: any) => {
-                    setRecipients(response.data)
+                    setRecipients(response.data.data)
                 })
                 .catch((error: any) => {
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data
+                        text: error.data.data
                     })
                 })
                 .finally(() => {
@@ -75,7 +75,7 @@ const PopupMailingInfo: React.FC<Props> = (props) => {
                             .catch((error: any) => {
                                 openPopupAlert(document.body, {
                                     title: 'Ошибка!',
-                                    text: error.data
+                                    text: error.data.data
                                 })
                             })
                             .finally(() => {

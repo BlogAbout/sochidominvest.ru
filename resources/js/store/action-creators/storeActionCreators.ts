@@ -28,7 +28,7 @@ export const StoreActionCreators = {
             const response = await StoreService.fetchCategories(filter)
 
             if (response.status === 200) {
-                dispatch(StoreActionCreators.setCategories(response.data))
+                dispatch(StoreActionCreators.setCategories(response.data.data))
             } else {
                 dispatch(StoreActionCreators.setError('Ошибка загрузки данных'))
             }
@@ -44,7 +44,7 @@ export const StoreActionCreators = {
             const response = await StoreService.fetchProducts(filter)
 
             if (response.status === 200) {
-                dispatch(StoreActionCreators.setProducts(response.data))
+                dispatch(StoreActionCreators.setProducts(response.data.data))
             } else {
                 dispatch(StoreActionCreators.setError('Ошибка загрузки данных'))
             }

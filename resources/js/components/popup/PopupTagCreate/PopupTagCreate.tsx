@@ -58,7 +58,7 @@ const PopupTagCreate: React.FC<Props> = (props) => {
 
         TagService.saveTag(tag)
             .then((response: any) => {
-                setTag(response.data)
+                setTag(response.data.data)
 
                 props.onSave()
 
@@ -69,7 +69,7 @@ const PopupTagCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetching(false))

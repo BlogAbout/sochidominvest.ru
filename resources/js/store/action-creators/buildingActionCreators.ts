@@ -24,7 +24,7 @@ export const BuildingActionCreators = {
             const response = await BuildingService.fetchBuildings(filter)
 
             if (response.status === 200) {
-                dispatch(BuildingActionCreators.setBuildings(response.data))
+                dispatch(BuildingActionCreators.setBuildings(response.data.data))
             } else {
                 dispatch(BuildingActionCreators.setError('Ошибка загрузки данных'))
             }

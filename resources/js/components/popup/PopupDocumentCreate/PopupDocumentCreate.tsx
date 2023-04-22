@@ -63,9 +63,9 @@ const PopupDocumentCreate: React.FC<Props> = (props) => {
         DocumentService.saveDocument(documentInfo)
             .then((response: any) => {
                 setFetching(false)
-                setDocumentInfo(response.data)
+                setDocumentInfo(response.data.data)
 
-                props.onSave(response.data)
+                props.onSave(response.data.data)
 
                 if (isClose) {
                     close()
@@ -74,7 +74,7 @@ const PopupDocumentCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
 
                 setFetching(false)

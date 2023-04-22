@@ -59,7 +59,7 @@ const PopupContactCreate: React.FC<Props> = (props) => {
         AgentService.saveContact(contact)
             .then((response: any) => {
                 setFetching(false)
-                setContact(response.data)
+                setContact(response.data.data)
 
                 props.onSave()
 

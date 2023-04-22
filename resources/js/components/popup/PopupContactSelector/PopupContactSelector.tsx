@@ -81,12 +81,12 @@ const PopupContactSelector: React.FC<Props> = (props) => {
 
         AgentService.fetchContacts(filter)
             .then((response: any) => {
-                setContacts(response.data)
+                setContacts(response.data.data)
             })
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetching(false))
@@ -171,7 +171,7 @@ const PopupContactSelector: React.FC<Props> = (props) => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data,
+                                        text: error.data.data,
                                         onOk: close.bind(this)
                                     })
 

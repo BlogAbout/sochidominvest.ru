@@ -24,7 +24,7 @@ export const DeveloperActionCreators = {
             const response = await DeveloperService.fetchDevelopers(filter)
 
             if (response.status === 200) {
-                dispatch(DeveloperActionCreators.setDevelopers(response.data))
+                dispatch(DeveloperActionCreators.setDevelopers(response.data.data))
             } else {
                 dispatch(DeveloperActionCreators.setError('Ошибка загрузки данных'))
             }

@@ -75,7 +75,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
         if (!articles || !articles.length) {
             setFilterArticles([])
         } else {
-            setFilterArticles(articles.filter((article: IArticle) => article.active === 1))
+            setFilterArticles(articles.filter((article: IArticle) => article.is_active === 1))
         }
     }, [articles])
 
@@ -99,7 +99,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
             setFetchingUser(true)
 
             UserService.fetchUserById(findUserId)
-                .then((response: any) => setUserInfo(response.data))
+                .then((response: any) => setUserInfo(response.data.data))
                 .catch((error: any) => {
                     console.error('Ошибка загрузки данных пользователя', error)
                 })
@@ -116,7 +116,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
         setFetchingTickets(true)
 
         FeedService.fetchFeeds({active: [1], author: [userInfo.id]})
-            .then((response: any) => setTickets(response.data))
+            .then((response: any) => setTickets(response.data.data))
             .catch((error: any) => {
                 console.error('Ошибка загрузки тикетов пользователя', error)
             })
@@ -128,7 +128,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
         setFetchingDevelopers(true)
 
         DeveloperService.fetchDevelopers({active: [0, 1], author: [userId]})
-            .then((response: any) => setDevelopers(response.data))
+            .then((response: any) => setDevelopers(response.data.data))
             .catch((error: any) => {
                 console.error('Ошибка загрузки застройщиков пользователя', error)
             })
@@ -140,7 +140,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
         setFetchingAgents(true)
 
         AgentService.fetchAgents({active: [0, 1], author: [userId]})
-            .then((response: any) => setAgents(response.data))
+            .then((response: any) => setAgents(response.data.data))
             .catch((error: any) => {
                 console.error('Ошибка загрузки агентств пользователя', error)
             })
@@ -177,7 +177,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
                                             .catch((error: any) => {
                                                 openPopupAlert(document.body, {
                                                     title: 'Ошибка!',
-                                                    text: error.data
+                                                    text: error.data.data
                                                 })
                                             })
                                             .finally(() => setFetchingAgents(false))
@@ -224,7 +224,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
                                             .catch((error: any) => {
                                                 openPopupAlert(document.body, {
                                                     title: 'Ошибка!',
-                                                    text: error.data
+                                                    text: error.data.data
                                                 })
                                             })
                                             .finally(() => setFetchingDevelopers(false))
@@ -323,7 +323,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
                                      className={classes.block}
                                      onClick={() => navigate(`${RouteNames.ARTICLE}/${article.id}`)}
                                 >
-                                    <Avatar href={article.avatar}
+                                    <Avatar href={article.avatar ? article.avatar.content : ''}
                                             alt={article.name}
                                             width={75}
                                             height={75}
@@ -333,7 +333,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
                                         <div className={classes.title}>{article.name}</div>
                                         <div className={classes.date} title='Дата публикации'>
                                             <FontAwesomeIcon icon='calendar'/>
-                                            <span>{getFormatDate(article.dateCreated)}</span>
+                                            <span>{article.date_created}</span>
                                         </div>
                                     </div>
                                 </div>

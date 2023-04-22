@@ -45,7 +45,7 @@ const PaymentPage: React.FC = (): React.ReactElement => {
         // }
 
         TransactionService.fetchPayments(filter)
-            .then((response: any) => setPayments(response.data))
+            .then((response: any) => setPayments(response.data.data))
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)
             })

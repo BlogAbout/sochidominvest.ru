@@ -1,9 +1,9 @@
 import React from 'react'
+import {configuration} from '../../../helpers/utilHelper'
 import DefaultView from '../../views/DefaultView/DefaultView'
 import Title from '../../ui/Title/Title'
 import Wrapper from '../../ui/Wrapper/Wrapper'
 import classes from './PolicyPage.module.scss'
-import {configuration} from "../../../helpers/utilHelper";
 
 const PolicyPage: React.FC = (): React.ReactElement => {
     return (
@@ -47,8 +47,8 @@ const PolicyPage: React.FC = (): React.ReactElement => {
                     </li>
                     <li>
                         2.3. Веб-сайт – совокупность графических и информационных материалов, а также программ
-                        для ЭВМ и баз данных, обеспечивающих их доступность в сети интернет по сетевому адресу
-                        {configuration.siteUrl}.
+                        для ЭВМ и баз данных, обеспечивающих их доступность в сети интернет по сетевому
+                        адресу {configuration.siteUrl}.
                     </li>
                     <li>
                         2.4. Информационная система персональных данных — совокупность содержащихся в базах
@@ -359,8 +359,8 @@ const PolicyPage: React.FC = (): React.ReactElement => {
                         8.2. Оператор обрабатывает персональные данные Пользователя только в случае их
                         заполнения
                         и/или
-                        отправки Пользователем самостоятельно через специальные формы, расположенные на сайте
-                        {configuration.siteUrl} или направленные Оператору посредством электронной почты.
+                        отправки Пользователем самостоятельно через специальные формы, расположенные на
+                        сайте {configuration.siteUrl} или направленные Оператору посредством электронной почты.
                         Заполняя
                         соответствующие формы и/или отправляя свои персональные данные Оператору, Пользователь
                         выражает свое
@@ -596,8 +596,7 @@ const PolicyPage: React.FC = (): React.ReactElement => {
                     </li>
                     <li>
                         14.3. Актуальная версия Политики в свободном доступе расположена в сети Интернет по
-                        адресу
-                        ${configuration.siteUrl}policy.
+                        адресу {configuration.siteUrl}policy.
                     </li>
                 </ol>
             </Wrapper>

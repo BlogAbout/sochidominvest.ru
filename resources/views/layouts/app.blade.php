@@ -20,6 +20,7 @@
 <div id="root">
     @yield('content')
 </div>
+<div class="center-div"></div>
 </body>
 <script src="{{ asset('js/app.js') }}" defer></script>
 </html>

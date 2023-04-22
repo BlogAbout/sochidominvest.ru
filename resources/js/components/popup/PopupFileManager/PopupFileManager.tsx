@@ -43,13 +43,13 @@ const PopupFileManager: React.FC<Props> = (props) => {
         setFetching(true)
 
         AttachmentService.fetchAttachments({active: [0, 1], type: props.type})
-            .then((response: any) => setAttachments(response.data))
+            .then((response: any) => setAttachments(response.data.data))
             .catch((error: any) => {
                 console.error('error', error)
 
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetching(false))
@@ -73,7 +73,7 @@ const PopupFileManager: React.FC<Props> = (props) => {
         let selectedAttachments: IAttachment[] = []
 
         if (selected.length) {
-            selectedAttachments = attachments.filter((attachment: IAttachment) => selected.includes(attachment.id))
+            selectedAttachments = attachments.filter((attachment: IAttachment) => attachment.id && selected.includes(attachment.id))
         }
 
         props.onSelect(selected, selectedAttachments)
@@ -82,15 +82,17 @@ const PopupFileManager: React.FC<Props> = (props) => {
 
     // Выбор вложений
     const onSelectHandler = (attachment: IAttachment) => {
-        if (props.multi) {
-            if (selected.includes(attachment.id)) {
-                setSelected(selected.filter((item: number) => item !== attachment.id))
+        if (attachment.id) {
+            if (props.multi) {
+                if (selected.includes(attachment.id)) {
+                    setSelected(selected.filter((item: number) => item !== attachment.id))
+                } else {
+                    setSelected([attachment.id, ...selected])
+                }
             } else {
-                setSelected([attachment.id, ...selected])
+                props.onSelect([attachment.id], [attachment])
+                close()
             }
-        } else {
-            props.onSelect([attachment.id], [attachment])
-            close()
         }
     }
 

@@ -2,6 +2,7 @@ import React, {CSSProperties, useState} from 'react'
 import classNames from 'classnames/bind'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd'
+import {configuration} from '../../../helpers/utilHelper'
 import {IAttachment} from '../../../@types/IAttachment'
 import AttachmentService from '../../../api/AttachmentService'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
@@ -11,7 +12,6 @@ import openPopupAlert from '../../popup/PopupAlert/PopupAlert'
 import Empty from '../Empty/Empty'
 import BlockingElement from '../BlockingElement/BlockingElement'
 import classes from './FileList.module.scss'
-import {configuration} from "../../../helpers/utilHelper";
 
 interface Props {
     files: IAttachment[]
@@ -91,7 +91,7 @@ const FileList: React.FC<Props> = (props) => {
                                     .catch((error: any) => {
                                         openPopupAlert(document.body, {
                                             title: 'Ошибка!',
-                                            text: error.data
+                                            text: error.data.data
                                         })
                                     })
                                     .finally(() => {
@@ -209,11 +209,7 @@ const FileList: React.FC<Props> = (props) => {
     }
 
     const renderFile = (file: IAttachment) => {
-        if (file.active === -1) {
-            return null
-        }
-
-        const selected = !!(props.selected && props.selected.length && props.selected.includes(file.id))
+        const selected = !!(props.selected && props.selected.length && file.id && props.selected.includes(file.id))
 
         switch (file.type) {
             case 'image':
@@ -241,10 +237,9 @@ const FileList: React.FC<Props> = (props) => {
                                     >
                                         {props.files.map((file: IAttachment, index: number) => {
                                             return (
-                                                <Draggable
-                                                    key={file.id}
-                                                    draggableId={file.id.toString()}
-                                                    index={index}>
+                                                <Draggable key={file.id}
+                                                           draggableId={file.id ? file.id.toString() : ''}
+                                                           index={index}>
                                                     {(provided, snapshot) => (
                                                         <div key={file.id}
                                                              ref={provided.innerRef}

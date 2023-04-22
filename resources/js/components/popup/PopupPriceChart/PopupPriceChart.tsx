@@ -28,13 +28,13 @@ const PopupPriceChart: React.FC<Props> = (props) => {
 
         BuildingService.fetchBuildingPrices(props.buildingId)
             .then((response: any) => {
-                setPrices(response.data)
+                setPrices(response.data.data)
             })
             .catch((error: any) => {
                 console.error('error', error)
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetching(false))

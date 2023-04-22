@@ -177,7 +177,7 @@ const BuildingsPanelPage: React.FC = (): React.ReactElement => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data
+                                        text: error.data.data
                                     })
                                 })
                                 .finally(() => setFetching(false))
@@ -199,7 +199,7 @@ const BuildingsPanelPage: React.FC = (): React.ReactElement => {
             //
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data
+            //             text: error.data.data
             //         })
             //     })
         }
@@ -215,7 +215,7 @@ const BuildingsPanelPage: React.FC = (): React.ReactElement => {
             //
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data
+            //             text: error.data.data
             //         })
             //     })
         }

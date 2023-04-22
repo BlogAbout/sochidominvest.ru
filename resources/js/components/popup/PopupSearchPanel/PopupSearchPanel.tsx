@@ -63,13 +63,13 @@ const PopupSearchPanel: React.FC<Props> = (props) => {
 
         // UtilService.fetchSearchGlobal({active: [0, 1], text: searchText})
         //     .then((result: any) => {
-        //         setUsers(result.data.users)
-        //         setBuildings(result.data.buildings)
-        //         setArticles(result.data.articles)
-        //         setDocuments(result.data.documents)
-        //         setDevelopers(result.data.developers)
-        //         setAttachments(result.data.attachments)
-        //         setPartners(result.data.partners)
+        //         setUsers(result.data.data.users)
+        //         setBuildings(result.data.data.buildings)
+        //         setArticles(result.data.data.articles)
+        //         setDocuments(result.data.data.documents)
+        //         setDevelopers(result.data.data.developers)
+        //         setAttachments(result.data.data.attachments)
+        //         setPartners(result.data.data.partners)
         //
         //         updateCountResults()
         //     })
@@ -78,7 +78,7 @@ const PopupSearchPanel: React.FC<Props> = (props) => {
         //
         //         openPopupAlert(document.body, {
         //             title: 'Ошибка!',
-        //             text: error.data,
+        //             text: error.data.data,
         //         })
         //     })
         //     .finally(() => {

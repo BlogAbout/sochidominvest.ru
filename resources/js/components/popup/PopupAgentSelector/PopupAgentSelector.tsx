@@ -73,7 +73,7 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
 
         AgentService.fetchAgents({active: [0, 1], author: [userId]})
             .then((response: any) => {
-                setAgents(response.data)
+                setAgents(response.data.data)
             })
             .catch((error: any) => {
                 console.error('Ошибка загрузки агентств пользователя', error)
@@ -171,7 +171,7 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data,
+                                        text: error.data.data,
                                         onOk: close.bind(this)
                                     })
 

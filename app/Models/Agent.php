@@ -31,6 +31,11 @@ class Agent extends Model
         return $this->belongsToMany(Building::class, 'sdi_building_relations', 'object_id', 'building_id')->wherePivot('object_type', 'agent');
     }
 
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class, 'agent_id', 'id');
+    }
+
     public function getDateCreatedFormatAttribute(): string
     {
         return Carbon::parse($this->created_at)->diffForHumans();

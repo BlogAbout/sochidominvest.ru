@@ -41,7 +41,7 @@ const AgentList: React.FC<Props> = (props) => {
 
         AgentService.fetchAgents({active: [0, 1], id: props.selected})
             .then((response: any) => {
-                setSelectedAgents(response.data)
+                setSelectedAgents(response.data.data)
             })
             .catch((error: any) => {
                 console.error('Ошибка загрузки агентств', error)

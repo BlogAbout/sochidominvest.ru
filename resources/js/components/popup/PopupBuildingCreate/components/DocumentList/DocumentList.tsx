@@ -31,12 +31,12 @@ const DocumentList: React.FC<Props> = (props) => {
             DocumentService.fetchDocuments({active: [0, 1], objectId: [props.buildingId], objectType: 'building'})
                 .then((response: any) => {
                     setFetching(false)
-                    setDocuments(response.data)
+                    setDocuments(response.data.data)
                 })
                 .catch((error: any) => {
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data
+                        text: error.data.data
                     })
 
                     setFetching(false)
@@ -79,7 +79,7 @@ const DocumentList: React.FC<Props> = (props) => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data
+                                        text: error.data.data
                                     })
                                 })
                                 .finally(() => {

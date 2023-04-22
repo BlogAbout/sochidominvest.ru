@@ -35,11 +35,11 @@ const ArticleTill: React.FC<Props> = (props): React.ReactElement => {
                         return (
                             <BlockItem key={article.id}
                                        title={article.name}
-                                       avatar={article.avatar || ''}
+                                       avatar={article.avatar ? article.avatar.content : ''}
                                        description={article.description}
-                                       date={article.dateCreated || undefined}
+                                       date={article.date_created || undefined}
                                        type={getArticleTypeText(article.type)}
-                                       isDisabled={!article.active}
+                                       isDisabled={!article.is_active}
                                        onContextMenu={(e: React.MouseEvent) => props.onContextMenu(article, e)}
                                        onClick={() => props.onClick(article)}
                             />

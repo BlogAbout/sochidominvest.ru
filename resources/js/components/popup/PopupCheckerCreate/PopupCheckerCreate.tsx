@@ -71,7 +71,7 @@ const PopupCheckerCreate: React.FC<Props> = (props) => {
         CheckerService.saveChecker(checker)
             .then((response: any) => {
                 setFetching(false)
-                setChecker(response.data)
+                setChecker(response.data.data)
 
                 props.onSave()
 
@@ -82,7 +82,7 @@ const PopupCheckerCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
 
                 setFetching(false)

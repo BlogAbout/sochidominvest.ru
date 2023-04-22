@@ -33,7 +33,7 @@ const AdministrationPagePanel: React.FC = (): React.ReactElement => {
 
         SettingService.fetchSettings()
             .then((response: any) => {
-                setSettings(response.data)
+                setSettings(response.data.data)
             })
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)
@@ -49,7 +49,7 @@ const AdministrationPagePanel: React.FC = (): React.ReactElement => {
 
         SettingService.saveSetting(settingsUpdate)
             .then((response: any) => {
-                setSettings(response.data)
+                setSettings(response.data.data)
                 setSettingsUpdate({})
             })
             .catch((error: any) => {

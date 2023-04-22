@@ -68,9 +68,9 @@ const AppRouter: React.FC = () => {
                 <Route path={RouteNames.ARTICLE} element={<ArticlesPage/>}/>
                 <Route path={RouteNames.ARTICLE_ITEM} element={<ArticlePage isPublic/>}/>
                 <Route path={RouteNames.BUILDING} element={<BuildingsPage/>}/>
-                <Route path={RouteNames.BUILDING_ITEM} element={<BuildingPage role={user.role} isPublic/>}/>
+                <Route path={RouteNames.BUILDING_ITEM} element={<BuildingPage role={user.role_id} isPublic/>}/>
                 <Route path={RouteNames.RENT} element={<BuildingsPage isRent/>}/>
-                <Route path={RouteNames.RENT_ITEM} element={<BuildingPage role={user.role} isPublic isRent/>}/>
+                <Route path={RouteNames.RENT_ITEM} element={<BuildingPage role={user.role_id} isPublic isRent/>}/>
                 <Route path={RouteNames.STORE_PRODUCTS} element={<StoreProductsPage/>}/>
                 <Route path={RouteNames.STORE_PRODUCT} element={<StoreProductPage/>}/>
 

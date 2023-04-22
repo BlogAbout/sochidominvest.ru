@@ -53,7 +53,7 @@ const AgentsPage: React.FC = (): React.ReactElement => {
         // }
 
         AgentService.fetchAgents(filter)
-            .then((response: any) => setAgents(response.data))
+            .then((response: any) => setAgents(response.data.data))
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)
             })
@@ -116,7 +116,7 @@ const AgentsPage: React.FC = (): React.ReactElement => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data
+                                        text: error.data.data
                                     })
                                 })
                                 .finally(() => setFetching(false))

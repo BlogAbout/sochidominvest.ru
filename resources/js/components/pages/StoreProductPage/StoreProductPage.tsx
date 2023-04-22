@@ -59,7 +59,7 @@ const ProductPage: React.FC = (): React.ReactElement => {
             setFetchingProduct(true)
 
             StoreService.fetchProductById(productId)
-                .then((response: any) => setProduct(response.data))
+                .then((response: any) => setProduct(response.data.data))
                 .catch((error: any) => {
                     console.error('Ошибка загрузки товара', error)
                 })
@@ -79,7 +79,7 @@ const ProductPage: React.FC = (): React.ReactElement => {
             }
 
             AttachmentService.fetchAttachments(filter)
-                .then((response: any) => setImages(sortAttachments(response.data, product.images)))
+                .then((response: any) => setImages(sortAttachments(response.data.data, product.images)))
                 .catch((error: any) => {
                     console.error('Ошибка загрузки фотогалереи товара', error)
                 })
@@ -99,7 +99,7 @@ const ProductPage: React.FC = (): React.ReactElement => {
             }
 
             AttachmentService.fetchAttachments(filter)
-                .then((response: any) => setVideos(sortAttachments(response.data, product.videos)))
+                .then((response: any) => setVideos(sortAttachments(response.data.data, product.videos)))
                 .catch((error: any) => {
                     console.error('Ошибка загрузки видео товара', error)
                 })

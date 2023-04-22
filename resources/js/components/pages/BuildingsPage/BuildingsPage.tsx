@@ -142,7 +142,7 @@ const BuildingsPage: React.FC<Props> = (props): React.ReactElement => {
 
         BuildingService.fetchBuildings(filter)
             .then((response: any) => {
-                setBuildings(response.data)
+                setBuildings(response.data.data)
             })
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)

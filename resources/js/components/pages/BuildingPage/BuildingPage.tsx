@@ -34,7 +34,7 @@ type BuildingPageProps = {
 }
 
 interface Props {
-    role?: string
+    role?: number | null
     isPublic?: boolean
     isRent?: boolean
 }
@@ -82,7 +82,7 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
 
             BuildingService.fetchBuildingById(buildingId)
                 .then((response: any) => {
-                    setBuilding(response.data)
+                    setBuilding(response.data.data)
                 })
                 .catch((error: any) => {
                     console.error('Ошибка загрузки объекта недвижимости', error)
@@ -109,7 +109,7 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
 
             ArticleService.fetchArticles(filter)
                 .then((response) => {
-                    setArticles(response.data)
+                    setArticles(response.data.data)
                 })
                 .catch((error: any) => {
                     console.error('Ошибка загрузки связанных статей', error)
@@ -133,7 +133,7 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
 
             AttachmentService.fetchAttachments(filter)
                 .then((response: any) => {
-                    setImages(sortAttachments(response.data, building.images))
+                    setImages(sortAttachments(response.data.data, building.images))
                 })
                 .catch((error: any) => {
                     console.error('Ошибка загрузки фотогалереи объекта недвижимости', error)
@@ -157,7 +157,7 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
 
             AttachmentService.fetchAttachments(filter)
                 .then((response: any) => {
-                    setVideos(sortAttachments(response.data, building.videos))
+                    setVideos(sortAttachments(response.data.data, building.videos))
                 })
                 .catch((error: any) => {
                     console.error('Ошибка загрузки видео объекта недвижимости', error)

@@ -1,7 +1,6 @@
 import React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {converter} from '../../../../../helpers/utilHelper'
-import {getFormatDate} from '../../../../../helpers/dateHelper'
 import {IArticle} from '../../../../../@types/IArticle'
 import Avatar from '../../../../ui/Avatar/Avatar'
 import Title from '../../../../ui/Title/Title'
@@ -26,7 +25,7 @@ const ArticleItem: React.FC<Props> = (props): React.ReactElement => {
              className={classes.ArticleItem}
              onClick={() => props.onClick()}
         >
-            <Avatar href={props.article.avatar}
+            <Avatar href={props.article.avatar ? props.article.avatar.content : ''}
                     alt={props.article.name}
                     width='100%'
                     height='100%'
@@ -50,9 +49,9 @@ const ArticleItem: React.FC<Props> = (props): React.ReactElement => {
                     <span>{props.article.views}</span>
                 </div>
 
-                <div className={classes.icon} title={`Дата публикации: ${getFormatDate(props.article.dateCreated)}`}>
+                <div className={classes.icon} title={`Дата публикации: ${props.article.date_created}`}>
                     <FontAwesomeIcon icon='calendar'/>
-                    <span>{getFormatDate(props.article.dateCreated)}</span>
+                    <span>{props.article.date_created}</span>
                 </div>
             </div>
         </div>

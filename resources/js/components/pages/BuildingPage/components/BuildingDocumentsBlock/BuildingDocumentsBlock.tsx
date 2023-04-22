@@ -40,11 +40,11 @@ const BuildingDocumentsBlock: React.FC<Props> = (props): React.ReactElement => {
         }
 
         DocumentService.fetchDocuments(filter)
-            .then((response: any) => setDocuments(response.data))
+            .then((response: any) => setDocuments(response.data.data))
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetching(false))

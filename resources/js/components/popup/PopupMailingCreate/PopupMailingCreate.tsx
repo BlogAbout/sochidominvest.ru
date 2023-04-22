@@ -75,7 +75,7 @@ const PopupMailingCreate: React.FC<Props> = (props) => {
 
         MailingService.saveMailing(saveMailing)
             .then((response: any) => {
-                setMailing(response.data)
+                setMailing(response.data.data)
 
                 props.onSave()
 
@@ -86,7 +86,7 @@ const PopupMailingCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
 
             })

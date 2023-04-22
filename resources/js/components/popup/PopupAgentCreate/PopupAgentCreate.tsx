@@ -83,12 +83,12 @@ const PopupAgentCreate: React.FC<Props> = (props) => {
 
         AgentService.fetchContacts({agentId: [agent.id], active: [0, 1]})
             .then((response: any) => {
-                setContacts(response.data)
+                setContacts(response.data.data)
             })
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetchingContacts(false))
@@ -100,7 +100,7 @@ const PopupAgentCreate: React.FC<Props> = (props) => {
 
         AgentService.saveAgent(agent)
             .then((response: any) => {
-                setAgent(response.data)
+                setAgent(response.data.data)
 
                 props.onSave()
 
@@ -111,7 +111,7 @@ const PopupAgentCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetchingAgent(false))

@@ -17,8 +17,10 @@ class CheckerResource extends JsonResource
         return [
             'id' => $this->id,
             'building_id' => $this->building_id,
+            'building' => new BuildingResource($this->whenLoaded('building')),
             'name' => $this->name,
             'author_id' => $this->author_id,
+            'author' => new UserResource($this->whenLoaded('author')),
             'area' => $this->area,
             'cost' => $this->cost,
             'furnish' => $this->furnish,

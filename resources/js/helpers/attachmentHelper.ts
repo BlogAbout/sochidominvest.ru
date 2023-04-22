@@ -15,7 +15,15 @@ export const getAttachmentTypeText = (key: string) => {
 export const sortAttachments = (files: IAttachment[], ids: number[]) => {
     if (files && files.length) {
         if (ids && ids.length) {
-            return files.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id))
+            return files.sort((a, b) => {
+                if (!a.id) {
+                    return 1
+                } else if (!b.id) {
+                    return -1
+                } else {
+                    return ids.indexOf(a.id) - ids.indexOf(b.id)
+                }
+            })
         }
 
         return files

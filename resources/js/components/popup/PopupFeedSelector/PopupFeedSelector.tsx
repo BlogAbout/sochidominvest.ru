@@ -64,12 +64,12 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
 
             FeedService.fetchFeeds({active: [0, 1]})
                 .then((response: any) => {
-                    setFeeds(response.data)
+                    setFeeds(response.data.data)
                 })
                 .catch((error: any) => {
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data,
+                        text: error.data.data,
                         onOk: close.bind(this)
                     })
                 })
@@ -161,7 +161,7 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data,
+                                        text: error.data.data,
                                         onOk: close.bind(this)
                                     })
 

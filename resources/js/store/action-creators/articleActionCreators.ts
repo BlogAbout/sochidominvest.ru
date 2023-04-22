@@ -24,7 +24,7 @@ export const ArticleActionCreators = {
             const response = await ArticleService.fetchArticles(filter)
 
             if (response.status === 200) {
-                dispatch(ArticleActionCreators.setArticles(response.data))
+                dispatch(ArticleActionCreators.setArticles(response.data.data))
             } else {
                 dispatch(ArticleActionCreators.setError('Ошибка загрузки данных'))
             }

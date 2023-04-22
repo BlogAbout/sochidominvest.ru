@@ -47,11 +47,11 @@ const BuildingContactsBlock: React.FC<Props> = (props): React.ReactElement | nul
         setFetching(true)
 
         AgentService.fetchContacts({id: props.building.contactContacts, active: [1]})
-            .then((response: any) => setContacts(response.data))
+            .then((response: any) => setContacts(response.data.data))
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => setFetching(false))

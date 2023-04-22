@@ -77,7 +77,7 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                 setFetchingImages(true)
                 AttachmentService.fetchAttachments({active: [0, 1], id: product.images, type: 'image'})
                     .then((response: any) => {
-                        setImages(sortAttachments(response.data, product.images))
+                        setImages(sortAttachments(response.data.data, product.images))
                     })
                     .finally(() => setFetchingImages(false))
             }
@@ -86,7 +86,7 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                 setFetchingVideos(true)
                 AttachmentService.fetchAttachments({active: [0, 1], id: product.videos, type: 'video'})
                     .then((response: any) => {
-                        setVideos(sortAttachments(response.data, product.videos))
+                        setVideos(sortAttachments(response.data.data, product.videos))
                     })
                     .finally(() => setFetchingVideos(false))
             }
@@ -114,7 +114,7 @@ const PopupProductCreate: React.FC<Props> = (props) => {
 
         StoreService.saveProduct(product)
             .then((response: any) => {
-                setProduct(response.data)
+                setProduct(response.data.data)
 
                 props.onSave()
 
@@ -126,7 +126,7 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                 console.error('error', error)
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
             })
             .finally(() => {
@@ -136,21 +136,25 @@ const PopupProductCreate: React.FC<Props> = (props) => {
 
     // Добавление файла
     const addAttachmentHandler = (attachment: IAttachment) => {
-        switch (attachment.type) {
-            case 'image':
-                setProduct({
-                    ...product,
-                    images: [attachment.id, ...product.images]
-                })
-                setImages([attachment, ...images])
-                break
-            case 'video':
-                setProduct({
-                    ...product,
-                    videos: [attachment.id, ...product.videos]
-                })
-                setVideos([attachment, ...images])
-                break
+        if (attachment.id) {
+            switch (attachment.type) {
+                case 'image':
+                    const image_ids: number[] = product.images ? [...product.images] : []
+                    setProduct({
+                        ...product,
+                        images: [attachment.id, ...image_ids]
+                    })
+                    setImages([attachment, ...images])
+                    break
+                case 'video':
+                    const video_ids: number[] = product.videos ? [...product.videos] : []
+                    setProduct({
+                        ...product,
+                        videos: [attachment.id, ...video_ids]
+                    })
+                    setVideos([attachment, ...images])
+                    break
+            }
         }
     }
 
@@ -175,13 +179,23 @@ const PopupProductCreate: React.FC<Props> = (props) => {
     }
 
     const onUpdateOrderingImagesHandler = (files: IAttachment[]) => {
-        const ids: number[] = files.map((attachment: IAttachment) => attachment.id)
+        const ids: number[] = []
+        files.forEach((attachment: IAttachment) => {
+            if (attachment.id) {
+                ids.push(attachment.id)
+            }
+        })
         setImages(sortAttachments(files, ids))
         setProduct({...product, images: ids})
     }
 
     const onUpdateOrderingVideosHandler = (files: IAttachment[]) => {
-        const ids: number[] = files.map((attachment: IAttachment) => attachment.id)
+        const ids: number[] = []
+        files.forEach((attachment: IAttachment) => {
+            if (attachment.id) {
+                ids.push(attachment.id)
+            }
+        })
         setVideos(sortAttachments(files, ids))
         setProduct({...product, videos: ids})
     }

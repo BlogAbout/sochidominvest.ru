@@ -23,7 +23,7 @@ const ToolsPanel: React.FC = () => {
 
     const getCountNewNotification = () => {
         // NotificationService.fetchCountNewNotifications()
-        //     .then((response: any) => setCountNewNotification(response.data))
+        //     .then((response: any) => setCountNewNotification(response.data.data))
         //     .catch((error: any) => console.error('Ошибка получения количества новых уведомлений', error))
     }
 

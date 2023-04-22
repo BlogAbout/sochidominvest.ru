@@ -38,7 +38,7 @@ const SupportPage: React.FC = (): React.ReactElement => {
     const fetchFeedsHandler = () => {
         FeedService.fetchFeeds({active: [0, 1]})
             .then((response: any) => {
-                setFeeds(response.data)
+                setFeeds(response.data.data)
             })
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)

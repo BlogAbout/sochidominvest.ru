@@ -98,9 +98,9 @@ const PopupBuyTariff: React.FC<Props> = (props) => {
 
         TransactionService.savePayment(payment, false)
             .then((response: any) => {
-                // TransactionService.fetchLinkPayment(response.data.id)
+                // TransactionService.fetchLinkPayment(response.data.data.id)
                 //     .then((response: any) => {
-                //         if (response.data.status) {
+                //         if (response.data.data.status) {
                 //             window.location.href = response.data.data
                 //         } else {
                 //             openPopupAlert(document.body, {
@@ -123,7 +123,7 @@ const PopupBuyTariff: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
 
                 setFetching(false)

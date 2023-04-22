@@ -1,3 +1,5 @@
+import {IUser} from './IUser'
+
 export interface IWidget {
     id: number | null
     name: string
@@ -6,12 +8,13 @@ export interface IWidget {
     page: string
     ordering: number
     author_id: number
+    author: IUser | null
     is_active: number
+    items: IWidgetData[]
     created_at: string
     updated_at: string
     date_created: string
     date_updated: string
-    items: IWidgetData[]
 }
 
 export interface IWidgetData {

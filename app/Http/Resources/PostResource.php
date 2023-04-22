@@ -9,7 +9,7 @@ class PostResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function toArray($request): array
@@ -19,7 +19,10 @@ class PostResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'type' => $this->type,
+            'post_id' => $this->post_id,
+            'post' => new PostResource($this->whenLoaded('postParent')),
             'author_id' => $this->author_id,
+            'author' => new UserResource($this->whenLoaded('author')),
             'is_active' => $this->is_active,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

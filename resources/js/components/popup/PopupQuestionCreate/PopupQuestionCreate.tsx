@@ -64,7 +64,7 @@ const PopupQuestionCreate: React.FC<Props> = (props) => {
         QuestionService.saveQuestion(question)
             .then((response: any) => {
                 setFetching(false)
-                setQuestion(response.data)
+                setQuestion(response.data.data)
 
                 props.onSave()
 
@@ -75,7 +75,7 @@ const PopupQuestionCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
 
                 setFetching(false)

@@ -35,7 +35,7 @@ const FavoritePage: React.FC = (): React.ReactElement => {
         // setFetchingFavorite(true)
 
         // FavoriteService.fetchFavorites()
-        //     .then((response: any) => setFavorites(response.data))
+        //     .then((response: any) => setFavorites(response.data.data))
         //     .catch((error: any) => {
         //         console.error('Ошибка загрузки избранного', error)
         //     })
@@ -87,7 +87,7 @@ const FavoritePage: React.FC = (): React.ReactElement => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data
+                                        text: error.data.data
                                     })
                                 })
                                 .finally(() => setFetching(false))
@@ -109,7 +109,7 @@ const FavoritePage: React.FC = (): React.ReactElement => {
             //
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data
+            //             text: error.data.data
             //         })
             //     })
         }
@@ -125,7 +125,7 @@ const FavoritePage: React.FC = (): React.ReactElement => {
             //
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data
+            //             text: error.data.data
             //         })
             //     })
         }

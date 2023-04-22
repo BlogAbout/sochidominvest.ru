@@ -19,6 +19,7 @@ class TransactionResource extends JsonResource
             'name' => $this->name,
             'status' => $this->status,
             'user_id' => $this->user_id,
+            'user' => new UserResource($this->whenLoaded('user')),
             'email' => $this->email,
             'cost' => $this->cost,
             'object_id' => $this->object_id,

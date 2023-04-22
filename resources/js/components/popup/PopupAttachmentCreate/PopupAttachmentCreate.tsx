@@ -54,9 +54,9 @@ const PopupAttachmentCreate: React.FC<Props> = (props) => {
         AttachmentService.updateAttachment(attachment)
             .then((response: any) => {
                 setFetching(false)
-                setAttachment(response.data)
+                setAttachment(response.data.data)
 
-                props.onSave(response.data)
+                props.onSave(response.data.data)
 
                 if (isClose) {
                     close()
@@ -65,7 +65,7 @@ const PopupAttachmentCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data
+                    text: error.data.data
                 })
 
                 setFetching(false)
@@ -112,11 +112,11 @@ const PopupAttachmentCreate: React.FC<Props> = (props) => {
                                     icon='arrow-pointer'
                                     onClick={() => openPopupFileManager(document.body, {
                                         type: 'image',
-                                        selected: attachment.poster ? [attachment.poster] : [],
+                                        selected: attachment.poster && attachment.poster.id ? [attachment.poster.id] : [],
                                         onSelect: (selected: number[]) => {
                                             setAttachment({
                                                 ...attachment,
-                                                poster: selected.length ? selected[0] : null
+                                                poster_id: selected.length ? selected[0] : null
                                             })
                                         }
                                     })}
@@ -130,10 +130,10 @@ const PopupAttachmentCreate: React.FC<Props> = (props) => {
                         <CheckBox label='Активен'
                                   type='modern'
                                   width={110}
-                                  checked={!!attachment.active}
+                                  checked={!!attachment.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setAttachment({
                                       ...attachment,
-                                      active: value ? 1 : 0
+                                      is_active: value ? 1 : 0
                                   })}
                         />
                     </div>

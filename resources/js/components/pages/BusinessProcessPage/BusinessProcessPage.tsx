@@ -23,8 +23,8 @@ const BusinessProcessPage: React.FC = (): React.ReactElement => {
 
         BusinessProcessService.fetchBusinessProcesses({active: [0, 1]})
             .then((response: any) => {
-                setBusinessProcesses(response.data.list)
-                setOrdering(response.data.ordering)
+                setBusinessProcesses(response.data.data.list)
+                setOrdering(response.data.data.ordering)
             })
             .catch((error: any) => {
                 console.error('Произошла ошибка загрузки данных', error)

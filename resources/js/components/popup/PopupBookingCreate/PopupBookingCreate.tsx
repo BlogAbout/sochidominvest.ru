@@ -96,7 +96,7 @@ const PopupBookingCreate: React.FC<Props> = (props) => {
 
         // BookingService.saveBooking(saveBooking)
         //     .then((response: any) => {
-        //         setBooking(response.data)
+        //         setBooking(response.data.data)
         //
         //         props.onSave()
         //
@@ -109,7 +109,7 @@ const PopupBookingCreate: React.FC<Props> = (props) => {
         //
         //         openPopupAlert(document.body, {
         //             title: 'Ошибка!',
-        //             text: error.data
+        //             text: error.data.data
         //         })
         //     })
         //     .finally(() => {
@@ -148,7 +148,7 @@ const PopupBookingCreate: React.FC<Props> = (props) => {
             // BookingService.fetchBookings(filter)
             //     .then((response: any) => {
             //         const todayDate = moment()
-            //         const bookingList: IBooking[] = response.data
+            //         const bookingList: IBooking[] = response.data.data
             //         const dates: Moment[] = []
             //
             //         if (bookingList && bookingList.length) {
@@ -174,7 +174,7 @@ const PopupBookingCreate: React.FC<Props> = (props) => {
             //
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data
+            //             text: error.data.data
             //         })
             //     })
             //     .finally(() => {
