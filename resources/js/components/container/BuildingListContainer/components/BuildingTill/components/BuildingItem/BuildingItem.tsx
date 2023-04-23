@@ -98,7 +98,7 @@ const BuildingItem: React.FC<Props> = (props) => {
     }
 
     return (
-        <div className={cx({'BuildingItem': true, 'disabled': props.building.active === 0})}
+        <div className={cx({'BuildingItem': true, 'disabled': props.building.is_active === 0})}
              onClick={() => props.onClick(props.building)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.building)}
         >
@@ -130,9 +130,9 @@ const BuildingItem: React.FC<Props> = (props) => {
                         <span>{props.building.views}</span>
                     </div>
 
-                    <div className={classes.icon} title={`Дата публикации: ${getFormatDate(props.building.dateCreated)}`}>
+                    <div className={classes.icon} title={`Дата публикации: ${props.building.date_created}`}>
                         <FontAwesomeIcon icon='calendar'/>
-                        <span>{getFormatDate(props.building.dateCreated)}</span>
+                        <span>{props.building.date_created}</span>
                     </div>
 
                     {props.building.authorName ?

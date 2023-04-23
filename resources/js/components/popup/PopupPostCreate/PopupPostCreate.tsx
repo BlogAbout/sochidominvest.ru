@@ -145,10 +145,10 @@ const PopupPostCreate: React.FC<Props> = (props) => {
                         <CheckBox label='Активен'
                                   type='modern'
                                   width={110}
-                                  checked={!!post.active}
+                                  checked={!!post.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setPost({
                                       ...post,
-                                      active: value ? 1 : 0
+                                      is_active: value ? 1 : 0
                                   })}
                         />
                     </div>

@@ -48,7 +48,7 @@ const MessageItem: React.FC<Props> = (props) => {
             <div className={classes.text}>
                 {props.message.text}
 
-                <div className={classes.date}>{getFormatDate(props.message.dateCreated)}</div>
+                <div className={classes.date}>{getFormatDate(props.message.date_created)}</div>
 
                 {(right && isNewCurrent) || isNewMember ?
                     <div className={classes.indicator}/>

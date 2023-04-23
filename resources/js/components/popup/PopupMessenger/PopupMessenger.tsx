@@ -364,7 +364,7 @@ class PopupMessenger extends React.Component<Props, State> {
     //                 <BlockingElement fetching={this.state.fetchingUsers} className={classes.list}>
     //                     {this.state.users && this.state.users.length ?
     //                         this.state.users.map((user: IUser) => {
-    //                             if (user.block || user.active !== 1 || user.id === this.state.userId) {
+    //                             if (user.block || user.is_active !== 1 || user.id === this.state.userId) {
     //                                 return null
     //                             }
     //

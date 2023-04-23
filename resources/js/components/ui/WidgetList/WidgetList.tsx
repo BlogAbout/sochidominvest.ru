@@ -99,7 +99,7 @@ const WidgetList: React.FC<Props> = (props) => {
         const widgetData: IWidget = JSON.parse(JSON.stringify(widget))
 
         // if (widgetData.data.length) {
-        //     const findElement = widgetData.data.find((item: IWidgetData) => item.objectId === selectedItem && item.objectType)
+        //     const findElement = widgetData.data.find((item: IWidgetData) => item.object_id === selectedItem && item.object_type)
         //
         //     if (findElement) {
         //         openPopupAlert(document.body, {
@@ -112,8 +112,8 @@ const WidgetList: React.FC<Props> = (props) => {
 
         // const item: IWidgetData = {
         //     widgetId: widgetData.id,
-        //     objectId: selectedItem,
-        //     objectType: widgetData.type,
+        //     object_id: selectedItem,
+        //     object_type: widgetData.type,
         //     ordering: widgetData.data.length + 1
         // }
         //

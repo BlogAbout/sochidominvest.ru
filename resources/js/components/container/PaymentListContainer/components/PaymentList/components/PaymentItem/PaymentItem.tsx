@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames/bind'
 import {useTypedSelector} from '../../../../../../../hooks/useTypedSelector'
-import {IPayment} from '../../../../../../../@types/IPayment'
+import {ITransaction} from '../../../../../../../@types/ITransaction'
 import {getUserName} from '../../../../../../../helpers/userHelper'
 import {getPaymentStatusText} from '../../../../../../../helpers/paymentHelper'
 import {getFormatDate} from '../../../../../../../helpers/dateHelper'
@@ -9,24 +9,24 @@ import {numberWithSpaces, round} from '../../../../../../../helpers/numberHelper
 import classes from './PaymentItem.module.scss'
 
 interface Props {
-    payment: IPayment
+    payment: ITransaction
 
-    onClick(payment: IPayment): void
+    onClick(payment: ITransaction): void
 
-    onEdit(payment: IPayment): void
+    onEdit(payment: ITransaction): void
 
-    onContextMenu(e: React.MouseEvent, payment: IPayment): void
+    onContextMenu(e: React.MouseEvent, payment: ITransaction): void
 }
 
 const defaultProps: Props = {
-    payment: {} as IPayment,
-    onClick: (payment: IPayment) => {
+    payment: {} as ITransaction,
+    onClick: (payment: ITransaction) => {
         console.info('PaymentItem onClick', payment)
     },
-    onEdit: (payment: IPayment) => {
+    onEdit: (payment: ITransaction) => {
         console.info('PaymentItem onEdit', payment)
     },
-    onContextMenu: (e: React.MouseEvent, payment: IPayment) => {
+    onContextMenu: (e: React.MouseEvent, payment: ITransaction) => {
         console.info('PaymentItem onContextMenu', e, payment)
     }
 }
@@ -46,7 +46,7 @@ const PaymentItem: React.FC<Props> = (props) => {
             <div className={classes.userName}>{props.payment.userName || getUserName(users, props.payment.userId)}</div>
             <div className={classes.cost}>{numberWithSpaces(round(props.payment.cost || 0, 0))}</div>
             <div className={classes.status}>{getPaymentStatusText(props.payment.status)}</div>
-            <div className={classes.dateCreated}>{getFormatDate(props.payment.dateCreated)}</div>
+            <div className={classes.dateCreated}>{props.payment.date_created}</div>
         </div>
     )
 }

@@ -49,22 +49,22 @@ const BuildingTill: React.FC<Props> = (props): React.ReactElement => {
                         return (
                             <BlockItem key={building.id}
                                        title={building.name}
-                                       avatar={building.avatar || ''}
+                                       avatar={building.info.avatar ? building.info.avatar.content : ''}
                                        address={building.address || ''}
-                                       districtText={getDistrictText(building.district, building.districtZone)}
-                                       date={building.dateCreated || undefined}
+                                       districtText={getDistrictText(building.info.district, building.info.district_zone)}
+                                       date={building.date_created || undefined}
                                        type={getBuildingTypesText(building.type)}
-                                       passed={getPassedText(building.passed)}
-                                       isPassed={!!(building.passed && building.passed.is)}
+                                       passed={getPassedText(building.info.passed)}
+                                       isPassed={!!(building.info.passed && building.info.passed.is)}
                                        rentType={building.rentData ? building.rentData.type === 'short' ? '/в сутки' : '/в месяц' : undefined}
                                        rentCost={building.rentData && building.rentData.cost ? building.rentData.cost : undefined}
-                                       countCheckers={building.countCheckers || undefined}
+                                       countCheckers={building.checkers ? building.checkers.length : undefined}
                                        buildingType={building.type}
-                                       cost={building.type === 'building' ? (building.costMin || 0) : (building.cost || 0)}
-                                       areaMin={building.type === 'building' ? (building.areaMin || 0) : (building.area || 0)}
-                                       areaMax={building.type === 'building' ? (building.areaMax || 0) : undefined}
-                                       cadastrNumber={building.type === 'land' ? building.cadastrNumber : null}
-                                       isDisabled={!building.active}
+                                       cost={building.type === 'building' ? (building.cost_min || 0) : (building.cost || 0)}
+                                       areaMin={building.type === 'building' ? (building.area_min || 0) : (building.area || 0)}
+                                       areaMax={building.type === 'building' ? (building.area_max || 0) : undefined}
+                                       cadastral_number={building.type === 'land' ? building.info.cadastral_number : null}
+                                       isDisabled={!building.is_active}
                                        onContextMenu={(e: React.MouseEvent) => props.onContextMenu(building, e)}
                                        onClick={() => props.onClick(building)}
                             />

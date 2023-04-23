@@ -18,15 +18,14 @@ const defaultProps: Props = {
 const CallbackForm: React.FC<Props> = (props) => {
     const [info, setInfo] = useState<IFeed>({
         id: null,
-        author: null,
-        phone: '',
-        name: '',
         title: `Запрос информации о ${props.building.name}`,
         type: 'callback',
-        objectId: props.building.id,
-        objectType: props.building.id ? 'building' : null,
-        active: 1,
-        status: 'new'
+        status: 'new',
+        phone: '',
+        name: '',
+        object_id: props.building.id,
+        object_type: props.building.id ? 'building' : null,
+        is_active: 1
     })
 
     const [validationPhone, setValidationPhone] = useState('')

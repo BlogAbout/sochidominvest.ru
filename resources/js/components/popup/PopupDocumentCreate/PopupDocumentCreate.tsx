@@ -156,7 +156,7 @@ const PopupDocumentCreate: React.FC<Props> = (props) => {
                         <CheckBox label='Активен'
                                   type='modern'
                                   width={110}
-                                  checked={!!documentInfo.active}
+                                  checked={!!documentInfo.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setDocumentInfo({
                                       ...documentInfo,
                                       active: value ? 1 : 0

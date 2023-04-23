@@ -81,7 +81,7 @@ const SupportItem: React.FC<Props> = (props) => {
             type: 'feed',
             step: 'default',
             relations: [
-                {objectId: props.feed.id, objectType: 'feed'}
+                {object_id: props.feed.id, object_type: 'feed'}
             ]
         }
 

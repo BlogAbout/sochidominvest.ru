@@ -32,7 +32,7 @@ const PopupTagCreate: React.FC<Props> = (props) => {
     const [tag, setTag] = useState<ITag>(props.tag || {
         id: null,
         name: '',
-        active: 1
+        is_active: 1
     })
 
     const [fetching, setFetching] = useState(false)
@@ -101,10 +101,10 @@ const PopupTagCreate: React.FC<Props> = (props) => {
                         <CheckBox label='Активен'
                                   type='modern'
                                   width={110}
-                                  checked={!!tag.active}
+                                  checked={!!tag.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setTag({
                                       ...tag,
-                                      active: value ? 1 : 0
+                                      is_active: value ? 1 : 0
                                   })}
                         />
                     </div>

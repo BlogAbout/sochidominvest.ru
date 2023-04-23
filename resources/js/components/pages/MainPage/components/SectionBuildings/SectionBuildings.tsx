@@ -69,7 +69,7 @@ const SectionBuildings: React.FC = (): React.ReactElement => {
     //                                            avatar={building.avatar || ''}
     //                                            address={building.address || ''}
     //                                            districtText={getDistrictText(building.district, building.districtZone)}
-    //                                            date={building.dateCreated || undefined}
+    //                                            date={building.date_created || undefined}
     //                                            type={getBuildingTypesText(building.type)}
     //                                            passed={getPassedText(building.passed)}
     //                                            isPassed={!!(building.passed && building.passed.is)}
@@ -80,8 +80,8 @@ const SectionBuildings: React.FC = (): React.ReactElement => {
     //                                            cost={building.type === 'building' ? (building.costMin || 0) : (building.cost || 0)}
     //                                            areaMin={building.type === 'building' ? (building.areaMin || 0) : (building.area || 0)}
     //                                            areaMax={building.type === 'building' ? (building.areaMax || 0) : undefined}
-    //                                            cadastrNumber={building.type === 'land' ? building.cadastrNumber : null}
-    //                                            isDisabled={!building.active}
+    //                                            cadastral_number={building.type === 'land' ? building.cadastral_number : null}
+    //                                            isDisabled={!building.is_active}
     //                                            onContextMenu={() => {
     //                                            }}
     //                                            onClick={() => navigate(`${RouteNames.BUILDING}/${building.id}`)}

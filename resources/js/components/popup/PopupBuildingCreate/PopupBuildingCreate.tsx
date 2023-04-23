@@ -415,10 +415,10 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <Label text='Кадастровый номер'/>
 
-                        <TextBox value={building.cadastrNumber || ''}
+                        <TextBox value={building.cadastral_number || ''}
                                  onChange={(value: string) => setBuilding({
                                      ...building,
-                                     cadastrNumber: value
+                                     cadastral_number: value
                                  })}
                                  placeHolder='Введите кадастровый номер'
                                  styleType='minimal'
@@ -431,14 +431,14 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <Label text='Кадастровая стоимость, руб.'/>
 
-                        <NumberBox value={building.cadastrCost || ''}
+                        <NumberBox value={building.cadastral_cost || ''}
                                    min={0}
                                    step={0.01}
                                    max={999999999}
                                    countAfterComma={2}
                                    onChange={(e: React.ChangeEvent<HTMLInputElement>, value: number) => setBuilding({
                                        ...building,
-                                       cadastrCost: value
+                                       cadastral_cost: value
                                    })}
                                    placeHolder='Введите кадастровую стоимость'
                                    styleType='minimal'
@@ -500,7 +500,7 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                     <CheckBox label='Активен'
                               type='modern'
                               width={110}
-                              checked={!!building.active}
+                              checked={!!building.is_active}
                               onChange={(e: React.MouseEvent, value: boolean) => setBuilding({
                                   ...building,
                                   active: value ? 1 : 0

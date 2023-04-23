@@ -39,18 +39,22 @@ const cx = classNames.bind(classes)
 
 const DeveloperItem: React.FC<Props> = (props) => {
     return (
-        <div className={cx({'DeveloperItem': true, 'disabled': !props.developer.active})}
+        <div className={cx({'DeveloperItem': true, 'disabled': !props.developer.is_active})}
              onClick={() => props.onClick(props.developer)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.developer)}
         >
-            <Avatar href={props.developer.avatar} alt={props.developer.name} width={150} height={150}/>
+            <Avatar href={props.developer.avatar ? props.developer.avatar.content : ''}
+                    alt={props.developer.name}
+                    width={150}
+                    height={150}
+            />
 
             <div className={classes.itemContent}>
                 <h2>{props.developer.name}</h2>
 
                 <div className={classes.row} title='Дата публикации'>
                     <FontAwesomeIcon icon='calendar'/>
-                    <span>{getFormatDate(props.developer.dateCreated)}</span>
+                    <span>{props.developer.date_created}</span>
                 </div>
 
                 <div className={classes.row} title='Тип'>

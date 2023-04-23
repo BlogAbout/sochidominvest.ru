@@ -216,7 +216,7 @@ const PopupCheckerCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <CheckBox label='Активен'
                                   type='modern'
-                                  checked={!!checker.active}
+                                  checked={!!checker.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setChecker({
                                       ...checker,
                                       active: value ? 1 : 0

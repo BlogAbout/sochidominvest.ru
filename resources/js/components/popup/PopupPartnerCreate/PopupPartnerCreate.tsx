@@ -160,7 +160,7 @@ const PopupPartnerCreate: React.FC<Props> = (props) => {
                     <CheckBox label='Активен'
                               type='modern'
                               width={110}
-                              checked={!!partner.active}
+                              checked={!!partner.is_active}
                               onChange={(e: React.MouseEvent, value: boolean) => setPartner({
                                   ...partner,
                                   active: value ? 1 : 0

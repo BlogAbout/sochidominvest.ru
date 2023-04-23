@@ -1,6 +1,6 @@
 import {AxiosResponse} from 'axios'
 import API from '../axios.init'
-import {IPayment} from '../@types/IPayment'
+import {ITransaction} from '../@types/ITransaction'
 import {IFilter} from '../@types/IFilter'
 
 export default class TransactionService {
@@ -12,7 +12,7 @@ export default class TransactionService {
         return API.get('/transaction', {params: filter})
     }
 
-    static async savePayment(payment: IPayment, sendLink: boolean): Promise<AxiosResponse> {
+    static async savePayment(payment: ITransaction, sendLink: boolean): Promise<AxiosResponse> {
         if (payment.id) {
             return API.patch(`/transaction/${payment.id}`, {payment: payment, sendLink: sendLink})
         } else {

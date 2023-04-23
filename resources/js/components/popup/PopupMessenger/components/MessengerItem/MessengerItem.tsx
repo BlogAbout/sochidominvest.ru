@@ -64,7 +64,7 @@ const MessengerItem: React.FC<Props> = (props) => {
             </div>
 
             <div className={classes.meta}>
-                <span>{getFormatDate(props.messenger.messages[0].dateCreated)}</span>
+                <span>{props.messenger.messages[0].date_created}</span>
 
                 {isNew && <div className={classes.indicator}/>}
             </div>

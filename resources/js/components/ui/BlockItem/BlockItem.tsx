@@ -31,7 +31,7 @@ interface Props {
     isDisabled?: boolean
     className?: string
     isRent?: boolean
-    cadastrNumber?: string | null
+    cadastral_number?: string | null
 
     onClick?(): void
 
@@ -101,8 +101,8 @@ const BlockItem: React.FC<Props> = (props): React.ReactElement => {
                             : null
                         }
 
-                        {props.buildingType === 'land' && props.cadastrNumber ?
-                            <div className={classes.passed} title='Кадастровый номер'><span>{props.cadastrNumber}</span>
+                        {props.buildingType === 'land' && props.cadastral_number ?
+                            <div className={classes.passed} title='Кадастровый номер'><span>{props.cadastral_number}</span>
                             </div>
                             : null
                         }

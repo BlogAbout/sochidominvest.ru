@@ -1,17 +1,24 @@
+import {IUser} from './IUser'
+
 export interface IFeed {
     id: number | null
-    author: number | null
-    phone: string | null
-    name: string | null
     title: string
     type: string
-    objectId: number | null
-    objectType: string | null
-    active: number
     status: string
-    dateCreated?: string
-    dateUpdate?: string
+    user_id?: number | null
+    user?: IUser | null
+    author_id?: number | null
+    author?: IUser | null
+    phone: string | null
+    name: string | null
+    object_id?: number | null
+    object_type?: string | null
+    is_active?: number
     messages?: IFeedMessage[]
+    created_at?: string | null
+    updated_at?: string | null
+    date_created?: string | null
+    date_updated?: string | null
 }
 
 export interface IFeedMessage {
@@ -21,6 +28,10 @@ export interface IFeedMessage {
     active: number
     status: string
     content: string
-    dateCreated?: string,
     authorName?: string | null
+
+    created_at?: string | null
+    updated_at?: string | null
+    date_created?: string | null
+    date_updated?: string | null
 }

@@ -49,7 +49,7 @@ const PostItem: React.FC<Props> = (props) => {
     }
 
     return (
-        <div className={cx({'PostItem': true, 'disabled': !props.post.active})}
+        <div className={cx({'PostItem': true, 'disabled': !props.post.is_active})}
              onClick={() => props.onClick(props.post)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.post)}
              style={{
@@ -61,7 +61,7 @@ const PostItem: React.FC<Props> = (props) => {
                 {renderArrowTree()}
                 {props.post.name}
             </div>
-            <div className={classes.author}>{props.post.authorName || ''}</div>
+            <div className={classes.author}>{props.post.author ? props.post.author.name : ''}</div>
             <div className={classes.type}>{getPostTypeText(props.post.type)}</div>
         </div>
     )

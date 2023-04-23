@@ -193,7 +193,7 @@ const PopupMailingCreate: React.FC<Props> = (props) => {
                         <CheckBox label='Активен'
                                   type='modern'
                                   width={110}
-                                  checked={!!mailing.active}
+                                  checked={!!mailing.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setMailing({
                                       ...mailing,
                                       active: value ? 1 : 0

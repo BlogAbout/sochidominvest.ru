@@ -1,5 +1,5 @@
 import React from 'react'
-import {ICategory, IProduct} from '../../../../../@types/IStore'
+import {IProduct} from '../../../../../@types/IStore'
 import Empty from '../../../../ui/Empty/Empty'
 import BlockingElement from '../../../../../components/ui/BlockingElement/BlockingElement'
 import BlockItem from '../../../../ui/BlockItem/BlockItem'
@@ -7,7 +7,6 @@ import classes from './ProductTill.module.scss'
 
 interface Props {
     list: IProduct[]
-    categories: ICategory[]
     fetching: boolean
 
     onClick(product: IProduct): void
@@ -17,7 +16,6 @@ interface Props {
 
 const defaultProps: Props = {
     list: [],
-    categories: [],
     fetching: false,
     onClick: (product: IProduct) => {
         console.info('BuildingList onClick', product)
@@ -28,20 +26,6 @@ const defaultProps: Props = {
 }
 
 const ProductTill: React.FC<Props> = (props): React.ReactElement => {
-    const getCategoryName = (categoryId: number): string => {
-        if (!props.categories.length) {
-            return ''
-        }
-
-        const findCategory = props.categories.find((category: ICategory) => category.id === categoryId)
-
-        if (!findCategory) {
-            return ''
-        }
-
-        return findCategory.name
-    }
-
     return (
         <div className={classes.ProductTill}>
             <BlockingElement fetching={props.fetching} className={classes.list}>
@@ -50,12 +34,12 @@ const ProductTill: React.FC<Props> = (props): React.ReactElement => {
                         return (
                             <BlockItem key={product.id}
                                        title={product.name}
-                                       avatar={product.avatar || ''}
+                                       avatar={product.avatar ? product.avatar.content : ''}
                                        description={product.description}
                                        cost={product.cost}
-                                       date={product.dateCreated || undefined}
-                                       type={getCategoryName(product.categoryId)}
-                                       isDisabled={!product.active}
+                                       date={product.date_created || undefined}
+                                       type={product.category ? product.category.name : ''}
+                                       isDisabled={!product.is_active}
                                        onContextMenu={(e: React.MouseEvent) => props.onContextMenu(product, e)}
                                        onClick={() => props.onClick(product)}
                             />

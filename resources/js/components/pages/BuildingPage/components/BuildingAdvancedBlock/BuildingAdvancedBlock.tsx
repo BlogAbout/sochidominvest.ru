@@ -30,22 +30,22 @@ const defaultProps: Props = {
 }
 
 const BuildingAdvancedBlock: React.FC<Props> = (props): React.ReactElement => {
-    const houseClass = getBuildingClassesText(props.building.houseClass)
-    const material = getBuildingMaterialsText(props.building.material)
-    const houseType = getBuildingFormatText(props.building.houseType)
-    const entranceHouse = getBuildingEntranceText(props.building.entranceHouse)
-    const parking = getBuildingParkingText(props.building.parking)
-    const territory = getBuildingTerritoryText(props.building.territory)
-    const gas = getBuildingGasText(props.building.gas)
-    const heating = getBuildingHeatingText(props.building.heating)
-    const electricity = getBuildingElectricityText(props.building.electricity)
-    const sewerage = getBuildingSewerageText(props.building.sewerage)
-    const waterSupply = getBuildingWaterSupplyText(props.building.waterSupply)
-    const contract = getBuildingAmountContractText(props.building.amountContract)
+    const houseClass = getBuildingClassesText(props.building.info.house_class)
+    const material = getBuildingMaterialsText(props.building.info.material)
+    const houseType = getBuildingFormatText(props.building.info.house_type)
+    const entranceHouse = getBuildingEntranceText(props.building.info.entrance_house)
+    const parking = getBuildingParkingText(props.building.info.parking)
+    const territory = getBuildingTerritoryText(props.building.info.territory)
+    const gas = getBuildingGasText(props.building.info.gas)
+    const heating = getBuildingHeatingText(props.building.info.heating)
+    const electricity = getBuildingElectricityText(props.building.info.electricity)
+    const sewerage = getBuildingSewerageText(props.building.info.sewerage)
+    const waterSupply = getBuildingWaterSupplyText(props.building.info.water_supply)
+    const contract = getBuildingAmountContractText(props.building.info.amount_contract)
     const type = getBuildingTypesText(props.building.type)
 
-    let payments: string[] = paymentsList.filter((item: ISelector) => props.building.payments?.includes(item.key)).map((item: ISelector) => item.text)
-    let formalizations: string[] = formalizationList.filter((item: ISelector) => props.building.formalization?.includes(item.key)).map((item: ISelector) => item.text)
+    let payments: string[] = paymentsList.filter((item: ISelector) => props.building.info.payments?.includes(item.key)).map((item: ISelector) => item.text)
+    let formalizations: string[] = formalizationList.filter((item: ISelector) => props.building.info.formalization?.includes(item.key)).map((item: ISelector) => item.text)
 
     return (
         <div className={classes.BuildingAdvancedBlock}>
@@ -83,26 +83,28 @@ const BuildingAdvancedBlock: React.FC<Props> = (props): React.ReactElement => {
                         <div className={classes.param}>{entranceHouse}</div>
                     </div>}
 
-                    {props.building.ceilingHeight && props.building.ceilingHeight > 0 ?
+                    {props.building.info.ceiling_height && props.building.info.ceiling_height > 0 ?
                         <div className={classes.row}>
                             <div className={classes.label}>Высота потолков:</div>
-                            <div className={classes.param}>{props.building.ceilingHeight} м.</div>
+                            <div className={classes.param}>{props.building.info.ceiling_height} м.</div>
                         </div>
                         : null
                     }
 
-                    {props.building.maintenanceCost && props.building.maintenanceCost > 0 ?
+                    {props.building.info.maintenance_cost && props.building.info.maintenance_cost > 0 ?
                         <div className={classes.row}>
                             <div className={classes.label}>Стоимость обслуживания:</div>
-                            <div className={classes.param}>{props.building.maintenanceCost} руб./м<sup>2</sup></div>
+                            <div className={classes.param}>
+                                {props.building.info.maintenance_cost} руб./м<sup>2</sup>
+                            </div>
                         </div>
                         : null
                     }
 
-                    {props.building.distanceSea && props.building.distanceSea > 0 ?
+                    {props.building.info.distance_sea && props.building.info.distance_sea > 0 ?
                         <div className={classes.row}>
                             <div className={classes.label}>Расстояние до моря:</div>
-                            <div className={classes.param}>{props.building.distanceSea} м.</div>
+                            <div className={classes.param}>{props.building.info.distance_sea} м.</div>
                         </div>
                         : null
                     }
@@ -182,7 +184,7 @@ const BuildingAdvancedBlock: React.FC<Props> = (props): React.ReactElement => {
                     <div className={classes.row}>
                         <div className={classes.label}>Продажа для нерезидентов России:</div>
                         <div className={classes.param}>
-                            {!!props.building.saleNoResident ? 'Доступно' : 'Не доступно'}
+                            {!!props.building.info.is_sale_no_resident ? 'Доступно' : 'Не доступно'}
                         </div>
                     </div>
                 </div>

@@ -3,7 +3,7 @@ import withStore from '../../hoc/withStore'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import TransactionService from '../../../api/TransactionService'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
-import {IPayment} from '../../../@types/IPayment'
+import {ITransaction} from '../../../@types/ITransaction'
 import {paymentStatuses} from '../../../helpers/paymentHelper'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
@@ -21,7 +21,7 @@ import NumberBox from '../../form/NumberBox/NumberBox'
 import classes from './PopupPaymentCreate.module.scss'
 
 interface Props extends PopupProps {
-    payment?: IPayment | null
+    payment?: ITransaction | null
 
     onSave(): void
 }
@@ -38,15 +38,15 @@ const PopupPaymentCreate: React.FC<Props> = (props) => {
 
     const [fetching, setFetching] = useState(false)
     const [sendLink, setSendLink] = useState(false)
-    const [payment, setPayment] = useState<IPayment>(props.payment || {
+    const [payment, setPayment] = useState<ITransaction>(props.payment || {
         id: null,
         name: '',
         status: 'new',
         userId: userId,
         cost: 0,
         duration: null,
-        objectId: 0,
-        objectType: ''
+        object_id: 0,
+        object_type: ''
     })
 
     useEffect(() => {

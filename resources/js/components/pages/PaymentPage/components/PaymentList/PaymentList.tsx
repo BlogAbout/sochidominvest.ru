@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {IPayment} from '../../../../../@types/IPayment'
+import {ITransaction} from '../../../../../@types/ITransaction'
 import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
 import {useActions} from '../../../../../hooks/useActions'
 import {getPaymentStatusText} from '../../../../../helpers/paymentHelper'
@@ -20,7 +20,7 @@ import openPopupPaymentCreate from '../../../../../components/popup/PopupPayment
 import classes from './PaymentList.module.scss'
 
 interface Props {
-    list: IPayment[]
+    list: ITransaction[]
     fetching: boolean
 
     onSave(): void
@@ -47,7 +47,7 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
     }, [])
 
     // Редактирование платежа
-    const onEditHandler = (payment: IPayment) => {
+    const onEditHandler = (payment: ITransaction) => {
         openPopupPaymentCreate(document.body, {
             payment: payment,
             onSave: () => props.onSave()
@@ -55,8 +55,8 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
     }
 
     // Копирование платежа
-    const onCopyHandler = (payment: IPayment) => {
-        const newPayment: IPayment = {
+    const onCopyHandler = (payment: ITransaction) => {
+        const newPayment: ITransaction = {
             id: null,
             name: payment.name,
             status: 'new',
@@ -65,8 +65,8 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
             userName: payment.userName,
             cost: payment.cost,
             duration: payment.duration,
-            objectId: payment.objectId,
-            objectType: payment.objectType
+            object_id: payment.object_id,
+            object_type: payment.object_type
         }
 
         openPopupPaymentCreate(document.body, {
@@ -76,7 +76,7 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
     }
 
     // Переход по ссылке на платежную форму
-    const onOpenLinkHandler = (payment: IPayment) => {
+    const onOpenLinkHandler = (payment: ITransaction) => {
         if (payment.id) {
             // setFetching(true)
             //
@@ -104,7 +104,7 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
     }
 
     // Отправка ссылки на платежную форму плательщику на почту
-    const onSendLinkHandler = (payment: IPayment) => {
+    const onSendLinkHandler = (payment: ITransaction) => {
         setFetching(true)
 
         TransactionService.savePayment(payment, true)
@@ -124,7 +124,7 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
     }
 
     // Контекстное меню на платеже
-    const onContextMenuHandler = (payment: IPayment, e: React.MouseEvent) => {
+    const onContextMenuHandler = (payment: ITransaction, e: React.MouseEvent) => {
         e.preventDefault()
 
         if (allowForRole(['director', 'administrator', 'manager'])) {
@@ -155,7 +155,7 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
 
             <ListBody fetching={props.fetching || fetching}>
                 {props.list && props.list.length ?
-                    props.list.map((payment: IPayment) => {
+                    props.list.map((payment: ITransaction) => {
                         return (
                             <ListRow key={payment.id}
                                      onContextMenu={(e: React.MouseEvent) => onContextMenuHandler(payment, e)}
@@ -170,7 +170,7 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
                                     className={classes.cost}>{numberWithSpaces(round(payment.cost || 0, 0))}</ListCell>
                                 <ListCell className={classes.status}>{getPaymentStatusText(payment.status)}</ListCell>
                                 <ListCell
-                                    className={classes.dateCreated}>{getFormatDate(payment.dateCreated)}</ListCell>
+                                    className={classes.dateCreated}>{payment.date_created}</ListCell>
                             </ListRow>
                         )
                     })

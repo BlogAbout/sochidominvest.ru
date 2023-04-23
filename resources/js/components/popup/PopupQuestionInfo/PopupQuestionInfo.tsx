@@ -46,7 +46,7 @@ const PopupQuestionInfo: React.FC<Props> = (props) => {
                     <div className={classes.meta}>
                         <div className={classes.row} title='Дата публикации'>
                             <FontAwesomeIcon icon='calendar'/>
-                            <span>{getFormatDate(props.question.dateCreated)}</span>
+                            <span>{props.question.date_created}</span>
                         </div>
 
                         <div className={classes.row} title='Тип'>

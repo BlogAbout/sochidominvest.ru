@@ -44,6 +44,11 @@ class Building extends Model
         return $this->hasMany(Price::class, 'object_id', 'id')->where('object_type', 'like', 'building');
     }
 
+    public function checkers()
+    {
+        return $this->hasMany(Checker::class, 'building_id', 'id');
+    }
+
     public function relationDevelopers()
     {
         return $this->belongsToMany(Article::class, 'sdi_building_relations', 'building_id', 'object_id')->wherePivot('object_type', 'developer');

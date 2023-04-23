@@ -46,7 +46,7 @@ const UserTill: React.FC<Props> = (props): React.ReactElement => {
                                   email={user.email}
                                   indicatorColor={user.id && usersOnline.includes(user.id) ? 'green' : 'red'}
                                   // indicatorText={user.id && usersOnline.includes(user.id) ? 'Online' : `Был в сети: ${getFormatDate(user.lastActive)}`}
-                                  // isDisabled={!user.active}
+                                  // isDisabled={!user.is_active}
                                   // isBlock={!!user.block}
                                   onContextMenu={(e: React.MouseEvent) => props.onContextMenu(user, e)}
                                   onClick={() => props.onClick(user)}

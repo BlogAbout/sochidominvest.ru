@@ -8,5 +8,5 @@ export interface IImage {
 export interface IImageDb extends IImage {
     id: number | null
     active: number
-    objectId: number
+    object_id: number
 }

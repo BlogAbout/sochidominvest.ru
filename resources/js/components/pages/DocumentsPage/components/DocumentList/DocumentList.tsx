@@ -40,11 +40,11 @@ const DocumentList: React.FC<Props> = (props): React.ReactElement => {
     const getObjectInfo = (document: IDocument): string => {
         let objectInfo = ''
 
-        if (document.objectType && document.objectId) {
-            switch (document.objectType) {
+        if (document.object_type && document.object_id) {
+            switch (document.object_type) {
                 case 'building':
                     if (buildings && buildings.length) {
-                        const buildingInfo = buildings.find((building: IBuilding) => building.id === document.objectId)
+                        const buildingInfo = buildings.find((building: IBuilding) => building.id === document.object_id)
 
                         if (buildingInfo) {
                             objectInfo = buildingInfo.name

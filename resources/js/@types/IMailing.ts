@@ -1,15 +1,20 @@
+import {IUser} from './IUser'
+
 export interface IMailing {
     id: number | null
     name: string
     content: string
-    contentHtml: string
+    content_html: string
     type: string
-    author: number | null
-    authorName?: string | null
-    dateCreated?: string | null
-    active: number
     status: number
-    countRecipients: number
+    author_id?: number | null
+    author?: IUser | null
+    is_active?: number
+    recipients?: IUser[] | null
+    created_at?: string | null
+    updated_at?: string | null
+    date_created?: string | null
+    date_updated?: string | null
 }
 
 export interface IMailingRecipient {

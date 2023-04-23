@@ -1,11 +1,15 @@
+import {IUser} from './IUser'
+
 export interface IQuestion {
     id: number | null
     name: string
     description: string
-    author: number | null
     type: string
-    dateCreated?: string | null
-    dateUpdate?: string | null
-    active: number
-    authorName?: string | null
+    author_id?: number | null
+    author?: IUser | null
+    is_active?: number
+    created_at?: string | null
+    updated_at?: string | null
+    date_created?: string | null
+    date_updated?: string | null
 }

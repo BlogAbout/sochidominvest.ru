@@ -43,8 +43,8 @@ const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
             name: '',
             title: `Заявка на покупку ${props.product.name}`,
             type: 'callback',
-            objectId: props.product.id,
-            objectType: 'store',
+            object_id: props.product.id,
+            object_type: 'store',
             active: 1,
             status: 'new'
         }
@@ -100,9 +100,9 @@ const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
     const renderMetaInformation = (): React.ReactElement => {
         return (
             <div className={classes.information}>
-                <div className={classes.icon} title={`Дата публикации: ${props.product.dateCreated}`}>
+                <div className={classes.icon} title={`Дата публикации: ${props.product.date_created}`}>
                     <FontAwesomeIcon icon='calendar'/>
-                    <span>{getFormatDate(props.product.dateCreated)}</span>
+                    <span>{props.product.date_created}</span>
                 </div>
 
                 {renderDynamicChangePrices()}

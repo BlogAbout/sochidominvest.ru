@@ -133,10 +133,10 @@ const PopupQuestionCreate: React.FC<Props> = (props) => {
                         <CheckBox label='Активен'
                                   type='modern'
                                   width={110}
-                                  checked={!!question.active}
+                                  checked={!!question.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setQuestion({
                                       ...question,
-                                      active: value ? 1 : 0
+                                      is_active: value ? 1 : 0
                                   })}
                         />
                     </div>

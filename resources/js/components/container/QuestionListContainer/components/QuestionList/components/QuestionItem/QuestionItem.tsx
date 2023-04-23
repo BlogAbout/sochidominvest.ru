@@ -36,12 +36,12 @@ const cx = classNames.bind(classes)
 
 const QuestionItem: React.FC<Props> = (props) => {
     return (
-        <div className={cx({'QuestionItem': true, 'disabled': !props.question.active})}
+        <div className={cx({'QuestionItem': true, 'disabled': !props.question.is_active})}
              onClick={() => props.onClick(props.question)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.question)}
         >
             <div className={classes.name}>{props.question.name}</div>
-            <div className={classes.author}>{props.question.authorName || ''}</div>
+            <div className={classes.author}>{props.question.author ? props.question.author.name : ''}</div>
             <div className={classes.type}>{getQuestionTypeText(props.question.type)}</div>
         </div>
     )

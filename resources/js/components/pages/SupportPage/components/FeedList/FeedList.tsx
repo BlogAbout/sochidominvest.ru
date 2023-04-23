@@ -88,7 +88,7 @@ const FeedList: React.FC<Props> = (props): React.ReactElement => {
             type: 'feed',
             step: 'default',
             relations: [
-                {objectId: feed.id, objectType: 'feed'}
+                {object_id: feed.id, object_type: 'feed'}
             ]
         }
 

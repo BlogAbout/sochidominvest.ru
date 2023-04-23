@@ -36,14 +36,14 @@ const cx = classNames.bind(classes)
 
 const MailingItem: React.FC<Props> = (props) => {
     return (
-        <div className={cx({'MailingItem': true, 'disabled': !props.mailing.active})}
+        <div className={cx({'MailingItem': true, 'disabled': !props.mailing.is_active})}
              onClick={() => props.onClick(props.mailing)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.mailing)}
         >
             <div className={classes.name}>{props.mailing.name}</div>
             <div className={classes.type}>{getMailingTypeText(props.mailing.type)}</div>
             <div className={classes.status}>{getMailingStatusText(props.mailing.status)}</div>
-            <div className={classes.count}>{props.mailing.countRecipients}</div>
+            <div className={classes.count}>{props.mailing.recipients ? props.mailing.recipients.length : 0}</div>
         </div>
     )
 }

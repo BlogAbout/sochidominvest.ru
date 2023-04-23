@@ -5,7 +5,11 @@ export const partnerTypes: ISelector[] = [
     {key: 'sponsor', text: 'Спонсор'}
 ]
 
-export const getPartnerTypeText = (key: string) => {
+export const getPartnerTypeText = (key?: string) => {
+    if (!key) {
+        return ''
+    }
+
     const find = partnerTypes.find((item: ISelector) => item.key === key)
     return find ? find.text : ''
 }

@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import {IFilter, IFilterContent} from '../../../@types/IFilter'
-import {IPayment} from '../../../@types/IPayment'
+import {ITransaction} from '../../../@types/ITransaction'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {compareText} from '../../../helpers/filterHelper'
 import {allowForTariff} from '../../../helpers/accessHelper'
@@ -17,9 +17,9 @@ import classes from './PaymentPage.module.scss'
 
 const PaymentPage: React.FC = (): React.ReactElement => {
     const [fetching, setFetching] = useState(false)
-    const [payments, setPayments] = useState<IPayment[]>([])
+    const [payments, setPayments] = useState<ITransaction[]>([])
     const [searchText, setSearchText] = useState('')
-    const [filterPayment, setFilterPayment] = useState<IPayment[]>([])
+    const [filterPayment, setFilterPayment] = useState<ITransaction[]>([])
     const [isShowFilter, setIsShowFilter] = useState(false)
     const [filters, setFilters] = useState({
         status: ['new', 'pending', 'paid', 'cancel', 'complete']
@@ -66,7 +66,7 @@ const PaymentPage: React.FC = (): React.ReactElement => {
         }
 
         if (value !== '') {
-            setFilterPayment(filterItemsHandler(payments.filter((payment: IPayment) => {
+            setFilterPayment(filterItemsHandler(payments.filter((payment: ITransaction) => {
                 return compareText(payment.name, value)
             })))
         } else {
@@ -81,12 +81,12 @@ const PaymentPage: React.FC = (): React.ReactElement => {
     }
 
     // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IPayment[]) => {
+    const filterItemsHandler = (list: ITransaction[]) => {
         if (!list || !list.length) {
             return []
         }
 
-        return list.filter((item: IPayment) => {
+        return list.filter((item: ITransaction) => {
             return filters.status.includes(item.status)
         })
     }

@@ -40,9 +40,10 @@ class BuildingInfoResource extends JsonResource
             'surcharge_gas' => $this->surcharge_gas,
             'is_sale_no_resident' => $this->is_sale_no_resident,
             'passed' => $this->passed,
-            'cadastr_number' => $this->cadastr_number,
-            'cadastr_cost' => $this->cadastr_cost,
-            'avatar_id' => $this->avatar_id
+            'cadastral_number' => $this->cadastral_number,
+            'cadastral_cost' => $this->cadastral_cost,
+            'avatar_id' => $this->avatar_id,
+            'avatar' => new AttachmentResource($this->whenLoaded('avatar'))
         ];
     }
 }

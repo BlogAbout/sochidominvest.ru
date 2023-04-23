@@ -36,12 +36,12 @@ const cx = classNames.bind(classes)
 
 const PartnerItem: React.FC<Props> = (props) => {
     return (
-        <div className={cx({'PartnerItem': true, 'disabled': !props.partner.active})}
+        <div className={cx({'PartnerItem': true, 'disabled': !props.partner.is_active})}
              onClick={() => props.onClick(props.partner)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.partner)}
         >
             <div className={classes.name}>{props.partner.name}</div>
-            <div className={classes.author}>{props.partner.authorName || ''}</div>
+            <div className={classes.author}>{props.partner.author ? props.partner.author.name : ''}</div>
             <div className={classes.type}>{getPartnerTypeText(props.partner.type)}</div>
         </div>
     )

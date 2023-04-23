@@ -35,12 +35,12 @@ const DeveloperTill: React.FC<Props> = (props): React.ReactElement => {
                         return (
                             <Card key={developer.id}
                                   title={developer.name}
-                                  avatar={developer.avatar || ''}
-                                  date={developer.dateCreated || undefined}
+                                  avatar={developer.avatar ? developer.avatar.content : ''}
+                                  date={developer.date_created || undefined}
                                   type={getDeveloperTypeText(developer.type)}
                                   phone={developer.phone}
                                   countBuildings={developer.buildings ? developer.buildings.length : 0}
-                                  isDisabled={!developer.active}
+                                  isDisabled={!developer.is_active}
                                   onContextMenu={(e: React.MouseEvent) => props.onContextMenu(developer, e)}
                                   onClick={() => props.onClick(developer)}
                             />

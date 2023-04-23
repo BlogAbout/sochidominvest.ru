@@ -105,7 +105,7 @@ const QuestionList: React.FC<Props> = (props): React.ReactElement => {
                                      onClick={() => openPopupQuestionInfo(document.body, {
                                          question: question
                                      })}
-                                     isDisabled={!question.active}
+                                     isDisabled={!question.is_active}
                             >
                                 <ListCell className={classes.name}>{question.name}</ListCell>
                                 <ListCell className={classes.author}>{question.authorName}</ListCell>

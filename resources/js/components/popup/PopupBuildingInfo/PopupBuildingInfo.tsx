@@ -142,9 +142,9 @@ const PopupBuildingInfo: React.FC<Props> = (props) => {
                             </div>
 
                             <div className={classes.icon}
-                                 title={`Дата публикации: ${getFormatDate(props.building.dateCreated)}`}>
+                                 title={`Дата публикации: ${props.building.date_created}`}>
                                 <FontAwesomeIcon icon='calendar'/>
-                                <span>{getFormatDate(props.building.dateCreated)}</span>
+                                <span>{props.building.date_created}</span>
                             </div>
 
                             {props.building.authorName ?

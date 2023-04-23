@@ -256,19 +256,23 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
                                                                              onContextMenu={(e: React.MouseEvent) => onContextMenuHandler(businessProcess, e)}
                                                                         >
                                                                             <div className={classes.meta}>
-                                                                                <div
-                                                                                    className={classes.id}>#{businessProcess.id}</div>
-                                                                                <div
-                                                                                    className={classes.dateCreated}>{businessProcess.date_created}</div>
+                                                                                <div className={classes.id}>
+                                                                                    #{businessProcess.id}
+                                                                                </div>
+                                                                                <div className={classes.dateCreated}>
+                                                                                    {businessProcess.date_created}
+                                                                                </div>
                                                                             </div>
-                                                                            <div
-                                                                                className={classes.name}>{businessProcess.name}</div>
+                                                                            <div className={classes.name}>
+                                                                                {businessProcess.name}
+                                                                            </div>
                                                                             <div className={classes.info} title='Тип'>
                                                                                 <FontAwesomeIcon icon='star'/>
                                                                                 <span>{getBpTypesText(businessProcess.type)}</span>
                                                                             </div>
                                                                             <div className={classes.info}
-                                                                                 title='Ответственный'>
+                                                                                 title='Ответственный'
+                                                                            >
                                                                                 <FontAwesomeIcon icon='user'/>
                                                                                 <span>{businessProcess.responsible ? businessProcess.responsible.name : ''}</span>
                                                                             </div>

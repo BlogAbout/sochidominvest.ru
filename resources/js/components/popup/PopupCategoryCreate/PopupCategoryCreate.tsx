@@ -128,7 +128,7 @@ const PopupCategoryCreate: React.FC<Props> = (props) => {
                     <CheckBox label='Активен'
                               type='modern'
                               width={110}
-                              checked={!!category.active}
+                              checked={!!category.is_active}
                               onChange={(e: React.MouseEvent, value: boolean) => setCategory({
                                   ...category,
                                   active: value ? 1 : 0

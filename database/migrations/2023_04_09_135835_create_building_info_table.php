@@ -39,8 +39,8 @@ class CreateBuildingInfoTable extends Migration
             $table->float('surcharge_gas', 11)->nullable();
             $table->boolean('is_sale_no_resident')->default(0);
             $table->string('passed')->nullable();
-            $table->string('cadastr_number')->nullable();
-            $table->float('cadastr_cost', 11)->nullable();
+            $table->string('cadastral_number')->nullable();
+            $table->float('cadastral_cost', 11)->nullable();
             $table->unsignedBigInteger('avatar_id')->nullable();
         });
     }

@@ -29,15 +29,14 @@ const defaultProps: Props = {
 const PopupFeedCreate: React.FC<Props> = (props) => {
     const [info, setInfo] = useState<IFeed>(props.feed || {
         id: null,
-        author: null,
-        phone: '',
-        name: '',
         title: '',
         type: 'feed',
-        objectId: props.building ? props.building.id : null,
-        objectType: props.building ? 'building' : null,
-        active: 1,
-        status: 'new'
+        status: 'new',
+        phone: '',
+        name: '',
+        object_id: props.building ? props.building.id : null,
+        object_type: props.building ? 'building' : null,
+        is_active: 1
     })
 
     const [policy, setPolicy] = useState(false)

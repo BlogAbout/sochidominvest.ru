@@ -25,8 +25,8 @@ export interface IBusinessProcess {
 }
 
 export interface IBusinessProcessRelation {
-    objectId: number
-    objectType: string
+    object_id: number
+    object_type: string
 }
 
 export interface IBusinessProcessStep {

@@ -501,19 +501,19 @@ export const checkBuildingByRangeCost = (building: IBuilding, filters: any) => {
     if (filters.buildingCost.min > 0 && filters.buildingCost.max > 0) {
         if (building.type !== 'building' && building.cost && building.cost >= filters.buildingCost.min && building.cost <= filters.buildingCost.max) {
             return true
-        } else if (building.type === 'building' && building.costMin && building.costMax && building.costMin >= filters.buildingCost.min && building.costMax <= filters.buildingCost.max) {
+        } else if (building.type === 'building' && building.cost_min && building.cost_max && building.cost_min >= filters.buildingCost.min && building.cost_max <= filters.buildingCost.max) {
             return true
         }
     } else if (filters.buildingCost.min > 0) {
         if (building.type !== 'building' && building.cost && building.cost >= +filters.buildingCost.min) {
             return true
-        } else if (building.type === 'building' && building.costMin && building.costMin >= +filters.buildingCost.min) {
+        } else if (building.type === 'building' && building.cost_min && building.cost_min >= +filters.buildingCost.min) {
             return true
         }
     } else if (filters.buildingCost.max > 0) {
         if (building.type !== 'building' && building.cost && building.cost <= filters.buildingCost.max) {
             return true
-        } else if (building.type === 'building' && building.costMax && building.costMax <= filters.buildingCost.max) {
+        } else if (building.type === 'building' && building.cost_max && building.cost_max <= filters.buildingCost.max) {
             return true
         }
     } else {
@@ -531,19 +531,19 @@ export const checkBuildingByRangeArea = (building: IBuilding, filters: any) => {
     if (filters.buildingArea.min > 0 && filters.buildingArea.max > 0) {
         if (building.type !== 'building' && building.area && building.area >= filters.buildingArea.min && building.area <= filters.buildingArea.max) {
             return true
-        } else if (building.type === 'building' && building.areaMin && building.areaMax && building.areaMin >= filters.buildingArea.min && building.areaMax <= filters.buildingArea.max) {
+        } else if (building.type === 'building' && building.area_min && building.area_max && building.area_min >= filters.buildingArea.min && building.area_max <= filters.buildingArea.max) {
             return true
         }
     } else if (filters.buildingArea.min > 0) {
         if (building.type !== 'building' && building.area && building.area >= filters.buildingArea.min) {
             return true
-        } else if (building.type === 'building' && building.areaMin && building.areaMin >= filters.buildingArea.min) {
+        } else if (building.type === 'building' && building.area_min && building.area_min >= filters.buildingArea.min) {
             return true
         }
     } else if (filters.buildingArea.max > 0) {
         if (building.type !== 'building' && building.area && building.area <= filters.buildingArea.max) {
             return true
-        } else if (building.type === 'building' && building.areaMax && building.areaMax <= filters.buildingArea.max) {
+        } else if (building.type === 'building' && building.area_max && building.area_max <= filters.buildingArea.max) {
             return true
         }
     } else {
@@ -558,7 +558,7 @@ export const checkBuildingByDistrict = (building: IBuilding, filters: any) => {
         return true
     }
 
-    return !!(building.districtZone && filters.buildingDistrictZone.includes(building.districtZone))
+    return !!(building.info.district_zone && filters.buildingDistrictZone.includes(building.info.district_zone))
 }
 
 export const checkVisibleBuildingByAuthor = (building: IBuilding, authorId: number | null): boolean => {
@@ -566,7 +566,7 @@ export const checkVisibleBuildingByAuthor = (building: IBuilding, authorId: numb
         return true
     }
 
-    return building.author === authorId || building.active === 1
+    return building.author === authorId || building.is_active === 1
 }
 
 export const getRentTypesText = (key: string) => {

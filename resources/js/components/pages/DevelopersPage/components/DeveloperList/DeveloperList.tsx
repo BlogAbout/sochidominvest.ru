@@ -47,7 +47,7 @@ const DeveloperList: React.FC<Props> = (props): React.ReactElement => {
                             <ListRow key={developer.id}
                                      onContextMenu={(e: React.MouseEvent) => props.onContextMenu(developer, e)}
                                      onClick={() => props.onClick(developer)}
-                                     isDisabled={!developer.active}
+                                     isDisabled={!developer.is_active}
                                      isCompact={props.isCompact}
                             >
                                 <ListCell className={classes.name}>{developer.name}</ListCell>

@@ -183,7 +183,7 @@ const PopupDeveloperCreate: React.FC<Props> = (props) => {
                         <CheckBox label='Активен'
                                   type='modern'
                                   width={110}
-                                  checked={!!developer.active}
+                                  checked={!!developer.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setDeveloper({
                                       ...developer,
                                       active: value ? 1 : 0

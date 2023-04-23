@@ -38,8 +38,8 @@ const FormBuildRequest: React.FC = (): React.ReactElement => {
             name: formData.name,
             title: `Заявка на помощь в ${formData.type === 'buy' ? 'покупке' : 'аренде'} недвижимости`,
             type: 'feed',
-            objectId: null,
-            objectType: null,
+            object_id: null,
+            object_type: null,
             active: 1,
             status: 'new'
         }

@@ -50,12 +50,12 @@ const cx = classNames.bind(classes)
 
 const BuildingItem: React.FC<Props> = (props) => {
     return (
-        <div className={cx({'BuildingItem': true, 'disabled': !props.building.active})}
+        <div className={cx({'BuildingItem': true, 'disabled': !props.building.is_active})}
              onClick={() => props.onClick(props.building)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.building)}
         >
             <div className={classes.name}>{props.building.name}</div>
-            <div className={classes.author}>{props.building.authorName || ''}</div>
+            <div className={classes.author}>{props.building.author ? props.building.author.name : ''}</div>
             <div className={classes.type}>{getBuildingTypesText(props.building.type)}</div>
             <div className={classes.views}>{props.building.views}</div>
         </div>

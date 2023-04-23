@@ -150,7 +150,7 @@ const MailingList: React.FC<Props> = (props): React.ReactElement => {
                                      onClick={() => openPopupMailingInfo(document.body, {
                                          mailing: mailing
                                      })}
-                                     isDisabled={!mailing.active}
+                                     isDisabled={!mailing.is_active}
                             >
                                 <ListCell className={classes.name}>{mailing.name}</ListCell>
                                 <ListCell className={classes.type}>{getMailingTypeText(mailing.type)}</ListCell>

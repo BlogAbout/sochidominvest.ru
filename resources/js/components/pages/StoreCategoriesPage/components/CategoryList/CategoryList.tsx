@@ -42,7 +42,7 @@ const CategoryList: React.FC<Props> = (props): React.ReactElement => {
                             <ListRow key={category.id}
                                      onContextMenu={(e: React.MouseEvent) => props.onContextMenu(category, e)}
                                      onClick={() => props.onClick(category)}
-                                     isDisabled={!category.active}
+                                     isDisabled={!category.is_active}
                             >
                                 <ListCell className={classes.name}>{category.name}</ListCell>
                             </ListRow>

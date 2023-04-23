@@ -37,8 +37,8 @@ const PopupSupportCreate: React.FC<Props> = (props): React.ReactElement => {
         name: null,
         title: '',
         type: 'feed',
-        objectId: props.objectId || null,
-        objectType: props.objectType || null,
+        object_id: props.objectId || null,
+        object_type: props.objectType || null,
         active: 1,
         status: 'new'
     })

@@ -47,7 +47,7 @@ const SearchItem: React.FC<Props> = (props) => {
             </div>
 
             <div className={classes.date}>
-                {'dateCreated' in props.item ? getFormatDate(props.item.dateCreated) : ''}
+                {'date_created' in props.item ? props.item.date_created : ''}
             </div>
         </div>
     )

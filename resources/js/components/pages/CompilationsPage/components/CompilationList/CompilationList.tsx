@@ -99,10 +99,10 @@ const CompilationList: React.FC<Props> = (props): React.ReactElement => {
                             <ListRow key={compilation.id}
                                      onContextMenu={(e: React.MouseEvent) => onContextMenu(compilation, e)}
                                      onClick={() => navigate(`${RouteNames.P_COMPILATION}/${compilation.id}`)}
-                                     isDisabled={!compilation.active}
+                                     isDisabled={!compilation.is_active}
                             >
                                 <ListCell className={classes.name}>{compilation.name}</ListCell>
-                                <ListCell className={classes.date}>{getFormatDate(compilation.dateCreated)}</ListCell>
+                                <ListCell className={classes.date}>{compilation.date_created}</ListCell>
                                 <ListCell className={classes.count}>
                                     {compilation.buildings ? compilation.buildings.length : 0}
                                 </ListCell>

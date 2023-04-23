@@ -44,8 +44,8 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
         name: null,
         title: '',
         type: 'feed',
-        objectId: null,
-        objectType: null,
+        object_id: null,
+        object_type: null,
         active: 1,
         status: 'new',
         messages: []
@@ -94,9 +94,9 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
     }, [props.feedId])
 
     useEffect(() => {
-        if (feed.objectId && feed.objectType) {
-            if (feed.objectType === 'building') {
-                BuildingService.fetchBuildingById(feed.objectId)
+        if (feed.object_id && feed.object_type) {
+            if (feed.object_type === 'building') {
+                BuildingService.fetchBuildingById(feed.object_id)
                     .then((response: any) => {
                         setInfo({...info, objectName: response.data.data.name})
                     })
@@ -108,7 +108,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
                     })
             }
         }
-    }, [feed.objectId])
+    }, [feed.object_id])
 
     // Закрытие popup
     const closePopup = () => {
@@ -193,7 +193,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
             <div key={message.id} className={classes.item}>
                 <div className={classes.head}>
                     <div className={classes.name}>{message.authorName}</div>
-                    <div className={classes.date}>{message.dateCreated}</div>
+                    <div className={classes.date}>{message.date_created}</div>
                 </div>
                 <div className={classes.description}>{message.content}</div>
             </div>
@@ -276,9 +276,9 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
                             : null
                         }
 
-                        {feed.objectId && feed.objectType ?
-                            <Field label={getFeedObjectText(feed.objectType)}
-                                   title={getFeedObjectText(feed.objectType)}
+                        {feed.object_id && feed.object_type ?
+                            <Field label={getFeedObjectText(feed.object_type)}
+                                   title={getFeedObjectText(feed.object_type)}
                                    type='hor'
                                    style='dark'
                                    labelWidth={150}
@@ -318,7 +318,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
                                style='dark'
                                labelWidth={150}
                         >
-                            <TextBox value={feed.dateCreated}
+                            <TextBox value={feed.date_created}
                                      onChange={() => {
                                      }}
                                      styleType='minimal'
@@ -333,7 +333,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
                                style='dark'
                                labelWidth={150}
                         >
-                            <TextBox value={feed.dateUpdate}
+                            <TextBox value={feed.date_updated}
                                      onChange={() => {
                                      }}
                                      styleType='minimal'

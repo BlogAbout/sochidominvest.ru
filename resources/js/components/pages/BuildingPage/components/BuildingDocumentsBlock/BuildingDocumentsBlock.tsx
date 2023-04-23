@@ -35,8 +35,8 @@ const BuildingDocumentsBlock: React.FC<Props> = (props): React.ReactElement => {
 
         const filter: IFilter = {
             active: [0, 1],
-            objectId: [props.building.id],
-            objectType: 'building'
+            object_id: [props.building.id],
+            object_type: 'building'
         }
 
         DocumentService.fetchDocuments(filter)

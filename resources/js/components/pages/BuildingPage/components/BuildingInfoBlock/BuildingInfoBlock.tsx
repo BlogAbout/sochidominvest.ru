@@ -188,9 +188,9 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                     <span>{props.views}</span>
                 </div>
 
-                <div className={classes.icon} title={`Дата публикации: ${props.building.dateCreated}`}>
+                <div className={classes.icon} title={`Дата публикации: ${props.building.date_created}`}>
                     <FontAwesomeIcon icon='calendar'/>
-                    <span>{getFormatDate(props.building.dateCreated)}</span>
+                    <span>{props.building.date_created}</span>
                 </div>
 
                 {props.building.authorName ?
@@ -282,9 +282,9 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                     }
                 </div>
 
-                {props.building.type === 'land' && props.building.cadastrCost ?
+                {props.building.type === 'land' && props.building.cadastral_cost ?
                     <div className={classes.row}>
-                        <span>{numberWithSpaces(round(props.building.cadastrCost || 0, 0))} руб.</span>
+                        <span>{numberWithSpaces(round(props.building.cadastral_cost || 0, 0))} руб.</span>
                         <span>Кадастровая стоимость</span>
                     </div>
                     : null
@@ -456,9 +456,9 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                 : null
             }
 
-            {props.building.type === 'land' && props.building.cadastrNumber ?
+            {props.building.type === 'land' && props.building.cadastral_number ?
                 <div className={classes.passed} title='Кадастровый номер'>
-                    <span>{props.building.cadastrNumber}</span>
+                    <span>{props.building.cadastral_number}</span>
                 </div>
                 : null
             }

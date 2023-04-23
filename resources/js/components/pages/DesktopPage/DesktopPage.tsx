@@ -383,7 +383,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
         }
 
         // const showAdd = allowForRole(['director', 'administrator', 'manager'], userInfo.role) || (allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business', 'effectivePlus'], userInfo.tariff))
-        // const isDisable = allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business'], userInfo.tariff) && agents.filter((agent: IAgent) => agent.active === 1).length > 0
+        // const isDisable = allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business'], userInfo.tariff) && agents.filter((agent: IAgent) => agent.is_active === 1).length > 0
         // const emptyText = showAdd ? 'У Вас еще нет созданных агентств.' : 'На текущем тарифе не доступно.'
         //
         // return (
@@ -412,7 +412,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
     const renderDevelopersInfo = (): React.ReactElement => {
         return <div/>
         // const showAdd = allowForRole(['director', 'administrator', 'manager'], userInfo.role) || (allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business', 'effectivePlus'], userInfo.tariff))
-        // const isDisable = allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business'], userInfo.tariff) && developers.filter((developer: IDeveloper) => developer.active === 1).length > 0
+        // const isDisable = allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business'], userInfo.tariff) && developers.filter((developer: IDeveloper) => developer.is_active === 1).length > 0
         // const emptyText = showAdd ? 'У Вас еще нет созданных застройщиков.' : 'На текущем тарифе не доступно.'
         //
         // return (

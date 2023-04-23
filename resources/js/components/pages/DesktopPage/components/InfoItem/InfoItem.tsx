@@ -2,13 +2,11 @@ import React from 'react'
 import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
 import {IArticle} from '../../../../../@types/IArticle'
 import {IBuilding} from '../../../../../@types/IBuilding'
-import {ILog} from '../../../../../@types/ILog'
 import classes from './InfoItem.module.scss'
 
 interface Props {
     article?: IArticle
     building?: IBuilding
-    log?: ILog
     type: 'article' | 'building' | 'log'
 
     onSave(): void
@@ -109,73 +107,7 @@ const InfoItem: React.FC<Props> = (props) => {
                  onContextMenu={(e: React.MouseEvent) => onContextMenu(e)}
             >
                 <div className={classes.name}>{props.building.name}</div>
-                <div className={classes.date}>{props.building.dateCreated}</div>
-            </div>
-        )
-    }
-
-    const renderLog = () => {
-        if (!props.log) {
-            return null
-        }
-
-        let textContent = ''
-
-        switch (props.log.type) {
-            case 'create':
-                textContent = 'Создано: '
-                break
-            case 'update':
-                textContent = 'Обновлено: '
-                break
-            case 'remove':
-                textContent = 'Удалено: '
-                break
-        }
-
-        switch (props.log.objectType) {
-            case 'article':
-                textContent += 'статья. '
-                break
-            case 'building':
-                textContent += 'объект недвижимости. '
-                break
-            case 'checker':
-                textContent += 'шахматка. '
-                break
-            case 'developer':
-                textContent += 'застройщик. '
-                break
-            case 'document':
-                textContent += 'документ. '
-                break
-            case 'tag':
-                textContent += 'тег. '
-                break
-            case 'feed':
-                textContent += 'заявка. '
-                break
-            case 'user':
-                textContent += 'пользователь. '
-                break
-            case 'attachment':
-                textContent += 'вложение. '
-                break
-            case 'notify':
-                textContent += 'уведомление. '
-                break
-            case 'widget':
-                textContent += 'виджет. '
-                break
-            case 'partner':
-                textContent += 'партнер. '
-                break
-        }
-
-        return (
-            <div className={classes.InfoItem}>
-                <div className={classes.name}>{textContent + props.log.content}</div>
-                <div className={classes.date}>{props.log.dateCreated}</div>
+                <div className={classes.date}>{props.building.date_created}</div>
             </div>
         )
     }
@@ -183,7 +115,7 @@ const InfoItem: React.FC<Props> = (props) => {
     return (
         props.type === 'article' ? renderArticle()
             : props.type === 'building' ? renderBuilding()
-            : renderLog()
+            : null
     )
 }
 

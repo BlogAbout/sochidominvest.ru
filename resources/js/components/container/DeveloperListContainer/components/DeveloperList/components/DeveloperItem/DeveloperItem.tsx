@@ -37,7 +37,7 @@ const cx = classNames.bind(classes)
 
 const DeveloperItem: React.FC<Props> = (props) => {
     return (
-        <div className={cx({'DeveloperItem': true, 'disabled': !props.developer.active})}
+        <div className={cx({'DeveloperItem': true, 'disabled': !props.developer.is_active})}
              onClick={(e: React.MouseEvent) => openPopupDeveloperInfo(e, {
                  developer: props.developer
              })}

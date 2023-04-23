@@ -1,30 +1,30 @@
 import React from 'react'
-import {IPayment} from '../../../@types/IPayment'
+import {ITransaction} from '../../../@types/ITransaction'
 import Empty from '../../ui/Empty/Empty'
 import PaymentList from './components/PaymentList/PaymentList'
 import classes from './PaymentListContainer.module.scss'
 
 interface Props {
-    payments: IPayment[]
+    payments: ITransaction[]
     fetching: boolean
 
-    onClick(payment: IPayment): void
+    onClick(payment: ITransaction): void
 
-    onEdit(payment: IPayment): void
+    onEdit(payment: ITransaction): void
 
-    onContextMenu(e: React.MouseEvent, payment: IPayment): void
+    onContextMenu(e: React.MouseEvent, payment: ITransaction): void
 }
 
 const defaultProps: Props = {
     payments: [],
     fetching: false,
-    onClick: (payment: IPayment) => {
+    onClick: (payment: ITransaction) => {
         console.info('PaymentListContainer onClick', payment)
     },
-    onEdit: (payment: IPayment) => {
+    onEdit: (payment: ITransaction) => {
         console.info('PaymentListContainer onEdit', payment)
     },
-    onContextMenu: (e: React.MouseEvent, payment: IPayment) => {
+    onContextMenu: (e: React.MouseEvent, payment: ITransaction) => {
         console.info('PaymentListContainer onContextMenu', e, payment)
     }
 }

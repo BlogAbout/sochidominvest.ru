@@ -65,12 +65,12 @@ const PopupDeveloperInfo: React.FC<Props> = (props) => {
 
                     <div className={classes.row}>
                         <span>Создано</span>
-                        <span>{props.developer.dateCreated}</span>
+                        <span>{props.developer.date_created}</span>
                     </div>
 
                     <div className={classes.row}>
                         <span>Обновлено</span>
-                        <span>{props.developer.dateUpdate}</span>
+                        <span>{props.developer.date_updated}</span>
                     </div>
 
                     {props.developer.description ?

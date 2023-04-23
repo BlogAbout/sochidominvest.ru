@@ -1,30 +1,30 @@
 import React from 'react'
 import PaymentItem from './components/PaymentItem/PaymentItem'
 import BlockingElement from '../../../../ui/BlockingElement/BlockingElement'
-import {IPayment} from '../../../../../@types/IPayment'
+import {ITransaction} from '../../../../../@types/ITransaction'
 import classes from './PaymentList.module.scss'
 
 interface Props {
-    payments: IPayment[]
+    payments: ITransaction[]
     fetching: boolean
 
-    onClick(payment: IPayment): void
+    onClick(payment: ITransaction): void
 
-    onEdit(payment: IPayment): void
+    onEdit(payment: ITransaction): void
 
-    onContextMenu(e: React.MouseEvent, payment: IPayment): void
+    onContextMenu(e: React.MouseEvent, payment: ITransaction): void
 }
 
 const defaultProps: Props = {
     payments: [],
     fetching: false,
-    onClick: (payment: IPayment) => {
+    onClick: (payment: ITransaction) => {
         console.info('DocumentList onClick', payment)
     },
-    onEdit: (payment: IPayment) => {
+    onEdit: (payment: ITransaction) => {
         console.info('DocumentList onEdit', payment)
     },
-    onContextMenu: (e: React.MouseEvent, payment: IPayment) => {
+    onContextMenu: (e: React.MouseEvent, payment: ITransaction) => {
         console.info('DocumentList onContextMenu', e, payment)
     }
 }
@@ -42,7 +42,7 @@ const PaymentList: React.FC<Props> = (props) => {
             </div>
 
             <BlockingElement fetching={props.fetching} className={classes.list}>
-                {props.payments.map((payment: IPayment) => {
+                {props.payments.map((payment: ITransaction) => {
                     return (
                         <PaymentItem key={payment.id}
                                      payment={payment}

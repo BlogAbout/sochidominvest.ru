@@ -1,6 +1,6 @@
 import React from 'react'
 import {numberWithSpaces, round} from '../../../../../helpers/numberHelper'
-import {ICategory, IProduct} from '../../../../../@types/IStore'
+import {IProduct} from '../../../../../@types/IStore'
 import ListHead from '../../../../ui/List/components/ListHead/ListHead'
 import ListCell from '../../../../ui/List/components/ListCell/ListCell'
 import ListBody from '../../../../ui/List/components/ListBody/ListBody'
@@ -11,7 +11,6 @@ import classes from './ProductList.module.scss'
 
 interface Props {
     list: IProduct[]
-    categories: ICategory[]
     fetching: boolean
 
     onClick(product: IProduct): void
@@ -21,7 +20,6 @@ interface Props {
 
 const defaultProps: Props = {
     list: [],
-    categories: [],
     fetching: false,
     onClick: (product: IProduct) => {
         console.info('ProductList onClick', product)
@@ -32,20 +30,6 @@ const defaultProps: Props = {
 }
 
 const ProductList: React.FC<Props> = (props): React.ReactElement => {
-    const getCategoryName = (categoryId: number): string => {
-        if (!props.categories.length) {
-            return ''
-        }
-
-        const findCategory = props.categories.find((category: ICategory) => category.id === categoryId)
-
-        if (!findCategory) {
-            return ''
-        }
-
-        return findCategory.name
-    }
-
     return (
         <List className={classes.ProductList}>
             <ListHead>
@@ -61,20 +45,22 @@ const ProductList: React.FC<Props> = (props): React.ReactElement => {
                             <ListRow key={product.id}
                                      onContextMenu={(e: React.MouseEvent) => props.onContextMenu(product, e)}
                                      onClick={() => props.onClick(product)}
-                                     isDisabled={!product.active}
+                                     isDisabled={!product.is_active}
                             >
                                 <ListCell className={classes.name}>{product.name}</ListCell>
                                 <ListCell className={classes.cost}>
-                                    {product.cost && product.costOld ?
+                                    {product.cost && product.cost_old ?
                                         <span className={classes.old}>
-                                            {numberWithSpaces(round(product.costOld || 0, 2))}
+                                            {numberWithSpaces(round(product.cost_old || 0, 2))}
                                         </span>
                                         : null
                                     }
 
                                     {numberWithSpaces(round(product.cost || 0, 0))}
                                 </ListCell>
-                                <ListCell className={classes.category}>{getCategoryName(product.categoryId)}</ListCell>
+                                <ListCell className={classes.category}>
+                                    {product.category ? product.category.name : ''}
+                                </ListCell>
                             </ListRow>
                         )
                     })

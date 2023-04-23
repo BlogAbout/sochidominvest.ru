@@ -60,10 +60,12 @@ const BuildingList: React.FC<Props> = (props): React.ReactElement => {
                             <ListRow key={building.id}
                                      onContextMenu={(e: React.MouseEvent) => props.onContextMenu(building, e)}
                                      onClick={() => props.onClick(building)}
-                                     isDisabled={!building.active}
+                                     isDisabled={!building.is_active}
                             >
                                 <ListCell className={classes.name}>{building.name}</ListCell>
-                                <ListCell className={classes.author}>{building.authorName || ''}</ListCell>
+                                <ListCell className={classes.author}>
+                                    {building.author ? building.author.name : ''}
+                                </ListCell>
                                 <ListCell className={classes.type}>{getBuildingTypesText(building.type)}</ListCell>
                                 <ListCell className={classes.views}>{building.views}</ListCell>
                             </ListRow>

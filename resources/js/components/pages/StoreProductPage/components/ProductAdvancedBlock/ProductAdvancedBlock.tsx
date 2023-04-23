@@ -19,7 +19,7 @@ const ProductAdvancedBlock: React.FC<Props> = (props): React.ReactElement | null
         return null
     }
 
-    const category = props.categories.find((category: ICategory) => category.id === props.product.categoryId)
+    const category = props.categories.find((category: ICategory) => category.id === props.product.category_id)
     if (!category || !category.fields.length) {
         return null
     }

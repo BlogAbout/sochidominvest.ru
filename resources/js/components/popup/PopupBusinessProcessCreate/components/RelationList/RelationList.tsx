@@ -42,16 +42,16 @@ const RelationList: React.FC<Props> = (props) => {
     useEffect(() => {
         if (props.selected.length) {
             const buildingsIds: number[] = props.selected
-                .filter((relation: IBusinessProcessRelation) => relation.objectType === 'building')
-                .map((relation: IBusinessProcessRelation) => relation.objectId)
+                .filter((relation: IBusinessProcessRelation) => relation.object_type === 'building')
+                .map((relation: IBusinessProcessRelation) => relation.object_id)
 
             const feedsIds: number[] = props.selected
-                .filter((relation: IBusinessProcessRelation) => relation.objectType === 'feed')
-                .map((relation: IBusinessProcessRelation) => relation.objectId)
+                .filter((relation: IBusinessProcessRelation) => relation.object_type === 'feed')
+                .map((relation: IBusinessProcessRelation) => relation.object_id)
 
             const bookingIds: number[] = props.selected
-                .filter((relation: IBusinessProcessRelation) => relation.objectType === 'booking')
-                .map((relation: IBusinessProcessRelation) => relation.objectId)
+                .filter((relation: IBusinessProcessRelation) => relation.object_type === 'booking')
+                .map((relation: IBusinessProcessRelation) => relation.object_id)
 
             if (buildingsIds.length) {
                 setFetchingBuildings(true)
@@ -107,15 +107,15 @@ const RelationList: React.FC<Props> = (props) => {
                 text: 'Тикет', onClick: () => {
                     openPopupFeedSelector(document.body, {
                         selected: props.selected
-                            .filter((relation: IBusinessProcessRelation) => relation.objectType === 'feed')
-                            .map((relation: IBusinessProcessRelation) => relation.objectId),
+                            .filter((relation: IBusinessProcessRelation) => relation.object_type === 'feed')
+                            .map((relation: IBusinessProcessRelation) => relation.object_id),
                         multi: true,
                         onSelect: (value: number[]) => {
                             const updateRelations: IBusinessProcessRelation[] = JSON.parse(JSON.stringify(props.selected))
 
                             value.forEach((id: number) => {
-                                if (updateRelations.findIndex((relation: IBusinessProcessRelation) => relation.objectId === id && relation.objectType === 'feed') === -1) {
-                                    updateRelations.push({objectId: id, objectType: 'feed'})
+                                if (updateRelations.findIndex((relation: IBusinessProcessRelation) => relation.object_id === id && relation.object_type === 'feed') === -1) {
+                                    updateRelations.push({object_id: id, object_type: 'feed'})
                                 }
                             })
 
@@ -129,15 +129,15 @@ const RelationList: React.FC<Props> = (props) => {
                 onClick: () => {
                     openPopupBuildingSelector(document.body, {
                         selected: props.selected
-                            .filter((relation: IBusinessProcessRelation) => relation.objectType === 'building')
-                            .map((relation: IBusinessProcessRelation) => relation.objectId),
+                            .filter((relation: IBusinessProcessRelation) => relation.object_type === 'building')
+                            .map((relation: IBusinessProcessRelation) => relation.object_id),
                         multi: true,
                         onSelect: (value: number[]) => {
                             const updateRelations: IBusinessProcessRelation[] = JSON.parse(JSON.stringify(props.selected))
 
                             value.forEach((id: number) => {
-                                if (updateRelations.findIndex((relation: IBusinessProcessRelation) => relation.objectId === id && relation.objectType === 'building') === -1) {
-                                    updateRelations.push({objectId: id, objectType: 'building'})
+                                if (updateRelations.findIndex((relation: IBusinessProcessRelation) => relation.object_id === id && relation.object_type === 'building') === -1) {
+                                    updateRelations.push({object_id: id, object_type: 'building'})
                                 }
                             })
 
@@ -154,9 +154,9 @@ const RelationList: React.FC<Props> = (props) => {
     // Удаление элемента из списка
     const removeHandler = (relation: IBusinessProcessRelation) => {
         let relationName = ''
-        switch (relation.objectType) {
+        switch (relation.object_type) {
             case 'feed':
-                const findFeed = selectedFeeds.find((feed: IFeed) => feed.id === relation.objectId)
+                const findFeed = selectedFeeds.find((feed: IFeed) => feed.id === relation.object_id)
 
                 if (findFeed) {
                     relationName = findFeed.title
@@ -164,7 +164,7 @@ const RelationList: React.FC<Props> = (props) => {
 
                 break
             case 'building':
-                const findBuilding = selectedBuildings.find((building: IBuilding) => building.id === relation.objectId)
+                const findBuilding = selectedBuildings.find((building: IBuilding) => building.id === relation.object_id)
 
                 if (findBuilding) {
                     relationName = findBuilding.name
@@ -179,7 +179,7 @@ const RelationList: React.FC<Props> = (props) => {
                 {
                     text: 'Удалить',
                     onClick: () => {
-                        const removeSelectedList: IBusinessProcessRelation[] = props.selected.filter((item: IBusinessProcessRelation) => !(item.objectId === relation.objectId && item.objectType === relation.objectType))
+                        const removeSelectedList: IBusinessProcessRelation[] = props.selected.filter((item: IBusinessProcessRelation) => !(item.object_id === relation.object_id && item.object_type === relation.object_type))
                         props.onSelect(removeSelectedList)
                     }
                 },
@@ -200,7 +200,7 @@ const RelationList: React.FC<Props> = (props) => {
     }
 
     const renderRelation = (relation: IBusinessProcessRelation) => {
-        switch (relation.objectType) {
+        switch (relation.object_type) {
             case 'feed':
                 return renderFeedItem(relation)
             case 'building':
@@ -211,14 +211,14 @@ const RelationList: React.FC<Props> = (props) => {
     }
 
     const renderFeedItem = (relation: IBusinessProcessRelation) => {
-        const findFeed = selectedFeeds.find((feed: IFeed) => feed.id === relation.objectId)
+        const findFeed = selectedFeeds.find((feed: IFeed) => feed.id === relation.object_id)
 
         if (!findFeed) {
             return null
         }
 
         return (
-            <div key={`${relation.objectType}-${relation.objectId}`}
+            <div key={`${relation.object_type}-${relation.object_id}`}
                  className={classes.row}
                  onContextMenu={(e: React.MouseEvent) => onContextMenu(e, relation)}
             >
@@ -229,14 +229,14 @@ const RelationList: React.FC<Props> = (props) => {
     }
 
     const renderBuildingItem = (relation: IBusinessProcessRelation) => {
-        const findBuilding = selectedBuildings.find((building: IBuilding) => building.id === relation.objectId)
+        const findBuilding = selectedBuildings.find((building: IBuilding) => building.id === relation.object_id)
 
         if (!findBuilding) {
             return null
         }
 
         return (
-            <div key={`${relation.objectType}-${relation.objectId}`}
+            <div key={`${relation.object_type}-${relation.object_id}`}
                  className={classes.row}
                  onContextMenu={(e: React.MouseEvent) => onContextMenu(e, relation)}
             >
@@ -247,14 +247,14 @@ const RelationList: React.FC<Props> = (props) => {
     }
 
     const renderBookingItem = (relation: IBusinessProcessRelation) => {
-        const findBooking = selectedBookings.find((booking: IBooking) => booking.id === relation.objectId)
+        const findBooking = selectedBookings.find((booking: IBooking) => booking.id === relation.object_id)
 
         if (!findBooking) {
             return null
         }
 
         return (
-            <div key={`${relation.objectType}-${relation.objectId}`}
+            <div key={`${relation.object_type}-${relation.object_id}`}
                  className={classes.row}
                  onContextMenu={(e: React.MouseEvent) => onContextMenu(e, relation)}
             >

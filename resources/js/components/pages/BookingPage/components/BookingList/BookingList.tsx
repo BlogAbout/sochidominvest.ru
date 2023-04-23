@@ -54,7 +54,7 @@ const BookingList: React.FC<Props> = (props): React.ReactElement => {
             type: 'booking',
             step: 'default',
             relations: [
-                {objectId: booking.id, objectType: 'booking'}
+                {object_id: booking.id, object_type: 'booking'}
             ]
         }
 

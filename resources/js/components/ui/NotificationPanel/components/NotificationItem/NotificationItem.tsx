@@ -29,11 +29,11 @@ const NotificationItem: React.FC<Props> = (props) => {
     const getTitle = () => {
         let onClick = undefined
 
-        switch (props.notification.objectType) {
+        switch (props.notification.object_type) {
             case 'feed':
                 onClick = () => {
                     openPopupSupportInfo(document.body, {
-                        feedId: props.notification.objectId || 0,
+                        feedId: props.notification.object_id || 0,
                         onSave: () => {
                         }
                     })
@@ -42,7 +42,7 @@ const NotificationItem: React.FC<Props> = (props) => {
             case 'booking':
                 onClick = () => {
                     openPopupBookingInfo(document.body, {
-                        bookingId: props.notification.objectId || 0
+                        bookingId: props.notification.object_id || 0
                     })
                 }
                 break
@@ -59,7 +59,7 @@ const NotificationItem: React.FC<Props> = (props) => {
         <div>
             <div key={props.notification.id} className={classes.item}>
                 <div className={classes.row}>
-                    <div className={classes.date}>{props.notification.dateCreated}</div>
+                    <div className={classes.date}>{props.notification.date_created}</div>
 
                     {props.notification.status === 'new' ?
                         <div className={classes.btn}

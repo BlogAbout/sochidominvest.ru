@@ -49,11 +49,11 @@ const DocumentItem: React.FC<Props> = (props) => {
 
     let objectInfo = ''
 
-    if (props.document.objectType && props.document.objectId) {
-        switch (props.document.objectType) {
+    if (props.document.object_type && props.document.object_id) {
+        switch (props.document.object_type) {
             case 'building':
                 if (buildings && buildings.length) {
-                    const buildingInfo = buildings.find((building: IBuilding) => building.id === props.document.objectId)
+                    const buildingInfo = buildings.find((building: IBuilding) => building.id === props.document.object_id)
 
                     if (buildingInfo) {
                         objectInfo = buildingInfo.name
@@ -64,7 +64,7 @@ const DocumentItem: React.FC<Props> = (props) => {
     }
 
     return (
-        <div className={cx({'DocumentItem': true, 'disabled': !props.document.active})}
+        <div className={cx({'DocumentItem': true, 'disabled': !props.document.is_active})}
              onClick={() => props.onClick(props.document)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.document)}
         >

@@ -19,7 +19,7 @@ import ComboBox from '../../form/ComboBox/ComboBox'
 import NumberBox from '../../form/NumberBox/NumberBox'
 import openPopupAlert from '../PopupAlert/PopupAlert'
 import classes from './PopupBuyTariff.module.scss'
-import {IPayment} from "../../../@types/IPayment";
+import {ITransaction} from "../../../@types/ITransaction";
 import TransactionService from "../../../api/TransactionService";
 
 interface Props extends PopupProps {
@@ -85,15 +85,15 @@ const PopupBuyTariff: React.FC<Props> = (props) => {
             return
         }
 
-        const payment: IPayment = {
+        const payment: ITransaction = {
             id: null,
             name: `Оплата тарифа ${findTariff.name}. Месяцев: ${months}`,
             status: 'new',
             userId: user.id,
             cost: total,
             duration: `P${months}M`,
-            objectId: 0, //Todo: findTariff.objectId,
-            objectType: 'tariff'
+            object_id: 0, //Todo: findTariff.object_id,
+            object_type: 'tariff'
         }
 
         TransactionService.savePayment(payment, false)

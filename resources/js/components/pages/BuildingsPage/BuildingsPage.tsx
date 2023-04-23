@@ -216,7 +216,7 @@ const BuildingsPage: React.FC<Props> = (props): React.ReactElement => {
                                        avatar={building.avatar || ''}
                                        address={building.address || ''}
                                        districtText={getDistrictText(building.district, building.districtZone)}
-                                       date={building.dateCreated || undefined}
+                                       date={building.date_created || undefined}
                                        type={getBuildingTypesText(building.type)}
                                        passed={getPassedText(building.passed)}
                                        isPassed={!!(building.passed && building.passed.is)}
@@ -227,9 +227,9 @@ const BuildingsPage: React.FC<Props> = (props): React.ReactElement => {
                                        cost={building.type === 'building' ? (building.costMin || 0) : (building.cost || 0)}
                                        areaMin={building.type === 'building' ? (building.areaMin || 0) : (building.area || 0)}
                                        areaMax={building.type === 'building' ? (building.areaMax || 0) : undefined}
-                                       isDisabled={!building.active}
+                                       isDisabled={!building.is_active}
                                        isRent={props.isRent}
-                                       cadastrNumber={building.type === 'land' ? building.cadastrNumber : null}
+                                       cadastral_number={building.type === 'land' ? building.cadastral_number : null}
                                        onContextMenu={() => {
                                        }}
                                        onClick={() => navigate(`${directoryUrl}/${building.id}`)}
