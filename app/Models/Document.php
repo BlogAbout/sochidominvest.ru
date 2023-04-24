@@ -14,6 +14,8 @@ class Document extends Model
     protected $table = 'sdi_documents';
     protected $guarded = false;
 
+    protected $with = ['attachment', 'author', 'relationBuildings'];
+
     public function attachment()
     {
         return $this->belongsTo(Attachment::class, 'attachment_id', 'id');
@@ -26,7 +28,7 @@ class Document extends Model
 
     public function relationBuildings()
     {
-        return $this->belongsToMany(Building::class, 'sdi_building_relations', 'object_id', 'building_id')->wherePivot('object_type', 'document');
+        return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')->without(['relationDocuments']);
     }
 
     public function getDateCreatedFormatAttribute(): string

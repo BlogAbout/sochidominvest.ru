@@ -16,6 +16,8 @@ class AddIdxFkToBuildingsTable extends Migration
         Schema::table('sdi_buildings', function (Blueprint $table) {
             $table->index('author_id', 'building_user_idx');
             $table->foreign('author_id', 'building_user_fk')->on('sdi_users')->references('id');
+
+            $table->foreign('id', 'building_building_info_fk')->on('sdi_building_info')->references('id');
         });
     }
 
@@ -27,6 +29,7 @@ class AddIdxFkToBuildingsTable extends Migration
     public function down()
     {
         Schema::table('sdi_buildings', function (Blueprint $table) {
+            $table->dropForeign('building_building_info_fk');
             $table->dropForeign('building_user_fk');
             $table->dropIndex('building_user_idx');
         });

@@ -14,6 +14,21 @@ class Building extends Model
     protected $table = 'sdi_buildings';
     protected $guarded = false;
 
+    protected $with = [
+        'info',
+        'rentInfo',
+        'author',
+        'images',
+        'videos',
+        'checkers',
+        'relationDevelopers',
+        'relationAgents',
+        'relationContacts',
+        'relationDocuments',
+        'relationArticles',
+        'relationTags'
+    ];
+
     public function info()
     {
         return $this->hasOne(BuildingInfo::class, 'id');
@@ -31,52 +46,52 @@ class Building extends Model
 
     public function images()
     {
-        return $this->belongsToMany(Attachment::class, 'sdi_images', 'attachment_id', 'object_id')->wherePivot('object_type', 'building');
+        return $this->morphToMany(Attachment::class, 'object', 'sdi_images');
     }
 
     public function videos()
     {
-        return $this->belongsToMany(Attachment::class, 'sdi_videos', 'attachment_id', 'object_id')->wherePivot('object_type', 'building');
+        return $this->morphToMany(Attachment::class, 'object', 'sdi_videos');
     }
 
     public function prices()
     {
-        return $this->hasMany(Price::class, 'object_id', 'id')->where('object_type', 'like', 'building');
+        return $this->morphToMany(Price::class, 'object', 'sdi_prices');
     }
 
     public function checkers()
     {
-        return $this->hasMany(Checker::class, 'building_id', 'id');
+        return $this->hasMany(Checker::class, 'building_id', 'id')->without(['building']);
     }
 
     public function relationDevelopers()
     {
-        return $this->belongsToMany(Article::class, 'sdi_building_relations', 'building_id', 'object_id')->wherePivot('object_type', 'developer');
+        return $this->morphedByMany(Developer::class, 'object', 'sdi_building_relations')->without(['relationBuildings']);
     }
 
     public function relationAgents()
     {
-        return $this->belongsToMany(Agent::class, 'sdi_building_relations', 'building_id', 'object_id')->wherePivot('object_type', 'agent');
+        return $this->morphedByMany(Agent::class, 'object', 'sdi_building_relations')->without(['relationBuildings']);
     }
 
     public function relationContacts()
     {
-        return $this->belongsToMany(Article::class, 'sdi_building_relations', 'building_id', 'object_id')->wherePivot('object_type', 'contact');
+        return $this->morphedByMany(Contact::class, 'object', 'sdi_building_relations')->without(['relationBuildings']);
     }
 
     public function relationDocuments()
     {
-        return $this->belongsToMany(Article::class, 'sdi_building_relations', 'building_id', 'object_id')->wherePivot('object_type', 'document');
+        return $this->morphedByMany(Document::class, 'object', 'sdi_building_relations')->without(['relationBuildings']);
     }
 
     public function relationArticles()
     {
-        return $this->belongsToMany(Article::class, 'sdi_building_relations', 'building_id', 'object_id')->wherePivot('object_type', 'article');
+        return $this->morphedByMany(Article::class, 'object', 'sdi_building_relations')->without(['relationBuildings']);
     }
 
     public function relationTags()
     {
-        return $this->belongsToMany(Article::class, 'sdi_building_relations', 'building_id', 'object_id')->wherePivot('object_type', 'tag');
+        return $this->morphedByMany(Tag::class, 'object', 'sdi_building_relations');
     }
 
     public function getDateCreatedFormatAttribute(): string

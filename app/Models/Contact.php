@@ -14,9 +14,11 @@ class Contact extends Model
     protected $table = 'sdi_contacts';
     protected $guarded = false;
 
+    protected $with = ['agent', 'author', 'relationBuildings'];
+
     public function agent()
     {
-        return $this->belongsTo(Agent::class, 'agent_id', 'id');
+        return $this->belongsTo(Agent::class, 'agent_id', 'id')->without(['contacts']);
     }
 
     public function author()
@@ -26,7 +28,7 @@ class Contact extends Model
 
     public function relationBuildings()
     {
-        return $this->belongsToMany(Building::class, 'sdi_building_relations', 'object_id', 'building_id')->wherePivot('object_type', 'contact');
+        return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')->without(['relationContacts']);
     }
 
     public function getDateCreatedFormatAttribute(): string

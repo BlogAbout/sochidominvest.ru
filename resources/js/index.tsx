@@ -3,6 +3,7 @@ require('./bootstrap')
 import '../css/app.css'
 import React from 'react'
 import ReactDOM from 'react-dom'
+import {HelmetProvider} from 'react-helmet-async'
 import {library} from '@fortawesome/fontawesome-svg-core'
 import {
     fa1,
@@ -220,19 +221,21 @@ library.add(
 const App = () => {
     return (
         <React.StrictMode>
-            <Provider store={store}>
-                <LightgalleryProvider lightgallerySettings={{
-                    mode: 'lg-fade',
-                    cssEasing: 'cubic-bezier(0.25, 0, 0.25, 1)',
-                    loop: true,
-                    preload: 1,
-                    download: false
-                }}>
-                    <BrowserRouter>
-                        <AppRouter/>
-                    </BrowserRouter>
-                </LightgalleryProvider>
-            </Provider>
+            <HelmetProvider>
+                <Provider store={store}>
+                    <LightgalleryProvider lightgallerySettings={{
+                        mode: 'lg-fade',
+                        cssEasing: 'cubic-bezier(0.25, 0, 0.25, 1)',
+                        loop: true,
+                        preload: 1,
+                        download: false
+                    }}>
+                        <BrowserRouter>
+                            <AppRouter/>
+                        </BrowserRouter>
+                    </LightgalleryProvider>
+                </Provider>
+            </HelmetProvider>
         </React.StrictMode>
     )
 }

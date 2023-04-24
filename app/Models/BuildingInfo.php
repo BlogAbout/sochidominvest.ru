@@ -13,6 +13,8 @@ class BuildingInfo extends Model
     protected $guarded = false;
     public $timestamps = false;
 
+    protected $with = ['avatar'];
+
     public function avatar()
     {
         return $this->belongsTo(Attachment::class, 'avatar_id', 'id');

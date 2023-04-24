@@ -14,6 +14,8 @@ class Article extends Model
     protected $table = 'sdi_articles';
     protected $guarded = false;
 
+    protected $with = ['avatar', 'author', 'images', 'videos', 'relationBuildings'];
+
     public function avatar()
     {
         return $this->belongsTo(Attachment::class, 'avatar_id', 'id');
@@ -26,17 +28,17 @@ class Article extends Model
 
     public function images()
     {
-        return $this->belongsToMany(Attachment::class, 'sdi_images', 'attachment_id', 'object_id')->wherePivot('object_type', 'article');
+        return $this->morphToMany(Attachment::class, 'object', 'sdi_images');
     }
 
     public function videos()
     {
-        return $this->belongsToMany(Attachment::class, 'sdi_videos', 'attachment_id', 'object_id')->wherePivot('object_type', 'article');
+        return $this->morphToMany(Attachment::class, 'object', 'sdi_videos');
     }
 
     public function relationBuildings()
     {
-        return $this->belongsToMany(Building::class, 'sdi_building_relations', 'object_id', 'building_id')->wherePivot('object_type', 'article');
+        return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')->without(['relationArticles']);
     }
 
     public function getDateCreatedFormatAttribute(): string

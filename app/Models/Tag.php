@@ -14,6 +14,8 @@ class Tag extends Model
     protected $table = 'sdi_tags';
     protected $guarded = false;
 
+    protected $with = ['author'];
+
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id', 'id');

@@ -14,6 +14,8 @@ class Product extends Model
     protected $table = 'sdi_products';
     protected $guarded = false;
 
+    protected $with = ['category', 'avatar', 'author', 'images', 'videos'];
+
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
@@ -31,12 +33,12 @@ class Product extends Model
 
     public function images()
     {
-        return $this->belongsToMany(Attachment::class, 'sdi_images', 'attachment_id', 'object_id')->wherePivot('object_type', 'product');
+        return $this->morphToMany(Attachment::class, 'object', 'sdi_images');
     }
 
     public function videos()
     {
-        return $this->belongsToMany(Attachment::class, 'sdi_videos', 'attachment_id', 'object_id')->wherePivot('object_type', 'product');
+        return $this->morphToMany(Attachment::class, 'object', 'sdi_videos');
     }
 
     public function prices()

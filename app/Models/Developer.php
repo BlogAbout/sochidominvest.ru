@@ -14,6 +14,8 @@ class Developer extends Model
     protected $table = 'sdi_developers';
     protected $guarded = false;
 
+    protected $with = ['avatar', 'author', 'relationBuildings'];
+
     public function avatar()
     {
         return $this->belongsTo(Attachment::class, 'avatar_id', 'id');
@@ -26,7 +28,7 @@ class Developer extends Model
 
     public function relationBuildings()
     {
-        return $this->belongsToMany(Building::class, 'sdi_building_relations', 'object_id', 'building_id')->wherePivot('object_type', 'developer');
+        return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')->without(['relationDevelopers']);
     }
 
     public function getDateCreatedFormatAttribute(): string

@@ -14,9 +14,11 @@ class Checker extends Model
     protected $table = 'sdi_checkers';
     protected $guarded = false;
 
+    protected $with = ['building', 'author'];
+
     public function building()
     {
-        return $this->belongsTo(Building::class, 'building_id', 'id');
+        return $this->belongsTo(Building::class, 'building_id', 'id')->without(['checkers']);
     }
 
     public function author()
@@ -26,7 +28,7 @@ class Checker extends Model
 
     public function prices()
     {
-        return $this->hasMany(Price::class, 'object_id', 'id')->where('object_type', 'like', 'checker');
+        return $this->morphToMany(Price::class, 'object', 'sdi_prices');
     }
 
     public function getDateCreatedFormatAttribute(): string

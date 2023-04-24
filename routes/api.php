@@ -6,7 +6,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/agent', 'Agent\AgentController');
     Route::apiResource('/article', 'Article\ArticleController')->only(['store', 'update', 'destroy']);
     Route::apiResource('/attachment', 'Attachment\AttachmentController');
-    Route::apiResource('/building', 'Building\BuildingController');
+    Route::apiResource('/building', 'Building\BuildingController')->only(['store', 'update', 'destroy']);
     Route::apiResource('/business-process', 'BusinessProcess\BusinessProcessController');
     Route::apiResource('/category', 'Category\CategoryController');
     Route::apiResource('/checker', 'Checker\CheckerController');
@@ -31,3 +31,4 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 });
 
 Route::apiResource('/article', 'Article\ArticleController')->only(['index', 'show']);
+Route::apiResource('/building', 'Building\BuildingController')->only(['index', 'show']);
