@@ -3,7 +3,6 @@ import withStore from '../../hoc/withStore'
 import classNames from 'classnames/bind'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import StoreService from '../../../api/StoreService'
-import AttachmentService from '../../../api/AttachmentService'
 import {sortAttachments} from '../../../helpers/attachmentHelper'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
 import {getFieldTypeChildren, getFieldTypeText} from '../../../helpers/storeHelper'
@@ -47,21 +46,16 @@ const cx = classNames.bind(classes)
 const PopupProductCreate: React.FC<Props> = (props) => {
     const [product, setProduct] = useState<IProduct>(props.product ? JSON.parse(JSON.stringify(props.product)) : {
         id: null,
-        categoryId: 0,
+        category_id: 0,
         name: '',
         cost: 0,
-        active: 1,
-        author: 0,
-        images: [],
-        videos: [],
+        is_active: 1,
+        image_ids: [],
+        video_ids: [],
         fields: {}
     })
 
     const [fetchingProduct, setFetchingProduct] = useState(false)
-    const [fetchingImages, setFetchingImages] = useState(false)
-    const [fetchingVideos, setFetchingVideos] = useState(false)
-    const [images, setImages] = useState<IAttachment[]>([])
-    const [videos, setVideos] = useState<IAttachment[]>([])
 
     const {categories} = useTypedSelector(state => state.storeReducer)
 
@@ -72,41 +66,17 @@ const PopupProductCreate: React.FC<Props> = (props) => {
     }, [props.blockId])
 
     useEffect(() => {
-        if (product.id) {
-            if (product.images && product.images.length) {
-                setFetchingImages(true)
-                AttachmentService.fetchAttachments({active: [0, 1], id: product.images, type: 'image'})
-                    .then((response: any) => {
-                        setImages(sortAttachments(response.data.data, product.images))
-                    })
-                    .finally(() => setFetchingImages(false))
-            }
-
-            if (product.videos && product.videos.length) {
-                setFetchingVideos(true)
-                AttachmentService.fetchAttachments({active: [0, 1], id: product.videos, type: 'video'})
-                    .then((response: any) => {
-                        setVideos(sortAttachments(response.data.data, product.videos))
-                    })
-                    .finally(() => setFetchingVideos(false))
-            }
-        }
-    }, [product.id])
-
-    useEffect(() => {
-        if (images && images.length) {
+        if (product.images && product.images.length) {
             checkAvatar()
         }
-    }, [images])
+    }, [product.images])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Сохранение изменений
     const saveHandler = (isClose?: boolean) => {
-        if (product.name.trim() === '' || !product.categoryId) {
+        if (product.name.trim() === '' || !product.category_id) {
             return
         }
 
@@ -129,9 +99,7 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                     text: error.data.data
                 })
             })
-            .finally(() => {
-                setFetchingProduct(false)
-            })
+            .finally(() => setFetchingProduct(false))
     }
 
     // Добавление файла
@@ -139,20 +107,22 @@ const PopupProductCreate: React.FC<Props> = (props) => {
         if (attachment.id) {
             switch (attachment.type) {
                 case 'image':
-                    const image_ids: number[] = product.images ? [...product.images] : []
+                    const image_ids: number[] = product.image_ids ? [...product.image_ids] : []
+                    const images: IAttachment[] = product.images ? [...product.images] : []
                     setProduct({
                         ...product,
-                        images: [attachment.id, ...image_ids]
+                        image_ids: [attachment.id, ...image_ids],
+                        images: [attachment, ...images]
                     })
-                    setImages([attachment, ...images])
                     break
                 case 'video':
-                    const video_ids: number[] = product.videos ? [...product.videos] : []
+                    const video_ids: number[] = product.video_ids ? [...product.video_ids] : []
+                    const videos: IAttachment[] = product.videos ? [...product.videos] : []
                     setProduct({
                         ...product,
-                        videos: [attachment.id, ...video_ids]
+                        video_ids: [attachment.id, ...video_ids],
+                        videos: [attachment, ...videos]
                     })
-                    setVideos([attachment, ...images])
                     break
             }
         }
@@ -160,22 +130,22 @@ const PopupProductCreate: React.FC<Props> = (props) => {
 
     // Смена главного изображения
     const selectImageAvatarHandler = (attachment: IAttachment) => {
-        setProduct({...product, avatarId: attachment.id, avatar: attachment.content})
+        setProduct({...product, avatar_id: attachment.id, avatar: attachment})
     }
 
     // Проверка наличия главного изображения
     const checkAvatar = () => {
-        if (product.images && product.images.length && images && images.length) {
-            if (!product.avatarId || !product.images.includes(product.avatarId)) {
-                selectImageAvatarHandler(images[0])
+        if (product.images && product.images.length && product.image_ids && product.image_ids.length) {
+            if (!product.avatar_id || !product.image_ids.includes(product.avatar_id)) {
+                selectImageAvatarHandler(product.images[0])
             }
         } else {
-            setProduct({...product, avatarId: null, avatar: null})
+            setProduct({...product, avatar_id: null, avatar: null})
         }
     }
 
     const isDisableButton = () => {
-        return fetchingProduct || fetchingImages || fetchingVideos || product.name.trim() === '' || !product.categoryId
+        return fetchingProduct || product.name.trim() === '' || !product.category_id
     }
 
     const onUpdateOrderingImagesHandler = (files: IAttachment[]) => {
@@ -185,8 +155,7 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                 ids.push(attachment.id)
             }
         })
-        setImages(sortAttachments(files, ids))
-        setProduct({...product, images: ids})
+        setProduct({...product, image_ids: ids, images: sortAttachments(files, ids)})
     }
 
     const onUpdateOrderingVideosHandler = (files: IAttachment[]) => {
@@ -196,18 +165,31 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                 ids.push(attachment.id)
             }
         })
-        setVideos(sortAttachments(files, ids))
-        setProduct({...product, videos: ids})
+        setProduct({...product, video_ids: ids, videos: sortAttachments(files, ids)})
     }
 
     const removeSelectedImageHandler = (file: IAttachment) => {
-        setProduct({...product, images: product.images.filter((id: number) => id !== file.id)})
-        setImages([...images.filter((attachment: IAttachment) => attachment.id !== file.id)])
+        if (file.id) {
+            const image_ids: number[] = product.image_ids ? product.image_ids.filter((id: number) => id !== file.id) : []
+            const images: IAttachment[] = product.images ? [...product.images.filter((attachment: IAttachment) => attachment.id !== file.id)] : []
+            setProduct({
+                ...product,
+                image_ids: image_ids,
+                images: images
+            })
+        }
     }
 
     const removeSelectedVideoHandler = (file: IAttachment) => {
-        setProduct({...product, videos: product.images.filter((id: number) => id !== file.id)})
-        setVideos([...videos.filter((attachment: IAttachment) => attachment.id !== file.id)])
+        if (file.id) {
+            const video_ids: number[] = product.video_ids ? product.video_ids.filter((id: number) => id !== file.id) : []
+            const videos: IAttachment[] = product.videos ? [...product.videos.filter((attachment: IAttachment) => attachment.id !== file.id)] : []
+            setProduct({
+                ...product,
+                video_ids: video_ids,
+                videos: videos
+            })
+        }
     }
 
     const renderField = (fieldName: string): React.ReactElement | null => {
@@ -280,13 +262,13 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Категория'/>
 
-                    <CategoryBox categories={product.categoryId ? [product.categoryId] : []}
+                    <CategoryBox categories={product.category_id ? [product.category_id] : []}
                                  onSelect={(value: number[], e: React.MouseEvent) => setProduct({
                                      ...product,
-                                     categoryId: value.length ? value[0] : 0
+                                     category_id: value.length ? value[0] : 0
                                  })}
                                  placeHolder='Выберите категорию'
-                                 error={!product.categoryId}
+                                 error={!product.category_id}
                                  showRequired
                                  errorText='Поле обязательно для заполнения'
                                  styleType='minimal'
@@ -327,14 +309,14 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Старая цена, руб.'/>
 
-                    <NumberBox value={product.costOld || ''}
+                    <NumberBox value={product.cost_old || ''}
                                min={0}
                                step={0.01}
                                max={999999999}
                                countAfterComma={2}
                                onChange={(e: React.ChangeEvent<HTMLInputElement>, value: number) => setProduct({
                                    ...product,
-                                   costOld: value
+                                   cost_old: value
                                })}
                                placeHolder='Введите старую стоимость товара'
                                styleType='minimal'
@@ -358,11 +340,11 @@ const PopupProductCreate: React.FC<Props> = (props) => {
 
     // Вкладка информации объекта
     const renderInformationTab = (): React.ReactElement | null => {
-        if (!categories || !categories.length || !product.categoryId) {
+        if (!categories || !categories.length || !product.category_id) {
             return null
         }
 
-        const category = categories.find((category: ICategory) => category.id === product.categoryId)
+        const category = categories.find((category: ICategory) => category.id === product.category_id)
         if (!category || !category.fields || !category.fields.length) {
             return null
         }
@@ -385,19 +367,18 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                             icon='arrow-pointer'
                             onClick={() => openPopupFileManager(document.body, {
                                 type: 'image',
-                                selected: product.images,
+                                selected: product.image_ids || [],
                                 onSelect: (selected: number[], attachments: IAttachment[]) => {
-                                    setProduct({...product, images: selected})
-                                    setImages(attachments)
+                                    setProduct({...product, image_ids: selected, images: attachments})
                                 },
                                 multi: true
                             })}
                             disabled={isDisableButton()}
                     >Выбрать / Загрузить</Button>
 
-                    <FileList files={images}
-                              selected={product.avatarId ? [product.avatarId] : []}
-                              fetching={fetchingImages}
+                    <FileList files={product.images || []}
+                              selected={product.avatar_id ? [product.avatar_id] : []}
+                              fetching={fetchingProduct}
                               onSave={addAttachmentHandler.bind(this)}
                               onSelect={selectImageAvatarHandler.bind(this)}
                               onRemove={removeSelectedImageHandler.bind(this)}
@@ -413,18 +394,17 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                             icon='arrow-pointer'
                             onClick={() => openPopupFileManager(document.body, {
                                 type: 'video',
-                                selected: product.videos,
+                                selected: product.video_ids || [],
                                 onSelect: (selected: number[], attachments: IAttachment[]) => {
-                                    setProduct({...product, videos: selected})
-                                    setVideos(attachments)
+                                    setProduct({...product, video_ids: selected, videos: attachments})
                                 },
                                 multi: true
                             })}
                             disabled={isDisableButton()}
                     >Выбрать / Загрузить</Button>
 
-                    <FileList files={videos}
-                              fetching={fetchingVideos}
+                    <FileList files={product.videos || []}
+                              fetching={fetchingProduct}
                               onSave={addAttachmentHandler.bind(this)}
                               onSelect={selectImageAvatarHandler.bind(this)}
                               onRemove={removeSelectedVideoHandler.bind(this)}
@@ -443,10 +423,10 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <Label text='Meta Title'/>
 
-                        <TextBox value={product.metaTitle}
+                        <TextBox value={product.meta_title}
                                  onChange={(value: string) => setProduct({
                                      ...product,
-                                     metaTitle: value
+                                     meta_title: value
                                  })}
                                  placeHolder='Введите Meta Title'
                                  styleType='minimal'
@@ -456,10 +436,10 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                     <div className={cx({'field': true, 'fieldWrap': true})}>
                         <Label text='Meta Description'/>
 
-                        <TextAreaBox value={product.metaDescription || ''}
+                        <TextAreaBox value={product.meta_description || ''}
                                      onChange={(value: string) => setProduct({
                                          ...product,
-                                         metaDescription: value
+                                         meta_description: value
                                      })}
                                      placeHolder='Введите Meta Description'
                                      width='100%'

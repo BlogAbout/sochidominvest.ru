@@ -128,56 +128,58 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
     }
 
     const passedInfo = useMemo(() => {
-        return getPassedText(props.building.passed)
+        return getPassedText(props.building.info.passed)
     }, [props.building])
 
     const districtText = useMemo(() => {
-        return getDistrictText(props.building.district, props.building.districtZone)
+        return getDistrictText(props.building.info.district, props.building.info.district_zone)
     }, [props.building])
 
     // Вывод графика цен
     const renderDynamicChangePrices = (): React.ReactElement | null => {
-        if (props.isRent) {
-            return null
-        }
-
-        if (!props.building.id || !props.building.costOld || !props.building.cost) {
-            return null
-        }
-
-        return (
-            <div className={cx({'icon': true, 'link': true})}
-                 title='График цен'
-                 onClick={() => openPopupPriceChart(document.body, {buildingId: props.building.id || 0})}
-            >
-                <FontAwesomeIcon icon='chart-line'/>
-            </div>
-        )
+        return null
+        // if (props.isRent) {
+        //     return null
+        // }
+        //
+        // if (!props.building.id || !props.building.costOld || !props.building.cost) {
+        //     return null
+        // }
+        //
+        // return (
+        //     <div className={cx({'icon': true, 'link': true})}
+        //          title='График цен'
+        //          onClick={() => openPopupPriceChart(document.body, {buildingId: props.building.id || 0})}
+        //     >
+        //         <FontAwesomeIcon icon='chart-line'/>
+        //     </div>
+        // )
     }
 
     // Вывод старой цены
     const renderOldPrice = (): React.ReactElement | null => {
-        if (!props.isRent || !props.building.costOld || !props.building.cost || props.building.costOld === props.building.cost) {
-            return null
-        }
-
-        if (props.building.costOld > props.building.cost) {
-            return (
-                <span className={classes.costDown}
-                      title={`Старая цена: ${numberWithSpaces(round(props.building.costOld || 0, 0))} руб.`}
-                >
-                    <FontAwesomeIcon icon='arrow-down'/>
-                </span>
-            )
-        } else {
-            return (
-                <span className={classes.costUp}
-                      title={`Старая цена: ${numberWithSpaces(round(props.building.costOld || 0, 0))} руб.`}
-                >
-                    <FontAwesomeIcon icon='arrow-up'/>
-                </span>
-            )
-        }
+        return null
+        // if (!props.isRent || !props.building.costOld || !props.building.cost || props.building.costOld === props.building.cost) {
+        //     return null
+        // }
+        //
+        // if (props.building.costOld > props.building.cost) {
+        //     return (
+        //         <span className={classes.costDown}
+        //               title={`Старая цена: ${numberWithSpaces(round(props.building.costOld || 0, 0))} руб.`}
+        //         >
+        //             <FontAwesomeIcon icon='arrow-down'/>
+        //         </span>
+        //     )
+        // } else {
+        //     return (
+        //         <span className={classes.costUp}
+        //               title={`Старая цена: ${numberWithSpaces(round(props.building.costOld || 0, 0))} руб.`}
+        //         >
+        //             <FontAwesomeIcon icon='arrow-up'/>
+        //         </span>
+        //     )
+        // }
     }
 
     const renderMetaInformation = (): React.ReactElement => {
@@ -193,10 +195,10 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                     <span>{props.building.date_created}</span>
                 </div>
 
-                {props.building.authorName ?
-                    <div className={classes.icon} title={`Автор: ${props.building.authorName}`}>
+                {props.building.author ?
+                    <div className={classes.icon} title={`Автор: ${props.building.author.name}`}>
                         <FontAwesomeIcon icon='user'/>
-                        <span>{props.building.authorName}</span>
+                        <span>{props.building.author.name}</span>
                     </div>
                     : null}
 
@@ -210,8 +212,8 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
             <div className={classes.info}>
                 {!props.isRent && props.building.type === 'building' ?
                     <div className={classes.row}>
-                        <span>{props.building.countCheckers || 0}</span>
-                        <span>{declension(props.building.countCheckers || 0, ['квартира', 'квартиры', 'квартир'], true)}</span>
+                        <span>{props.building.checkers ? props.building.checkers.length : 0}</span>
+                        <span>{declension(props.building.checkers ? props.building.checkers.length : 0, ['квартира', 'квартиры', 'квартир'], true)}</span>
                     </div>
                     : null
                 }
@@ -220,7 +222,7 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                     <div className={classes.row}>
                         {props.building.type === 'building' ?
                             <>
-                                <span>{numberWithSpaces(round(props.building.costMinUnit || 0, 0))} руб.</span>
+                                <span>{numberWithSpaces(round(props.building.cost_min_unit || 0, 0))} руб.</span>
                                 <span>Мин. цена за м<sup>2</sup></span>
                             </>
                             : props.building.type === 'land' ?
@@ -247,7 +249,7 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                     <div className={classes.row}>
                         {props.building.type === 'building' ?
                             <>
-                                <span>{numberWithSpaces(round(props.building.costMin || 0, 0))} руб.</span>
+                                <span>{numberWithSpaces(round(props.building.cost_min || 0, 0))} руб.</span>
                                 <span>Мин. цена</span>
                             </>
                             :
@@ -271,7 +273,7 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                 <div className={classes.row}>
                     {props.building.type === 'building' ?
                         <>
-                            <span>{props.building.areaMin || 0} - {props.building.areaMax || 0}</span>
+                            <span>{props.building.area_min || 0} - {props.building.area_max || 0}</span>
                             <span>Площади, м<sup>2</sup></span>
                         </>
                         :
@@ -282,9 +284,9 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                     }
                 </div>
 
-                {props.building.type === 'land' && props.building.cadastral_cost ?
+                {props.building.type === 'land' && props.building.info.cadastral_cost ?
                     <div className={classes.row}>
-                        <span>{numberWithSpaces(round(props.building.cadastral_cost || 0, 0))} руб.</span>
+                        <span>{numberWithSpaces(round(props.building.info.cadastral_cost || 0, 0))} руб.</span>
                         <span>Кадастровая стоимость</span>
                     </div>
                     : null
@@ -296,7 +298,7 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
     const renderButtons = (): React.ReactElement => {
         return (
             <div className={classes.buttons}>
-                {props.building.rent ?
+                {props.building.is_rent ?
                     <div className={classes.buttonRent}>
                         <Button type='apply'
                                 icon='house-laptop'
@@ -450,26 +452,22 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
             {renderMetaInformation()}
 
             {props.building.type !== 'land' && passedInfo !== '' ?
-                <div className={cx({'passed': true, 'is': props.building.passed && props.building.passed.is})}>
+                <div className={cx({'passed': true, 'is': props.building.info.passed && props.building.info.passed.is})}>
                     <span>{passedInfo}</span>
                 </div>
                 : null
             }
 
-            {props.building.type === 'land' && props.building.cadastral_number ?
+            {props.building.type === 'land' && props.building.info.cadastral_number ?
                 <div className={classes.passed} title='Кадастровый номер'>
-                    <span>{props.building.cadastral_number}</span>
+                    <span>{props.building.info.cadastral_number}</span>
                 </div>
                 : null
             }
 
             {tags && tags.length && props.building.tags && props.building.tags.length ?
                 <div className={classes.tags}>
-                    {props.building.tags.map((id: number) => {
-                        const findTag = tags.find((tag: ITag) => tag.id === id)
-
-                        return findTag ? <div key={findTag.id}>{findTag.name}</div> : null
-                    })}
+                    {props.building.tags.map((tag: ITag) => <div key={tag.id}>{tag.name}</div>)}
                 </div>
                 : null
             }

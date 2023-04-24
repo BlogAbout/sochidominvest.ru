@@ -42,11 +42,8 @@ const PopupPaymentCreate: React.FC<Props> = (props) => {
         id: null,
         name: '',
         status: 'new',
-        userId: userId,
-        cost: 0,
-        duration: null,
-        object_id: 0,
-        object_type: ''
+        user_id: userId,
+        cost: 0
     })
 
     useEffect(() => {
@@ -104,7 +101,7 @@ const PopupPaymentCreate: React.FC<Props> = (props) => {
                                  showRequired
                                  errorText='Поле обязательно для заполнения'
                                  styleType='minimal'
-                                 readOnly={!!payment.datePaid}
+                                 readOnly={!!payment.paid_at}
                         />
                     </div>
 
@@ -116,22 +113,22 @@ const PopupPaymentCreate: React.FC<Props> = (props) => {
                                   onSelect={(value: string) => setPayment({...payment, status: value})}
                                   placeHolder='Выберите статус'
                                   styleType='minimal'
-                                  readOnly={!!payment.datePaid}
+                                  readOnly={!!payment.paid_at}
                         />
                     </div>
 
                     <div className={classes.field}>
                         <Label text='Плательщик'/>
 
-                        <UserBox users={payment.userId ? [payment.userId] : []}
+                        <UserBox users={payment.user_id ? [payment.user_id] : []}
                                  onSelect={(value: number[]) => {
                                      setPayment({
                                          ...payment,
-                                         userId: value.length ? value[0] : 0
+                                         user_id: value.length ? value[0] : 0
                                      })
                                  }}
                                  placeHolder='Выберите плательщика'
-                                 error={!payment.userId}
+                                 error={!payment.user_id}
                                  showRequired
                                  errorText='Поле обязательно для заполнения'
                                  styleType='minimal'
@@ -155,11 +152,11 @@ const PopupPaymentCreate: React.FC<Props> = (props) => {
                                    showRequired
                                    errorText='Поле обязательно для заполнения'
                                    styleType='minimal'
-                                   readOnly={!!payment.datePaid}
+                                   readOnly={!!payment.paid_at}
                         />
                     </div>
 
-                    {!payment.datePaid ?
+                    {!payment.paid_at ?
                         <div className={classes.field}>
                             <CheckBox label='Отправить ссылку плательщику'
                                       title='Отправить ссылку плательщику'
@@ -178,14 +175,14 @@ const PopupPaymentCreate: React.FC<Props> = (props) => {
                 <Button type='save'
                         icon='check-double'
                         onClick={() => saveHandler(true)}
-                        disabled={fetching || payment.name.trim() === '' || !payment.userId || !payment.cost}
+                        disabled={fetching || payment.name.trim() === '' || !payment.user_id || !payment.cost}
                         title='Сохранить и закрыть'
                 />
 
                 <Button type='apply'
                         icon='check'
                         onClick={() => saveHandler()}
-                        disabled={fetching || payment.name.trim() === '' || !payment.userId || !payment.cost}
+                        disabled={fetching || payment.name.trim() === '' || !payment.user_id || !payment.cost}
                         className='marginLeft'
                         title='Сохранить'
                 >Сохранить</Button>

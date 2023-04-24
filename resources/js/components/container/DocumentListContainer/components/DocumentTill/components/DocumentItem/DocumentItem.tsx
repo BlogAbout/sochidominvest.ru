@@ -74,7 +74,11 @@ const DocumentItem: React.FC<Props> = (props) => {
              onClick={() => props.onClick(props.document)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.document)}
         >
-            <Avatar href={props.document.avatar} alt={props.document.name} width={150} height={150}/>
+            {/*<Avatar href={props.document.avatar ? props.document.avatar.content : ''}*/}
+            {/*        alt={props.document.name}*/}
+            {/*        width={150}*/}
+            {/*        height={150}*/}
+            {/*/>*/}
 
             <div className={classes.itemContent}>
                 <h2>{props.document.name}</h2>

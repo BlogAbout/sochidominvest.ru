@@ -4,7 +4,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {IBuilding} from '../../../../../@types/IBuilding'
 import {declension} from '../../../../../helpers/stringHelper'
 import {numberWithSpaces, round} from '../../../../../helpers/numberHelper'
-import {getFormatDate} from '../../../../../helpers/dateHelper'
 import {getBuildingTypesText, getDistrictText, getPassedText} from '../../../../../helpers/buildingHelper'
 import Avatar from '../../../../ui/Avatar/Avatar'
 import Title from '../../../../ui/Title/Title'
@@ -29,12 +28,12 @@ const cx = classNames.bind(classes)
 
 const BuildingItem: React.FC<Props> = (props): React.ReactElement => {
     const buildingType = getBuildingTypesText(props.building.type)
-    const passedInfo = getPassedText(props.building.passed)
-    const districtText = getDistrictText(props.building.district, props.building.districtZone)
+    const passedInfo = getPassedText(props.building.info.passed)
+    const districtText = getDistrictText(props.building.info.district, props.building.info.district_zone)
 
     return (
         <div key={props.building.id} className={classes.BuildingItem} onClick={() => props.onClick()}>
-            <Avatar href={props.building.avatar}
+            <Avatar href={props.building.info.avatar ? props.building.info.avatar.content : ''}
                     alt={props.building.name}
                     width='100%'
                     height='100%'
@@ -58,7 +57,7 @@ const BuildingItem: React.FC<Props> = (props): React.ReactElement => {
                     {passedInfo !== '' &&
                     <div className={cx({
                         'passed': true,
-                        'is': props.building.passed && props.building.passed.is
+                        'is': props.building.info.passed && props.building.info.passed.is
                     })}>
                         <span>{passedInfo}</span>
                     </div>}
@@ -73,20 +72,20 @@ const BuildingItem: React.FC<Props> = (props): React.ReactElement => {
 
                     {!props.isRent ?
                         props.building.type === 'building' ?
-                        <div className={classes.counter}>
-                            {declension(props.building.countCheckers || 0, ['квартира', 'квартиры', 'квартир'], false)} от {numberWithSpaces(round(props.building.costMin || 0, 0))} руб.
-                        </div>
-                        :
-                        <div className={classes.counter}>
-                            {numberWithSpaces(round(props.building.cost || 0, 0))} руб.
-                        </div>
-                    : null
+                            <div className={classes.counter}>
+                                {declension(props.building.checkers ? props.building.checkers.length : 0, ['квартира', 'квартиры', 'квартир'], false)} от {numberWithSpaces(round(props.building.cost_min || 0, 0))} руб.
+                            </div>
+                            :
+                            <div className={classes.counter}>
+                                {numberWithSpaces(round(props.building.cost || 0, 0))} руб.
+                            </div>
+                        : null
                     }
 
                     {props.building.type === 'building' ?
                         <div className={classes.area}>
                             <h3>Площади</h3>
-                            <div>{props.building.areaMin || 0} м<sup>2</sup> - {props.building.areaMax || 0} м<sup>2</sup>
+                            <div>{props.building.area_min || 0} м<sup>2</sup> - {props.building.area_max || 0} м<sup>2</sup>
                             </div>
                         </div>
                         :

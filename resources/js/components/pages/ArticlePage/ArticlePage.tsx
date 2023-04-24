@@ -67,7 +67,7 @@ const ArticlePage: React.FC<Props> = (props): React.ReactElement => {
 
                 <BlockingElement fetching={fetchingArticle} className={classes.list}>
                     {article.buildings.map((building: IBuilding) => {
-                        if (!building.publish) {
+                        if (!building.is_publish) {
                             return null
                         }
 

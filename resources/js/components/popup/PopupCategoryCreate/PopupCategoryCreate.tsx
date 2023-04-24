@@ -41,10 +41,10 @@ const PopupCategoryCreate: React.FC<Props> = (props) => {
         id: null,
         name: '',
         description: '',
-        active: 1,
-        metaTitle: '',
-        metaDescription: '',
-        fields: ['test1', 'test2']
+        is_active: 1,
+        meta_title: '',
+        meta_description: '',
+        fields: []
     })
 
     const [fetching, setFetching] = useState(false)
@@ -131,7 +131,7 @@ const PopupCategoryCreate: React.FC<Props> = (props) => {
                               checked={!!category.is_active}
                               onChange={(e: React.MouseEvent, value: boolean) => setCategory({
                                   ...category,
-                                  active: value ? 1 : 0
+                                  is_active: value ? 1 : 0
                               })}
                     />
                 </div>
@@ -164,10 +164,10 @@ const PopupCategoryCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Meta Title'/>
 
-                    <TextBox value={category.metaTitle}
+                    <TextBox value={category.meta_title}
                              onChange={(value: string) => setCategory({
                                  ...category,
-                                 metaTitle: value
+                                 meta_title: value
                              })}
                              placeHolder='Введите Meta Title'
                              styleType='minimal'
@@ -177,10 +177,10 @@ const PopupCategoryCreate: React.FC<Props> = (props) => {
                 <div className={cx({'field': true, 'fieldWrap': true})}>
                     <Label text='Meta Description'/>
 
-                    <TextAreaBox value={category.metaDescription || ''}
+                    <TextAreaBox value={category.meta_description || ''}
                                  onChange={(value: string) => setCategory({
                                      ...category,
-                                     metaDescription: value
+                                     meta_description: value
                                  })}
                                  placeHolder='Введите Meta Description'
                                  width='100%'

@@ -208,16 +208,16 @@ const BuildingsPanelPage: React.FC = (): React.ReactElement => {
     // Удаление объекта из подборки
     const onRemoveBuildingFromCompilationHandler = (building: IBuilding, compilationId?: number) => {
         if (compilationId && building.id) {
-            // CompilationService.removeBuildingFromCompilation(compilationId, building.id)
-            //     .then(() => onSaveHandler())
-            //     .catch((error: any) => {
-            //         console.error('Ошибка удаления из подборки', error)
-            //
-            //         openPopupAlert(document.body, {
-            //             title: 'Ошибка!',
-            //             text: error.data.data
-            //         })
-            //     })
+            CompilationService.removeBuildingFromCompilation(compilationId, building.id)
+                .then(() => onSaveHandler())
+                .catch((error: any) => {
+                    console.error('Ошибка удаления из подборки', error)
+
+                    openPopupAlert(document.body, {
+                        title: 'Ошибка!',
+                        text: error.data.data
+                    })
+                })
         }
     }
 
@@ -285,17 +285,17 @@ const BuildingsPanelPage: React.FC = (): React.ReactElement => {
                 checkBuildingByRangeArea(item, filters) &&
                 checkBuildingByDistrict(item, filters) &&
                 ((!filters.buildingType || !filters.buildingType.length) || (filters.buildingType && item.type && filters.buildingType.includes(item.type))) &&
-                ((!filters.houseClass || !filters.houseClass.length) || (filters.houseClass && item.houseClass && filters.houseClass.includes(item.houseClass))) &&
-                ((!filters.material || !filters.material.length) || (filters.material && item.material && filters.material.includes(item.material))) &&
-                ((!filters.houseType || !filters.houseType.length) || (filters.houseType && item.houseType && filters.houseType.includes(item.houseType))) &&
-                ((!filters.entranceHouse || !filters.entranceHouse.length) || (filters.entranceHouse && item.entranceHouse && filters.entranceHouse.includes(item.entranceHouse))) &&
-                ((!filters.parking || !filters.parking.length) || (filters.parking && item.parking && filters.parking.includes(item.parking))) &&
-                ((!filters.territory || !filters.territory.length) || (filters.territory && item.territory && filters.territory.includes(item.territory))) &&
-                ((!filters.gas || !filters.gas.length) || (filters.gas && item.gas && filters.gas.includes(item.gas))) &&
-                ((!filters.electricity || !filters.electricity.length) || (filters.electricity && item.electricity && filters.electricity.includes(item.electricity))) &&
-                ((!filters.sewerage || !filters.sewerage.length) || (filters.sewerage && item.sewerage && filters.sewerage.includes(item.sewerage))) &&
-                ((!filters.waterSupply || !filters.waterSupply.length) || (filters.waterSupply && item.waterSupply && filters.waterSupply.includes(item.waterSupply))) &&
-                ((!filters.rent || !filters.rent.length) || (filters.rent && item.rent && filters.rent.map(Number).includes(item.rent)))
+                ((!filters.houseClass || !filters.houseClass.length) || (filters.houseClass && item.info.house_class && filters.houseClass.includes(item.info.house_class))) &&
+                ((!filters.material || !filters.material.length) || (filters.material && item.info.material && filters.material.includes(item.info.material))) &&
+                ((!filters.houseType || !filters.houseType.length) || (filters.houseType && item.info.house_type && filters.houseType.includes(item.info.house_type))) &&
+                ((!filters.entranceHouse || !filters.entranceHouse.length) || (filters.entranceHouse && item.info.entrance_house && filters.entranceHouse.includes(item.info.entrance_house))) &&
+                ((!filters.parking || !filters.parking.length) || (filters.parking && item.info.parking && filters.parking.includes(item.info.parking))) &&
+                ((!filters.territory || !filters.territory.length) || (filters.territory && item.info.territory && filters.territory.includes(item.info.territory))) &&
+                ((!filters.gas || !filters.gas.length) || (filters.gas && item.info.gas && filters.gas.includes(item.info.gas))) &&
+                ((!filters.electricity || !filters.electricity.length) || (filters.electricity && item.info.electricity && filters.electricity.includes(item.info.electricity))) &&
+                ((!filters.sewerage || !filters.sewerage.length) || (filters.sewerage && item.info.sewerage && filters.sewerage.includes(item.info.sewerage))) &&
+                ((!filters.waterSupply || !filters.waterSupply.length) || (filters.waterSupply && item.info.water_supply && filters.waterSupply.includes(item.info.water_supply))) &&
+                ((!filters.rent || !filters.rent.length) || (filters.rent && item.is_rent && filters.rent.map(Number).includes(item.is_rent)))
         })
     }
 

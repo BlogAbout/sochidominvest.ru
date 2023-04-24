@@ -4,8 +4,6 @@ import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
 import {useActions} from '../../../../../hooks/useActions'
 import {getPaymentStatusText} from '../../../../../helpers/paymentHelper'
 import {allowForRole} from '../../../../../helpers/accessHelper'
-import {getUserName} from '../../../../../helpers/userHelper'
-import {getFormatDate} from '../../../../../helpers/dateHelper'
 import {numberWithSpaces, round} from '../../../../../helpers/numberHelper'
 import TransactionService from '../../../../../api/TransactionService'
 import ListHead from '../../../../ui/List/components/ListHead/ListHead'
@@ -60,9 +58,9 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
             id: null,
             name: payment.name,
             status: 'new',
-            userId: payment.userId,
-            userEmail: payment.userEmail,
-            userName: payment.userName,
+            user_id: payment.user_id,
+            user: payment.user,
+            email: payment.email,
             cost: payment.cost,
             duration: payment.duration,
             object_id: payment.object_id,
@@ -130,7 +128,7 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
         if (allowForRole(['director', 'administrator', 'manager'])) {
             const menuItems = []
 
-            if (!payment.datePaid) {
+            if (!payment.paid_at) {
                 menuItems.push({text: 'Перейти к оплате', onClick: () => onOpenLinkHandler(payment)})
                 menuItems.push({text: 'Отправить ссылку', onClick: () => onSendLinkHandler(payment)})
             }
@@ -164,13 +162,14 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
                             >
                                 <ListCell className={classes.id}>{payment.id}</ListCell>
                                 <ListCell className={classes.name}>{payment.name}</ListCell>
-                                <ListCell
-                                    className={classes.userName}>{payment.userName || getUserName(users, payment.userId)}</ListCell>
-                                <ListCell
-                                    className={classes.cost}>{numberWithSpaces(round(payment.cost || 0, 0))}</ListCell>
+                                <ListCell className={classes.userName}>
+                                    {payment.user ? payment.user.name : ''}
+                                </ListCell>
+                                <ListCell className={classes.cost}>
+                                    {numberWithSpaces(round(payment.cost || 0, 0))}
+                                </ListCell>
                                 <ListCell className={classes.status}>{getPaymentStatusText(payment.status)}</ListCell>
-                                <ListCell
-                                    className={classes.dateCreated}>{payment.date_created}</ListCell>
+                                <ListCell className={classes.dateCreated}>{payment.date_created}</ListCell>
                             </ListRow>
                         )
                     })

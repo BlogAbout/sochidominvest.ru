@@ -181,16 +181,16 @@ const BuildingsPage: React.FC<Props> = (props): React.ReactElement => {
                     checkBuildingByRangeArea(item, filtersParams) &&
                     checkBuildingByDistrict(item, filtersParams) &&
                     ((!filtersParams.buildingType || !filtersParams.buildingType.length) || (filtersParams.buildingType && item.type && filtersParams.buildingType.includes(item.type))) &&
-                    ((!filtersParams.houseClass || !filtersParams.houseClass.length) || (filtersParams.houseClass && item.houseClass && filtersParams.houseClass.includes(item.houseClass))) &&
-                    ((!filtersParams.material || !filtersParams.material.length) || (filtersParams.material && item.material && filtersParams.material.includes(item.material))) &&
-                    ((!filtersParams.houseType || !filtersParams.houseType.length) || (filtersParams.houseType && item.houseType && filtersParams.houseType.includes(item.houseType))) &&
-                    ((!filtersParams.entranceHouse || !filtersParams.entranceHouse.length) || (filtersParams.entranceHouse && item.entranceHouse && filtersParams.entranceHouse.includes(item.entranceHouse))) &&
-                    ((!filtersParams.parking || !filtersParams.parking.length) || (filtersParams.parking && item.parking && filtersParams.parking.includes(item.parking))) &&
-                    ((!filtersParams.territory || !filtersParams.territory.length) || (filtersParams.territory && item.territory && filtersParams.territory.includes(item.territory))) &&
-                    ((!filtersParams.gas || !filtersParams.gas.length) || (filtersParams.gas && item.gas && filtersParams.gas.includes(item.gas))) &&
-                    ((!filtersParams.electricity || !filtersParams.electricity.length) || (filtersParams.electricity && item.electricity && filtersParams.electricity.includes(item.electricity))) &&
-                    ((!filtersParams.sewerage || !filtersParams.sewerage.length) || (filtersParams.sewerage && item.sewerage && filtersParams.sewerage.includes(item.sewerage))) &&
-                    ((!filtersParams.waterSupply || !filtersParams.waterSupply.length) || (filtersParams.waterSupply && item.waterSupply && filtersParams.waterSupply.includes(item.waterSupply))) &&
+                    ((!filtersParams.houseClass || !filtersParams.houseClass.length) || (filtersParams.houseClass && item.info.house_class && filtersParams.houseClass.includes(item.info.house_class))) &&
+                    ((!filtersParams.material || !filtersParams.material.length) || (filtersParams.material && item.info.material && filtersParams.material.includes(item.info.material))) &&
+                    ((!filtersParams.houseType || !filtersParams.houseType.length) || (filtersParams.houseType && item.info.house_type && filtersParams.houseType.includes(item.info.house_type))) &&
+                    ((!filtersParams.entranceHouse || !filtersParams.entranceHouse.length) || (filtersParams.entranceHouse && item.info.entrance_house && filtersParams.entranceHouse.includes(item.info.entrance_house))) &&
+                    ((!filtersParams.parking || !filtersParams.parking.length) || (filtersParams.parking && item.info.parking && filtersParams.parking.includes(item.info.parking))) &&
+                    ((!filtersParams.territory || !filtersParams.territory.length) || (filtersParams.territory && item.info.territory && filtersParams.territory.includes(item.info.territory))) &&
+                    ((!filtersParams.gas || !filtersParams.gas.length) || (filtersParams.gas && item.info.gas && filtersParams.gas.includes(item.info.gas))) &&
+                    ((!filtersParams.electricity || !filtersParams.electricity.length) || (filtersParams.electricity && item.info.electricity && filtersParams.electricity.includes(item.info.electricity))) &&
+                    ((!filtersParams.sewerage || !filtersParams.sewerage.length) || (filtersParams.sewerage && item.info.sewerage && filtersParams.sewerage.includes(item.info.sewerage))) &&
+                    ((!filtersParams.waterSupply || !filtersParams.waterSupply.length) || (filtersParams.waterSupply && item.info.water_supply && filtersParams.waterSupply.includes(item.info.water_supply))) &&
                     (searchText.trim() === '' || compareText(item.name, searchText) || (item.address && compareText(item.address, searchText)))
             })
 
@@ -213,23 +213,23 @@ const BuildingsPage: React.FC<Props> = (props): React.ReactElement => {
                         return (
                             <BlockItem key={building.id}
                                        title={building.name}
-                                       avatar={building.avatar || ''}
+                                       avatar={building.info.avatar ? building.info.avatar.content : ''}
                                        address={building.address || ''}
-                                       districtText={getDistrictText(building.district, building.districtZone)}
+                                       districtText={getDistrictText(building.info.district, building.info.district_zone)}
                                        date={building.date_created || undefined}
                                        type={getBuildingTypesText(building.type)}
-                                       passed={getPassedText(building.passed)}
-                                       isPassed={!!(building.passed && building.passed.is)}
+                                       passed={getPassedText(building.info.passed)}
+                                       isPassed={!!(building.info.passed && building.info.passed.is)}
                                        rentType={building.rentData ? building.rentData.type === 'short' ? '/в сутки' : '/в месяц' : undefined}
                                        rentCost={building.rentData && building.rentData.cost ? building.rentData.cost : undefined}
-                                       countCheckers={building.countCheckers || undefined}
+                                       countCheckers={building.checkers ? building.checkers.length : undefined}
                                        buildingType={building.type}
-                                       cost={building.type === 'building' ? (building.costMin || 0) : (building.cost || 0)}
-                                       areaMin={building.type === 'building' ? (building.areaMin || 0) : (building.area || 0)}
-                                       areaMax={building.type === 'building' ? (building.areaMax || 0) : undefined}
+                                       cost={building.type === 'building' ? (building.cost_min || 0) : (building.cost || 0)}
+                                       areaMin={building.type === 'building' ? (building.area_min || 0) : (building.area || 0)}
+                                       areaMax={building.type === 'building' ? (building.area_max || 0) : undefined}
                                        isDisabled={!building.is_active}
                                        isRent={props.isRent}
-                                       cadastral_number={building.type === 'land' ? building.cadastral_number : null}
+                                       cadastral_number={building.type === 'land' ? building.info.cadastral_number : null}
                                        onContextMenu={() => {
                                        }}
                                        onClick={() => navigate(`${directoryUrl}/${building.id}`)}

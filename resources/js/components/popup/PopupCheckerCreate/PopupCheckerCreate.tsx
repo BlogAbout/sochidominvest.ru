@@ -34,17 +34,16 @@ const defaultProps: Props = {
 const PopupCheckerCreate: React.FC<Props> = (props) => {
     const [checker, setChecker] = useState<IBuildingChecker>(props.checker || {
         id: null,
-        buildingId: props.buildingId,
+        building_id: props.buildingId,
         name: '',
         area: 0,
         cost: 0,
-        costOld: 0,
         furnish: 'draft',
         housing: 1,
         stage: 'Ц',
         rooms: 1,
-        active: 1,
-        status: 'free'
+        status: 'free',
+        is_active: 1
     })
 
     const [fetching, setFetching] = useState(false)
@@ -62,7 +61,7 @@ const PopupCheckerCreate: React.FC<Props> = (props) => {
 
     // Сохранение изменений
     const saveHandler = (isClose?: boolean) => {
-        if (!checker.buildingId || checker.name.trim() === '' || !checker.area || !checker.cost) {
+        if (!checker.building_id || checker.name.trim() === '' || !checker.area || !checker.cost) {
             return
         }
 
@@ -219,7 +218,7 @@ const PopupCheckerCreate: React.FC<Props> = (props) => {
                                   checked={!!checker.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setChecker({
                                       ...checker,
-                                      active: value ? 1 : 0
+                                      is_active: value ? 1 : 0
                                   })}
                         />
                     </div>
@@ -230,14 +229,14 @@ const PopupCheckerCreate: React.FC<Props> = (props) => {
                 <Button type='save'
                         icon='check-double'
                         onClick={() => saveHandler(true)}
-                        disabled={fetching || !checker.buildingId || checker.name.trim() === '' || !checker.area || !checker.cost}
+                        disabled={fetching || !checker.building_id || checker.name.trim() === '' || !checker.area || !checker.cost}
                         title='Сохранить и закрыть'
                 />
 
                 <Button type='apply'
                         icon='check'
                         onClick={() => saveHandler()}
-                        disabled={fetching || !checker.buildingId || checker.name.trim() === '' || !checker.area || !checker.cost}
+                        disabled={fetching || !checker.building_id || checker.name.trim() === '' || !checker.area || !checker.cost}
                         className='marginLeft'
                         title='Сохранить'
                 >Сохранить</Button>

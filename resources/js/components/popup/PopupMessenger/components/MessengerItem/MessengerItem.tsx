@@ -32,7 +32,7 @@ const MessengerItem: React.FC<Props> = (props) => {
     const memberId: number = findMembersIds(props.messenger.members).find((id: number) => id !== props.userId) || 0
     const member = findUser(props.users, memberId)
     const avatarUrl = getUserAvatar(props.users, memberId)
-    const memberName = getUserName(props.users, props.userId === props.messenger.author ? memberId : props.messenger.author)
+    const memberName = getUserName(props.users, props.userId === props.messenger.author_id ? memberId : props.messenger.author_id)
     const isNew = isNewMessage(props.userId, props.messenger.members, props.messenger.messages[0])
 
     const {usersOnline} = useTypedSelector(state => state.userReducer)
@@ -56,7 +56,7 @@ const MessengerItem: React.FC<Props> = (props) => {
                     <span>{memberName}</span>
 
                     <span className={cx({'indicator': true, 'online': usersOnline.includes(memberId)})}
-                          // title={usersOnline.includes(memberId) ? 'Online' : `Был в сети: ${getFormatDate(member?.lastActive)}`}
+                          title={usersOnline.includes(memberId) ? 'Online' : `Был в сети: ${member?.date_last_active}`}
                     />
                 </div>
 

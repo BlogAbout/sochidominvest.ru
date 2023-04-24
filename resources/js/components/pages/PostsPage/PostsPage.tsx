@@ -48,11 +48,11 @@ const PostsPage: React.FC = (): React.ReactElement => {
     // Рекурсия для древовидного списка
     const recursiveThree = (sortingArray: IPost[], parentId: number | null, items: IPost[], level: number): IPost[] => {
         for (const item of sortingArray) {
-            if (item.postId == null) {
-                item.postId = 0
+            if (item.post_id == null) {
+                item.post_id = 0
             }
 
-            if (item.postId == parentId) {
+            if (item.post_id == parentId) {
                 item.spaces = level
                 items.push(item)
                 recursiveThree(sortingArray, item.id, items, level + 1)
@@ -109,21 +109,20 @@ const PostsPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    const filtersContent: IFilterContent[] = []
-    // const filtersContent: IFilterContent[] = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'Тип',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: postTypes,
-    //             selected: filters.types,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, types: values})
-    //             }
-    //         }
-    //     ]
-    // }, [filters])
+    const filtersContent: IFilterContent[] = useMemo((): IFilterContent[] => {
+        return [
+            {
+                title: 'Тип',
+                type: 'checker',
+                multi: true,
+                items: postTypes,
+                selected: filters.types,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, types: values})
+                }
+            }
+        ]
+    }, [filters])
 
     return (
         <PanelView pageTitle='Должности'>

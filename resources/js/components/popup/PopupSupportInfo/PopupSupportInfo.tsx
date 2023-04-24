@@ -39,15 +39,14 @@ const defaultProps: Props = {
 const PopupSupportInfo: React.FC<Props> = (props) => {
     const [feed, setFeed] = useState<IFeed>({
         id: null,
-        author: null,
-        phone: null,
-        name: null,
         title: '',
         type: 'feed',
+        status: 'new',
+        phone: null,
+        name: null,
         object_id: null,
         object_type: null,
-        active: 1,
-        status: 'new',
+        is_active: 1,
         messages: []
     })
 
@@ -229,7 +228,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
                                    style='dark'
                                    labelWidth={150}
                             >
-                                <TextBox value={feed.author}
+                                <TextBox value={feed.author ? feed.author.name : ''}
                                          onChange={() => {
                                          }}
                                          styleType='minimal'
@@ -318,7 +317,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
                                style='dark'
                                labelWidth={150}
                         >
-                            <TextBox value={feed.date_created}
+                            <TextBox value={feed.date_created || ''}
                                      onChange={() => {
                                      }}
                                      styleType='minimal'
@@ -333,7 +332,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
                                style='dark'
                                labelWidth={150}
                         >
-                            <TextBox value={feed.date_updated}
+                            <TextBox value={feed.date_updated || ''}
                                      onChange={() => {
                                      }}
                                      styleType='minimal'

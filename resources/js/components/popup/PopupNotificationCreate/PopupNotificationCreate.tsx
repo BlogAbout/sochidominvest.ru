@@ -33,7 +33,7 @@ const PopupNotificationCreate: React.FC<Props> = (props) => {
         name: '',
         description: '',
         type: 'system',
-        active: 1
+        is_active: 1
     })
 
     const [fetching, setFetching] = useState(false)
@@ -44,7 +44,6 @@ const PopupNotificationCreate: React.FC<Props> = (props) => {
         }
     }, [])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }

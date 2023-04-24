@@ -41,9 +41,8 @@ const PopupPartnerCreate: React.FC<Props> = (props) => {
         name: '',
         description: '',
         subtitle: '',
-        author: null,
         type: 'partner',
-        active: 1,
+        is_active: 1
     })
 
     const [fetching, setFetching] = useState(false)
@@ -120,7 +119,7 @@ const PopupPartnerCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Тип'/>
 
-                    <ComboBox selected={partner.type}
+                    <ComboBox selected={partner.type || ''}
                               items={partnerTypes}
                               onSelect={(value: string) => setPartner({...partner, type: value})}
                               placeHolder='Выберите тип'
@@ -131,12 +130,12 @@ const PopupPartnerCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Аватар'/>
 
-                    <AvatarBox avatarId={partner.avatarId || null}
+                    <AvatarBox avatarId={partner.avatar_id || null}
                                fetching={fetching}
                                onSelect={(attachmentId: number | null) => {
                                    setPartner({
                                        ...partner,
-                                       avatarId: attachmentId
+                                       avatar_id: attachmentId
                                    })
                                }}
                     />
@@ -163,7 +162,7 @@ const PopupPartnerCreate: React.FC<Props> = (props) => {
                               checked={!!partner.is_active}
                               onChange={(e: React.MouseEvent, value: boolean) => setPartner({
                                   ...partner,
-                                  active: value ? 1 : 0
+                                  is_active: value ? 1 : 0
                               })}
                     />
                 </div>
@@ -189,10 +188,10 @@ const PopupPartnerCreate: React.FC<Props> = (props) => {
                 <div className={cx({'field': true, 'full': true})}>
                     <Label text='Meta Title'/>
 
-                    <TextBox value={partner.metaTitle || ''}
+                    <TextBox value={partner.meta_title || ''}
                              onChange={(value: string) => setPartner({
                                  ...partner,
-                                 metaTitle: value
+                                 meta_title: value
                              })}
                              placeHolder='Введите Meta Title'
                              styleType='minimal'
@@ -202,10 +201,10 @@ const PopupPartnerCreate: React.FC<Props> = (props) => {
                 <div className={cx({'field': true, 'fieldWrap': true})}>
                     <Label text='Meta Description'/>
 
-                    <TextAreaBox value={partner.metaDescription || ''}
+                    <TextAreaBox value={partner.meta_description || ''}
                                  onChange={(value: string) => setPartner({
                                      ...partner,
-                                     metaDescription: value
+                                     meta_description: value
                                  })}
                                  placeHolder='Введите Meta Description'
                                  width='100%'

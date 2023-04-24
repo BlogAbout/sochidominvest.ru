@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import * as Showdown from 'showdown'
 import withStore from '../../hoc/withStore'
 import classNames from 'classnames/bind'
+import {converter} from '../../../helpers/utilHelper'
 import {mailingTypes} from '../../../helpers/mailingHelper'
 import MailingService from '../../../api/MailingService'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
@@ -20,7 +20,6 @@ import Label from '../../form/Label/Label'
 import ComboBox from '../../form/ComboBox/ComboBox'
 import CompilationBox from '../../form/CompilationBox/CompilationBox'
 import classes from './PopupMailingCreate.module.scss'
-import {converter} from "../../../helpers/utilHelper";
 
 interface Props extends PopupProps {
     mailing?: IMailing | null
@@ -42,12 +41,10 @@ const PopupMailingCreate: React.FC<Props> = (props) => {
         id: null,
         name: '',
         content: '',
-        contentHtml: '',
+        content_html: '',
         type: 'mail',
-        author: null,
-        active: 1,
         status: 0,
-        countRecipients: 0
+        is_active: 1
     })
 
     const [fetching, setFetching] = useState(false)
@@ -58,19 +55,17 @@ const PopupMailingCreate: React.FC<Props> = (props) => {
         }
     }, [props.blockId])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Сохранение изменений
     const saveHandler = (isClose?: boolean) => {
         setFetching(true)
 
         const saveMailing: IMailing = JSON.parse(JSON.stringify(mailing))
 
         if (saveMailing.type === 'mail') {
-            saveMailing.contentHtml = converter.makeHtml(saveMailing.content)
+            saveMailing.content_html = converter.makeHtml(saveMailing.content)
         }
 
         MailingService.saveMailing(saveMailing)
@@ -196,7 +191,7 @@ const PopupMailingCreate: React.FC<Props> = (props) => {
                                   checked={!!mailing.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setMailing({
                                       ...mailing,
-                                      active: value ? 1 : 0
+                                      is_active: value ? 1 : 0
                                   })}
                         />
                     </div>

@@ -44,8 +44,7 @@ const PopupDeveloperCreate: React.FC<Props> = (props) => {
         address: '',
         phone: '',
         type: 'constructionCompany',
-        active: !props.isDisable ? 1 : 0,
-        author: null
+        is_active: !props.isDisable ? 1 : 0
     })
 
     const [fetching, setFetching] = useState(false)
@@ -143,7 +142,7 @@ const PopupDeveloperCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <Label text='Тип'/>
 
-                        <ComboBox selected={developer.type}
+                        <ComboBox selected={developer.type || ''}
                                   items={developerTypes}
                                   onSelect={(value: string) => setDeveloper({...developer, type: value})}
                                   placeHolder='Выберите тип'
@@ -154,12 +153,12 @@ const PopupDeveloperCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <Label text='Аватар'/>
 
-                        <AvatarBox avatarId={developer.avatarId || null}
+                        <AvatarBox avatarId={developer.avatar_id || null}
                                    fetching={fetching}
                                    onSelect={(attachmentId: number | null) => {
                                        setDeveloper({
                                            ...developer,
-                                           avatarId: attachmentId
+                                           avatar_id: attachmentId
                                        })
                                    }}
                         />
@@ -186,7 +185,7 @@ const PopupDeveloperCreate: React.FC<Props> = (props) => {
                                   checked={!!developer.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setDeveloper({
                                       ...developer,
-                                      active: value ? 1 : 0
+                                      is_active: value ? 1 : 0
                                   })}
                                   readOnly={props.isDisable}
                         />
@@ -198,14 +197,14 @@ const PopupDeveloperCreate: React.FC<Props> = (props) => {
                 <Button type='save'
                         icon='check-double'
                         onClick={() => saveHandler(true)}
-                        disabled={fetching || developer.name.trim() === '' || developer.address.trim() === '' || developer.phone.trim() === ''}
+                        disabled={fetching || developer.name.trim() === '' || developer.address?.trim() === '' || developer.phone?.trim() === ''}
                         title='Сохранить и закрыть'
                 />
 
                 <Button type='apply'
                         icon='check'
                         onClick={() => saveHandler()}
-                        disabled={fetching || developer.name.trim() === '' || developer.address.trim() === '' || developer.phone.trim() === ''}
+                        disabled={fetching || developer.name.trim() === '' || developer.address?.trim() === '' || developer.phone?.trim() === ''}
                         className='marginLeft'
                         title='Сохранить'
                 >Сохранить</Button>

@@ -17,13 +17,12 @@ const StoreProductsPage: React.FC = (): React.ReactElement => {
     const [searchText, setSearchText] = useState('')
     const [filterProducts, setFilterProducts] = useState<IProduct[]>([])
 
-    const {products, categories, fetching} = useTypedSelector(state => state.storeReducer)
+    const {products, fetching} = useTypedSelector(state => state.storeReducer)
 
-    const {fetchProductList, fetchCategoryList} = useActions()
+    const {fetchProductList} = useActions()
 
     useEffect(() => {
         fetchProductsHandler()
-        fetchCategoryList({active: [0, 1]})
     }, [])
 
     useEffect(() => {
@@ -62,7 +61,6 @@ const StoreProductsPage: React.FC = (): React.ReactElement => {
                     <Title type='h1' style='center'>Товары и оборудование</Title>
 
                     <ProductTill list={filterProducts}
-                                 categories={categories}
                                  fetching={fetching}
                                  onClick={(product: IProduct) => onClickHandler(product)}
                                  onContextMenu={() => {

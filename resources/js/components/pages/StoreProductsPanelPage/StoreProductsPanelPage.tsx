@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
@@ -6,10 +6,8 @@ import {changeLayout, getLayout} from '../../../helpers/utilHelper'
 import {compareText} from '../../../helpers/filterHelper'
 import {allowForRole} from '../../../helpers/accessHelper'
 import {IProduct} from '../../../@types/IStore'
-import {IFilterContent} from '../../../@types/IFilter'
 import {RouteNames} from '../../../helpers/routerHelper'
 import PanelView from '../../views/PanelView/PanelView'
-import SidebarLeft from '../../../components/ui/SidebarLeft/SidebarLeft'
 import Wrapper from '../../ui/Wrapper/Wrapper'
 import Title from '../../ui/Title/Title'
 import StoreService from '../../../api/StoreService'
@@ -26,11 +24,9 @@ const StoreProductsPanelPage: React.FC = (): React.ReactElement => {
     const [fetching, setFetching] = useState(false)
     const [searchText, setSearchText] = useState('')
     const [filterProducts, setFilterProducts] = useState<IProduct[]>([])
-    const [isShowFilter, setIsShowFilter] = useState(false)
-    const [filters, setFilters] = useState({})
     const [layout, setLayout] = useState<'list' | 'till'>(getLayout('products'))
 
-    const {products, categories, fetching: fetchingProducts} = useTypedSelector(state => state.storeReducer)
+    const {products, fetching: fetchingProducts} = useTypedSelector(state => state.storeReducer)
 
     const {fetchProductList, fetchCategoryList} = useActions()
 
@@ -41,7 +37,7 @@ const StoreProductsPanelPage: React.FC = (): React.ReactElement => {
 
     useEffect(() => {
         search(searchText)
-    }, [products, filters])
+    }, [products])
 
     const fetchProductsHandler = () => {
         fetchProductList({active: [0, 1]})
@@ -61,11 +57,11 @@ const StoreProductsPanelPage: React.FC = (): React.ReactElement => {
         }
 
         if (value !== '') {
-            setFilterProducts(filterItemsHandler(products.filter((product: IProduct) => {
+            setFilterProducts(products.filter((product: IProduct) => {
                 return compareText(product.name, value)
-            })))
+            }))
         } else {
-            setFilterProducts(filterItemsHandler(products))
+            setFilterProducts(products)
         }
     }
 
@@ -79,7 +75,6 @@ const StoreProductsPanelPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Редактирование
     const onEditHandler = (product: IProduct) => {
         openPopupProductCreate(document.body, {
             product: product,
@@ -87,7 +82,6 @@ const StoreProductsPanelPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Удаление
     const onRemoveHandler = (product: IProduct) => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить "${product.name}"?`,
@@ -135,45 +129,11 @@ const StoreProductsPanelPage: React.FC = (): React.ReactElement => {
         changeLayout('products', value)
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IProduct[]) => {
-        if (!list || !list.length) {
-            return []
-        }
-
-        return list
-        // Todo
-        // return list.filter((item: IProduct) => {
-        //     return filters.types.includes(item.type)
-        // })
-    }
-
-    const filtersContent: IFilterContent[] = useMemo(() => {
-        return [
-            // {
-            //     title: 'Тип',
-            //     type: 'checker',
-            //     multi: true,
-            //     items: articleTypes,
-            //     selected: filters.types,
-            //     onSelect: (values: string[]) => {
-            //         setFilters({...filters, types: values})
-            //     }
-            // }
-        ]
-    }, [filters])
-
     return (
         <PanelView pageTitle='Товары'>
-            <SidebarLeft filters={filtersContent}
-                         isShow={isShowFilter}
-                         onChangeShow={(isShow: boolean) => setIsShowFilter(isShow)}
-            />
-
             <Wrapper isFull>
                 <Title type='h1'
                        onAdd={onAddHandler.bind(this)}
-                       onFilter={() => setIsShowFilter(!isShowFilter)}
                        searchText={searchText}
                        onSearch={search.bind(this)}
                        className={classes.title}
@@ -184,13 +144,11 @@ const StoreProductsPanelPage: React.FC = (): React.ReactElement => {
 
                 {layout === 'till'
                     ? <ProductTill list={filterProducts}
-                                   categories={categories}
                                    fetching={fetching || fetchingProducts}
                                    onClick={(product: IProduct) => onClickHandler(product)}
                                    onContextMenu={(product: IProduct, e: React.MouseEvent) => onContextMenuHandler(product, e)}
                     />
                     : <ProductList list={filterProducts}
-                                   categories={categories}
                                    fetching={fetching || fetchingProducts}
                                    onClick={(product: IProduct) => onClickHandler(product)}
                                    onContextMenu={(product: IProduct, e: React.MouseEvent) => onContextMenuHandler(product, e)}

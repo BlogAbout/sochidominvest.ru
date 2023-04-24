@@ -33,10 +33,9 @@ const cx = classNames.bind(classes)
 const PopupCompilationCreate: React.FC<Props> = (props) => {
     const [compilation, setCompilation] = useState<ICompilation>(props.compilation || {
         id: null,
-        author: null,
         name: '',
         description: '',
-        active: 1
+        is_active: 1
     })
 
     const [fetching, setFetching] = useState(false)

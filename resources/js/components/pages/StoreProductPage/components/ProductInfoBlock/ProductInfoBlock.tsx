@@ -1,8 +1,7 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {ICategory, IProduct} from '../../../../../@types/IStore'
+import {IProduct} from '../../../../../@types/IStore'
 import {IFeed} from '../../../../../@types/IFeed'
-import {getFormatDate} from '../../../../../helpers/dateHelper'
 import {numberWithSpaces, round} from '../../../../../helpers/numberHelper'
 import Title from '../../../../ui/Title/Title'
 import Button from '../../../../../components/form/Button/Button'
@@ -11,42 +10,28 @@ import classes from './ProductInfoBlock.module.scss'
 
 interface Props {
     product: IProduct
-    categories: ICategory[]
 
     onSave?(): void
 }
 
 const defaultProps: Props = {
-    product: {} as IProduct,
-    categories: []
+    product: {} as IProduct
 }
 
 const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
-    const category = useMemo(() => {
-        if (props.categories && props.categories.length) {
-            const findCategory = props.categories.find((item: ICategory) => item.id === props.product.categoryId)
-
-            if (findCategory) {
-                return findCategory
-            }
-        }
-
-        return null
-    }, [props.categories, props.product.categoryId])
 
     // Вызов окна обратной связи
     const onFeedButtonHandler = (): void => {
         const feed: IFeed = {
             id: null,
-            author: null,
-            phone: '',
-            name: '',
             title: `Заявка на покупку ${props.product.name}`,
             type: 'callback',
+            status: 'new',
+            phone: '',
+            name: '',
             object_id: props.product.id,
             object_type: 'store',
-            active: 1,
-            status: 'new'
+            is_active: 1
         }
         openPopupFeedCreate(document.body, {
             feed: feed,
@@ -58,7 +43,7 @@ const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
     const renderDynamicChangePrices = (): React.ReactElement | null => {
         // Todo
         return null
-        // if (!props.product.id || !props.product.costOld || !props.product.cost) {
+        // if (!props.product.id || !props.product.cost_old || !props.product.cost) {
         //     return null
         // }
         //
@@ -74,14 +59,14 @@ const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
 
     // Вывод старой цены
     const renderOldPrice = (): React.ReactElement | null => {
-        if (!props.product.costOld) {
+        if (!props.product.cost_old) {
             return null
         }
 
-        if (props.product.costOld > props.product.cost) {
+        if (props.product.cost_old > props.product.cost) {
             return (
                 <span className={classes.costDown}
-                      title={`Старая цена: ${numberWithSpaces(round(props.product.costOld || 0, 0))} руб.`}
+                      title={`Старая цена: ${numberWithSpaces(round(props.product.cost_old || 0, 0))} руб.`}
                 >
                     <FontAwesomeIcon icon='arrow-down'/>
                 </span>
@@ -89,7 +74,7 @@ const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
         } else {
             return (
                 <span className={classes.costUp}
-                      title={`Старая цена: ${numberWithSpaces(round(props.product.costOld || 0, 0))} руб.`}
+                      title={`Старая цена: ${numberWithSpaces(round(props.product.cost_old || 0, 0))} руб.`}
                 >
                     <FontAwesomeIcon icon='arrow-up'/>
                 </span>
@@ -121,11 +106,11 @@ const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                     </>
                 </div>
 
-                {props.product.costOld ?
+                {props.product.cost_old ?
                     <div className={classes.row}>
 
                         <>
-                            <span>{numberWithSpaces(round(props.product.costOld || 0, 0))} руб.</span>
+                            <span>{numberWithSpaces(round(props.product.cost_old || 0, 0))} руб.</span>
                             <span>Старая цена</span>
                         </>
                     </div>
@@ -149,9 +134,9 @@ const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
         <div className={classes.ProductInfoBlock}>
             {renderMetaInformation()}
 
-            {category ?
+            {props.product.category ?
                 <div className={classes.category}>
-                    <div>{category.name}</div>
+                    <div>{props.product.category.name}</div>
                 </div>
                 : null
             }

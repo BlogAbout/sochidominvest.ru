@@ -75,7 +75,9 @@ const DevelopersPage: React.FC = (): React.ReactElement => {
 
         if (value !== '') {
             setFilterDeveloper(filterItemsHandler(developers.filter((developer: IDeveloper) => {
-                return compareText(developer.name, value) || compareText(developer.address, value) || compareText(developer.phone, value.toLocaleLowerCase())
+                return compareText(developer.name, value)
+                    || (developer.address && compareText(developer.address, value))
+                    || (developer.phone && compareText(developer.phone, value.toLocaleLowerCase()))
             })))
         } else {
             setFilterDeveloper(filterItemsHandler(developers))
@@ -161,21 +163,20 @@ const DevelopersPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    const filtersContent: IFilterContent[] = []
-    // const filtersContent: IFilterContent[] = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'Тип',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: developerTypes,
-    //             selected: filters.types,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, types: values})
-    //             }
-    //         }
-    //     ]
-    // }, [filters])
+    const filtersContent: IFilterContent[] = useMemo((): IFilterContent[] => {
+        return [
+            {
+                title: 'Тип',
+                type: 'checker',
+                multi: true,
+                items: developerTypes,
+                selected: filters.types,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, types: values})
+                }
+            }
+        ]
+    }, [filters])
 
     return (
         <PanelView pageTitle='Застройщики'>

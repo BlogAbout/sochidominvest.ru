@@ -1,7 +1,6 @@
 import React from 'react'
 import {IArticle} from '../../../../../@types/IArticle'
 import {IBuilding} from '../../../../../@types/IBuilding'
-import {ILog} from '../../../../../@types/ILog'
 import Empty from '../../../../../components/ui/Empty/Empty'
 import InfoItem from '../InfoItem/InfoItem'
 import BlockingElement from '../../../../../components/ui/BlockingElement/BlockingElement'
@@ -10,7 +9,6 @@ import classes from './InfoList.module.scss'
 interface Props {
     articles?: IArticle[]
     buildings?: IBuilding[]
-    logs?: ILog[]
     type: 'article' | 'building' | 'log'
     fetching: boolean
 
@@ -58,22 +56,6 @@ const InfoList: React.FC<Props> = (props) => {
         }
     }
 
-    const renderLogList = () => {
-        if (!props.logs) {
-            return null
-        }
-
-        if (props.logs.length) {
-            return props.logs.map((item: ILog) => {
-                return (
-                    <InfoItem key={item.id} type='log' log={item} onSave={props.onSave.bind(this)}/>
-                )
-            })
-        } else {
-            return <Empty message='Нет логов'/>
-        }
-    }
-
     return (
         <div className={classes.InfoList}>
             <div className={classes.head}>
@@ -84,7 +66,7 @@ const InfoList: React.FC<Props> = (props) => {
             <BlockingElement fetching={props.fetching} className={classes.container}>
                 {props.type === 'article' ? renderArticleList()
                     : props.type === 'building' ? renderBuildingList()
-                        : renderLogList()}
+                        : null}
             </BlockingElement>
         </div>
     )

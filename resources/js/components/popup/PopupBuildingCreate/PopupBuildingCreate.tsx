@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react'
 import withStore from '../../hoc/withStore'
 import classNames from 'classnames/bind'
 import BuildingService from '../../../api/BuildingService'
-import AttachmentService from '../../../api/AttachmentService'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
 import {IBuilding, IBuildingPassed, IBuildingRent} from '../../../@types/IBuilding'
 import {ITab} from '../../../@types/ITab'
@@ -79,31 +78,30 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
     const [building, setBuilding] = useState<IBuilding>(props.building ? JSON.parse(JSON.stringify(props.building)) : {
         id: null,
         name: '',
+        description: '',
         address: '',
         coordinates: '',
         type: props.type || 'building',
         status: 'sold',
-        active: 1,
-        author: 0,
-        tags: [],
-        contacts: [],
-        developers: [],
-        agents: [],
-        advantages: [],
-        articles: [],
-        images: [],
-        videos: [],
-        surchargeDoc: 0,
-        surchargeGas: 0,
+        is_active: 1,
         area: 0,
-        cost: 0
+        cost: 0,
+        info: {
+            advantages: [],
+            surcharge_doc: 0,
+            surcharge_gas: 0
+        },
+        image_ids: [],
+        video_ids: [],
+        developer_ids: [],
+        agent_ids: [],
+        contact_ids: [],
+        document_ids: [],
+        article_ids: [],
+        tag_ids: []
     })
 
     const [fetchingBuilding, setFetchingBuilding] = useState(false)
-    const [fetchingImages, setFetchingImages] = useState(false)
-    const [fetchingVideos, setFetchingVideos] = useState(false)
-    const [images, setImages] = useState<IAttachment[]>([])
-    const [videos, setVideos] = useState<IAttachment[]>([])
 
     useEffect(() => {
         return () => {
@@ -112,39 +110,15 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
     }, [props.blockId])
 
     useEffect(() => {
-        if (building.id) {
-            if (building.images && building.images.length) {
-                setFetchingImages(true)
-                AttachmentService.fetchAttachments({active: [0, 1], id: building.images, type: 'image'})
-                    .then((response: any) => {
-                        setImages(sortAttachments(response.data.data, building.images))
-                    })
-                    .finally(() => setFetchingImages(false))
-            }
-
-            if (building.videos && building.videos.length) {
-                setFetchingVideos(true)
-                AttachmentService.fetchAttachments({active: [0, 1], id: building.videos, type: 'video'})
-                    .then((response: any) => {
-                        setVideos(sortAttachments(response.data.data, building.videos))
-                    })
-                    .finally(() => setFetchingVideos(false))
-            }
-        }
-    }, [building.id])
-
-    useEffect(() => {
-        if (images && images.length) {
+        if (building.images && building.images.length) {
             checkAvatar()
         }
-    }, [images])
+    }, [building.images])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Сохранение изменений
     const saveHandler = (isClose?: boolean) => {
         if (building.name.trim() === '' || !building.address || building.address.trim() === '') {
             return
@@ -169,9 +143,7 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                     text: error.data.data
                 })
             })
-            .finally(() => {
-                setFetchingBuilding(false)
-            })
+            .finally(() => setFetchingBuilding(false))
     }
 
     // Добавление файла
@@ -179,18 +151,22 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
         if (attachment.id) {
             switch (attachment.type) {
                 case 'image':
+                    const image_ids: number[] = building.image_ids ? [...building.image_ids] : []
+                    const images: IAttachment[] = building.images ? [...building.images] : []
                     setBuilding({
                         ...building,
-                        images: [attachment.id, ...building.images]
+                        image_ids: [attachment.id, ...image_ids],
+                        images: [attachment, ...images]
                     })
-                    setImages([attachment, ...images])
                     break
                 case 'video':
+                    const video_ids: number[] = building.video_ids ? [...building.video_ids] : []
+                    const videos: IAttachment[] = building.videos ? [...building.videos] : []
                     setBuilding({
                         ...building,
-                        videos: [attachment.id, ...building.videos]
+                        video_ids: [attachment.id, ...video_ids],
+                        videos: [attachment, ...videos]
                     })
-                    setVideos([attachment, ...images])
                     break
             }
         }
@@ -198,23 +174,29 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
 
     // Смена главного изображения
     const selectImageAvatarHandler = (attachment: IAttachment) => {
-        setBuilding({...building, avatarId: attachment.id, avatar: attachment.content})
+        setBuilding({...building, info: {...building.info, avatar_id: attachment.id, avatar: attachment}})
     }
 
     // Проверка наличия главного изображения
     const checkAvatar = () => {
-        if (building.images && building.images.length && images && images.length) {
-            if (!building.avatarId || !building.images.includes(building.avatarId)) {
-                selectImageAvatarHandler(images[0])
+        if (building.images && building.images.length && building.image_ids && building.image_ids.length) {
+            if (!building.info.avatar_id || !building.image_ids.includes(building.info.avatar_id)) {
+                selectImageAvatarHandler(building.images[0])
             }
         } else {
-            setBuilding({...building, avatarId: null, avatar: null})
+            setBuilding({
+                ...building,
+                info: {
+                    ...building.info,
+                    avatar_id: null,
+                    avatar: null
+                }
+            })
         }
     }
 
     const isDisableButton = () => {
-        return fetchingBuilding || fetchingImages || fetchingVideos ||
-            building.name.trim() === '' || !building.address || building.address.trim() === ''
+        return fetchingBuilding || building.name.trim() === '' || !building.address || building.address.trim() === ''
     }
 
     const onUpdateOrderingImagesHandler = (files: IAttachment[]) => {
@@ -224,29 +206,41 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 ids.push(attachment.id)
             }
         })
-        setImages(sortAttachments(files, ids))
-        setBuilding({...building, images: ids})
+        setBuilding({...building, image_ids: ids, images: sortAttachments(files, ids)})
     }
 
     const onUpdateOrderingVideosHandler = (files: IAttachment[]) => {
         const ids: number[] = []
-        files.map((attachment: IAttachment) => {
+        files.forEach((attachment: IAttachment) => {
             if (attachment.id) {
                 ids.push(attachment.id)
             }
         })
-        setVideos(sortAttachments(files, ids))
-        setBuilding({...building, videos: ids})
+        setBuilding({...building, video_ids: ids, videos: sortAttachments(files, ids)})
     }
 
     const removeSelectedImageHandler = (file: IAttachment) => {
-        setBuilding({...building, images: building.images.filter((id: number) => id !== file.id)})
-        setImages([...images.filter((attachment: IAttachment) => attachment.id !== file.id)])
+        if (file.id) {
+            const image_ids: number[] = building.image_ids ? building.image_ids.filter((id: number) => id !== file.id) : []
+            const images: IAttachment[] = building.images ? building.images.filter((attachment: IAttachment) => attachment.id !== file.id) : []
+            setBuilding({
+                ...building,
+                image_ids: image_ids,
+                images: images
+            })
+        }
     }
 
     const removeSelectedVideoHandler = (file: IAttachment) => {
-        setBuilding({...building, videos: building.images.filter((id: number) => id !== file.id)})
-        setVideos([...videos.filter((attachment: IAttachment) => attachment.id !== file.id)])
+        if (file.id) {
+            const video_ids: number[] = building.video_ids ? building.video_ids.filter((id: number) => id !== file.id) : []
+            const videos: IAttachment[] = building.videos ? building.videos.filter((attachment: IAttachment) => attachment.id !== file.id) : []
+            setBuilding({
+                ...building,
+                video_ids: video_ids,
+                videos: videos
+            })
+        }
     }
 
     const getPopupTitle = (): string => {
@@ -336,7 +330,7 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Статус'/>
 
-                    <ComboBox selected={building.status}
+                    <ComboBox selected={building.status || ''}
                               items={buildingStatuses}
                               onSelect={(value: string) => setBuilding({...building, status: value})}
                               placeHolder='Выберите статус'
@@ -348,8 +342,11 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <Label text='Дата сдачи'/>
 
-                        <PassedBox selected={building.passed || null}
-                                   onChange={(value: IBuildingPassed) => setBuilding({...building, passed: value})}
+                        <PassedBox selected={building.info.passed || null}
+                                   onChange={(value: IBuildingPassed) => setBuilding({
+                                       ...building,
+                                       info: {...building.info, passed: value}
+                                   })}
                                    placeHolder='Укажите дату сдачи'
                                    styleType='minimal'
                         />
@@ -360,8 +357,8 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Теги'/>
 
-                    <TagBox tags={building.tags}
-                            onSelect={(value: number[]) => setBuilding({...building, tags: value})}
+                    <TagBox tags={building.tag_ids || []}
+                            onSelect={(value: number[]) => setBuilding({...building, tag_ids: value})}
                             placeHolder='Выберите теги'
                             multi
                             styleType='minimal'
@@ -371,9 +368,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Сумма в договоре'/>
 
-                    <ComboBox selected={building.amountContract || null}
+                    <ComboBox selected={building.info.amount_contract || null}
                               items={amountContract}
-                              onSelect={(value: string) => setBuilding({...building, amountContract: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, amount_contract: value}
+                              })}
                               placeHolder='Выберите сумму в договоре'
                               styleType='minimal'
                     />
@@ -382,13 +382,16 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Доплата за документы, руб.'/>
 
-                    <NumberBox value={building.surchargeDoc || ''}
+                    <NumberBox value={building.info.surcharge_doc || ''}
                                min={0}
                                step={1}
                                max={999999999}
                                onChange={(e: React.ChangeEvent<HTMLInputElement>, value: number) => setBuilding({
                                    ...building,
-                                   surchargeDoc: value
+                                   info: {
+                                       ...building.info,
+                                       surcharge_doc: value
+                                   }
                                })}
                                placeHolder='Введите размер доплаты за документы'
                                styleType='minimal'
@@ -398,13 +401,16 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Доплата за газ, руб.'/>
 
-                    <NumberBox value={building.surchargeGas || ''}
+                    <NumberBox value={building.info.surcharge_gas || ''}
                                min={0}
                                step={1}
                                max={999999999}
                                onChange={(e: React.ChangeEvent<HTMLInputElement>, value: number) => setBuilding({
                                    ...building,
-                                   surchargeGas: value
+                                   info: {
+                                       ...building.info,
+                                       surcharge_gas: value
+                                   }
                                })}
                                placeHolder='Введите размер доплаты за газ'
                                styleType='minimal'
@@ -415,10 +421,13 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <Label text='Кадастровый номер'/>
 
-                        <TextBox value={building.cadastral_number || ''}
+                        <TextBox value={building.info.cadastral_number || ''}
                                  onChange={(value: string) => setBuilding({
                                      ...building,
-                                     cadastral_number: value
+                                     info: {
+                                         ...building.info,
+                                         cadastral_number: value
+                                     }
                                  })}
                                  placeHolder='Введите кадастровый номер'
                                  styleType='minimal'
@@ -431,14 +440,17 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <Label text='Кадастровая стоимость, руб.'/>
 
-                        <NumberBox value={building.cadastral_cost || ''}
+                        <NumberBox value={building.info.cadastral_cost || ''}
                                    min={0}
                                    step={0.01}
                                    max={999999999}
                                    countAfterComma={2}
                                    onChange={(e: React.ChangeEvent<HTMLInputElement>, value: number) => setBuilding({
                                        ...building,
-                                       cadastral_cost: value
+                                       info: {
+                                           ...building.info,
+                                           cadastral_cost: value
+                                       }
                                    })}
                                    placeHolder='Введите кадастровую стоимость'
                                    styleType='minimal'
@@ -453,14 +465,14 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                                   title='Сдается в аренду'
                                   type='modern'
                                   width={110}
-                                  checked={!!building.rent}
-                                  onChange={(n) => {
+                                  checked={!!building.is_rent}
+                                  onChange={() => {
                                       openPopupBuildingRent(document.body, {
                                           building: building,
                                           onSave: (active: number, rentData: IBuildingRent) => {
                                               setBuilding({
                                                   ...building,
-                                                  rent: active,
+                                                  is_rent: active,
                                                   rentData: rentData
                                               })
                                           }
@@ -476,10 +488,13 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                               title='Продажа для нерезидентов'
                               type='modern'
                               width={110}
-                              checked={!!building.saleNoResident}
+                              checked={!!building.info.is_sale_no_resident}
                               onChange={(e: React.MouseEvent, value: boolean) => setBuilding({
                                   ...building,
-                                  saleNoResident: value ? 1 : 0
+                                  info: {
+                                      ...building.info,
+                                      is_sale_no_resident: value ? 1 : 0
+                                  }
                               })}
                     />
                 </div>
@@ -488,10 +503,10 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                     <CheckBox label='Публичный'
                               type='modern'
                               width={110}
-                              checked={!!building.publish}
+                              checked={!!building.is_publish}
                               onChange={(e: React.MouseEvent, value: boolean) => setBuilding({
                                   ...building,
-                                  publish: value ? 1 : 0
+                                  is_publish: value ? 1 : 0
                               })}
                     />
                 </div>
@@ -503,7 +518,7 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                               checked={!!building.is_active}
                               onChange={(e: React.MouseEvent, value: boolean) => setBuilding({
                                   ...building,
-                                  active: value ? 1 : 0
+                                  is_active: value ? 1 : 0
                               })}
                     />
                 </div>
@@ -513,7 +528,7 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
 
     // Вкладка информации объекта
     const renderInformationTab = () => {
-        const districtZones = districtList.find((item: ISelector) => item.key === building.district)
+        const districtZones = districtList.find((item: ISelector) => item.key === building.info.district)
 
         return (
             <div key='info' className={classes.tabContent}>
@@ -558,9 +573,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Район'/>
 
-                    <ComboBox selected={building.district || null}
+                    <ComboBox selected={building.info.district || null}
                               items={districtList}
-                              onSelect={(value: string) => setBuilding({...building, district: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, district: value}
+                              })}
                               placeHolder='Выберите район'
                               styleType='minimal'
                     />
@@ -569,9 +587,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Микрорайон'/>
 
-                    <ComboBox selected={building.districtZone || null}
+                    <ComboBox selected={building.info.district_zone || null}
                               items={districtZones && districtZones.children ? districtZones.children : []}
-                              onSelect={(value: string) => setBuilding({...building, districtZone: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, district_zone: value}
+                              })}
                               placeHolder='Выберите микрорайон'
                               styleType='minimal'
                               showEmpty
@@ -581,11 +602,14 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Особенности'/>
 
-                    <SelectorBox selected={building.advantages || []}
+                    <SelectorBox selected={building.info.advantages || []}
                                  items={buildingAdvantages}
                                  onSelect={(value: string[]) => setBuilding({
                                      ...building,
-                                     advantages: value
+                                     info: {
+                                         ...building.info,
+                                         advantages: value
+                                     }
                                  })}
                                  title='Выберите особенности'
                                  placeHolder='Выберите особенности'
@@ -597,11 +621,14 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Варианты оплаты'/>
 
-                    <SelectorBox selected={building.payments || []}
+                    <SelectorBox selected={building.info.payments || []}
                                  items={paymentsList}
                                  onSelect={(value: string[]) => setBuilding({
                                      ...building,
-                                     payments: value
+                                     info: {
+                                         ...building.info,
+                                         payments: value
+                                     }
                                  })}
                                  title='Выберите варианты оплаты'
                                  placeHolder='Выберите варианты оплаты'
@@ -613,11 +640,14 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Варианты оформления покупки'/>
 
-                    <SelectorBox selected={building.formalization || []}
+                    <SelectorBox selected={building.info.formalization || []}
                                  items={formalizationList}
                                  onSelect={(value: string[]) => setBuilding({
                                      ...building,
-                                     formalization: value
+                                     info: {
+                                         ...building.info,
+                                         formalization: value
+                                     }
                                  })}
                                  title='Выберите варианты оформления покупки'
                                  placeHolder='Выберите варианты оформления покупки'
@@ -629,9 +659,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Класс дома'/>
 
-                    <ComboBox selected={building.houseClass || ''}
+                    <ComboBox selected={building.info.house_class || ''}
                               items={buildingClasses}
-                              onSelect={(value: string) => setBuilding({...building, houseClass: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, house_class: value}
+                              })}
                               placeHolder='Выберите класс дома'
                               styleType='minimal'
                     />
@@ -640,9 +673,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Материал здания'/>
 
-                    <ComboBox selected={building.material || ''}
+                    <ComboBox selected={building.info.material || ''}
                               items={buildingMaterials}
-                              onSelect={(value: string) => setBuilding({...building, material: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, material: value}
+                              })}
                               placeHolder='Выберите тип материала здания'
                               styleType='minimal'
                     />
@@ -651,9 +687,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Тип дома'/>
 
-                    <ComboBox selected={building.houseType || ''}
+                    <ComboBox selected={building.info.house_type || ''}
                               items={buildingFormat}
-                              onSelect={(value: string) => setBuilding({...building, houseType: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, house_type: value}
+                              })}
                               placeHolder='Выберите тип дома'
                               styleType='minimal'
                     />
@@ -662,9 +701,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Паркинг'/>
 
-                    <ComboBox selected={building.parking || ''}
+                    <ComboBox selected={building.info.parking || ''}
                               items={buildingParking}
-                              onSelect={(value: string) => setBuilding({...building, parking: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, parking: value}
+                              })}
                               placeHolder='Выберите тип паркинга'
                               styleType='minimal'
                     />
@@ -673,9 +715,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Территория'/>
 
-                    <ComboBox selected={building.territory || ''}
+                    <ComboBox selected={building.info.territory || ''}
                               items={buildingTerritory}
-                              onSelect={(value: string) => setBuilding({...building, territory: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, territory: value}
+                              })}
                               placeHolder='Выберите тип территории'
                               styleType='minimal'
                     />
@@ -684,9 +729,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Подъезд к дому'/>
 
-                    <ComboBox selected={building.entranceHouse || ''}
+                    <ComboBox selected={building.info.entrance_house || ''}
                               items={buildingEntrance}
-                              onSelect={(value: string) => setBuilding({...building, entranceHouse: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, entrance_house: value}
+                              })}
                               placeHolder='Выберите тип подъезда к дому'
                               styleType='minimal'
                     />
@@ -695,9 +743,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Газ'/>
 
-                    <ComboBox selected={building.gas || ''}
+                    <ComboBox selected={building.info.gas || ''}
                               items={buildingGas}
-                              onSelect={(value: string) => setBuilding({...building, gas: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, gas: value}
+                              })}
                               placeHolder='Выберите подключение газа'
                               styleType='minimal'
                     />
@@ -706,9 +757,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Отопление'/>
 
-                    <ComboBox selected={building.heating || ''}
+                    <ComboBox selected={building.info.heating || ''}
                               items={buildingHeating}
-                              onSelect={(value: string) => setBuilding({...building, heating: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, heating: value}
+                              })}
                               placeHolder='Выберите тип отопления'
                               styleType='minimal'
                     />
@@ -717,9 +771,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Электричество'/>
 
-                    <ComboBox selected={building.electricity || ''}
+                    <ComboBox selected={building.info.electricity || ''}
                               items={buildingElectricity}
-                              onSelect={(value: string) => setBuilding({...building, electricity: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, electricity: value}
+                              })}
                               placeHolder='Выберите тип электричества'
                               styleType='minimal'
                     />
@@ -728,9 +785,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Канализация'/>
 
-                    <ComboBox selected={building.sewerage || ''}
+                    <ComboBox selected={building.info.sewerage || ''}
                               items={buildingSewerage}
-                              onSelect={(value: string) => setBuilding({...building, sewerage: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, sewerage: value}
+                              })}
                               placeHolder='Выберите тип канализации'
                               styleType='minimal'
                     />
@@ -739,9 +799,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Водоснабжение'/>
 
-                    <ComboBox selected={building.waterSupply || ''}
+                    <ComboBox selected={building.info.water_supply || ''}
                               items={buildingWaterSupply}
-                              onSelect={(value: string) => setBuilding({...building, waterSupply: value})}
+                              onSelect={(value: string) => setBuilding({
+                                  ...building,
+                                  info: {...building.info, water_supply: value}
+                              })}
                               placeHolder='Выберите тип водоснабжения'
                               styleType='minimal'
                     />
@@ -750,13 +813,16 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Расстояние до моря, м.'/>
 
-                    <NumberBox value={building.distanceSea || ''}
+                    <NumberBox value={building.info.distance_sea || ''}
                                min={0}
                                step={1}
                                max={999999999}
                                onChange={(e: React.ChangeEvent<HTMLInputElement>, value: number) => setBuilding({
                                    ...building,
-                                   distanceSea: value
+                                   info: {
+                                       ...building.info,
+                                       distance_sea: value
+                                   }
                                })}
                                placeHolder='Укажите расстояние до моря'
                                styleType='minimal'
@@ -766,14 +832,17 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 <div className={classes.field}>
                     <Label text='Высота потолков, м.'/>
 
-                    <NumberBox value={building.ceilingHeight || ''}
+                    <NumberBox value={building.info.ceiling_height || ''}
                                min={0}
                                step={0.01}
                                max={99}
                                countAfterComma={2}
                                onChange={(e: React.ChangeEvent<HTMLInputElement>, value: number) => setBuilding({
                                    ...building,
-                                   ceilingHeight: value
+                                   info: {
+                                       ...building.info,
+                                       ceiling_height: value
+                                   }
                                })}
                                placeHolder='Укажите высоту потолков'
                                styleType='minimal'
@@ -806,19 +875,22 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                             icon='arrow-pointer'
                             onClick={() => openPopupFileManager(document.body, {
                                 type: 'image',
-                                selected: building.images,
+                                selected: building.image_ids || [],
                                 onSelect: (selected: number[], attachments: IAttachment[]) => {
-                                    setBuilding({...building, images: selected})
-                                    setImages(attachments)
+                                    setBuilding({
+                                        ...building,
+                                        image_ids: selected,
+                                        images: attachments
+                                    })
                                 },
                                 multi: true
                             })}
                             disabled={isDisableButton()}
                     >Выбрать / Загрузить</Button>
 
-                    <FileList files={images}
-                              selected={building.avatarId ? [building.avatarId] : []}
-                              fetching={fetchingImages}
+                    <FileList files={building.images || []}
+                              selected={building.info.avatar_id ? [building.info.avatar_id] : []}
+                              fetching={fetchingBuilding}
                               onSave={addAttachmentHandler.bind(this)}
                               onSelect={selectImageAvatarHandler.bind(this)}
                               onRemove={removeSelectedImageHandler.bind(this)}
@@ -834,18 +906,21 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                             icon='arrow-pointer'
                             onClick={() => openPopupFileManager(document.body, {
                                 type: 'video',
-                                selected: building.videos,
+                                selected: building.video_ids || [],
                                 onSelect: (selected: number[], attachments: IAttachment[]) => {
-                                    setBuilding({...building, videos: selected})
-                                    setVideos(attachments)
+                                    setBuilding({
+                                        ...building,
+                                        video_ids: selected,
+                                        videos: attachments
+                                    })
                                 },
                                 multi: true
                             })}
                             disabled={isDisableButton()}
                     >Выбрать / Загрузить</Button>
 
-                    <FileList files={videos}
-                              fetching={fetchingVideos}
+                    <FileList files={building.videos || []}
+                              fetching={fetchingBuilding}
                               onSave={addAttachmentHandler.bind(this)}
                               onSelect={selectImageAvatarHandler.bind(this)}
                               onRemove={removeSelectedVideoHandler.bind(this)}
@@ -861,8 +936,8 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
     const renderDeveloperTab = () => {
         return (
             <div key='developer' className={classes.tabContent}>
-                <DeveloperList selected={building.developers}
-                               onSelect={(value: number[]) => setBuilding({...building, developers: value})}
+                <DeveloperList selected={building.developer_ids || []}
+                               onSelect={(value: number[]) => setBuilding({...building, developer_ids: value})}
                 />
             </div>
         )
@@ -872,8 +947,8 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
     const renderAgentTab = () => {
         return (
             <div key='agent' className={classes.tabContent}>
-                <AgentList selected={building.agents}
-                           onSelect={(value: number[]) => setBuilding({...building, agents: value})}
+                <AgentList selected={building.agent_ids || []}
+                           onSelect={(value: number[]) => setBuilding({...building, agent_ids: value})}
                 />
             </div>
         )
@@ -883,11 +958,12 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
     const renderContactTab = () => {
         return (
             <div key='contact' className={classes.tabContent}>
-                <UserList selectedAgents={building.agents}
-                          selectedUsers={building.contactUsers}
-                          selectedContacts={building.contactContacts}
-                          onSelectUsers={(value: number[]) => setBuilding({...building, contactUsers: value})}
-                          onSelectContacts={(value: number[]) => setBuilding({...building, contactContacts: value})}
+                <UserList selectedAgents={building.agent_ids || []}
+                          selectedUsers={[]}
+                          selectedContacts={building.contact_ids || []}
+                          onSelectUsers={(value: number[]) => {
+                          }}
+                          onSelectContacts={(value: number[]) => setBuilding({...building, contact_ids: value})}
                 />
             </div>
         )
@@ -909,8 +985,8 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
     const renderArticleTab = () => {
         return (
             <div key='article' className={classes.tabContent}>
-                <ArticleList selected={building.articles || []}
-                             onSelect={(value: number[]) => setBuilding({...building, articles: value})}
+                <ArticleList selected={building.article_ids || []}
+                             onSelect={(value: number[]) => setBuilding({...building, article_ids: value})}
                 />
             </div>
         )
@@ -923,10 +999,10 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <Label text='Meta Title'/>
 
-                        <TextBox value={building.metaTitle || ''}
+                        <TextBox value={building.meta_title || ''}
                                  onChange={(value: string) => setBuilding({
                                      ...building,
-                                     metaTitle: value
+                                     meta_title: value
                                  })}
                                  placeHolder='Введите Meta Title'
                                  styleType='minimal'
@@ -936,10 +1012,10 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                     <div className={cx({'field': true, 'fieldWrap': true})}>
                         <Label text='Meta Description'/>
 
-                        <TextAreaBox value={building.metaDescription || ''}
+                        <TextAreaBox value={building.meta_description || ''}
                                      onChange={(value: string) => setBuilding({
                                          ...building,
-                                         metaDescription: value
+                                         meta_description: value
                                      })}
                                      placeHolder='Введите Meta Description'
                                      width='100%'

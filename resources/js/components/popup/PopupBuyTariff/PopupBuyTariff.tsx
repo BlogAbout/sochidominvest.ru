@@ -89,7 +89,7 @@ const PopupBuyTariff: React.FC<Props> = (props) => {
             id: null,
             name: `Оплата тарифа ${findTariff.name}. Месяцев: ${months}`,
             status: 'new',
-            userId: user.id,
+            user_id: user.id,
             cost: total,
             duration: `P${months}M`,
             object_id: 0, //Todo: findTariff.object_id,

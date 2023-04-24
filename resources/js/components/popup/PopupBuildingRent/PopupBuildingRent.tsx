@@ -55,12 +55,12 @@ const PopupBuildingRent: React.FC<Props> = (props) => {
     }
 
     const onSaveHandler = () => {
-        props.onSave(building.rent, rentData)
+        props.onSave(building.is_rent || 0, rentData)
         close()
     }
 
     const checkDisabled = () => {
-        if (building.rent === 0) {
+        if (building.is_rent === 0) {
             return false
         }
 
@@ -85,15 +85,15 @@ const PopupBuildingRent: React.FC<Props> = (props) => {
                         <CheckBox label='Аренда'
                                   type='modern'
                                   width={110}
-                                  checked={!!building.rent}
+                                  checked={!!building.is_rent}
                                   onChange={(e: React.MouseEvent, value: boolean) => setBuilding({
                                       ...building,
-                                      rent: value ? 1 : 0
+                                      is_rent: value ? 1 : 0
                                   })}
                         />
                     </div>
 
-                    {!!building.rent ?
+                    {!!building.is_rent ?
                         <>
                             <div className={classes.field}>
                                 <Label text='Тип'/>

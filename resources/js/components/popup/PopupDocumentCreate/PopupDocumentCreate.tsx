@@ -36,11 +36,11 @@ const PopupDocumentCreate: React.FC<Props> = (props) => {
     const [documentInfo, setDocumentInfo] = useState<IDocument>(props.document || {
         id: null,
         name: '',
-        attachmentId: null,
-        objectId: props.objectId || null,
-        objectType: props.objectType || null,
         type: props.type || 'file',
-        active: 1
+        attachment_id: null,
+        object_id: props.objectId || null,
+        object_type: props.objectType || null,
+        is_active: 1
     })
 
     const [fetching, setFetching] = useState(false)
@@ -119,16 +119,16 @@ const PopupDocumentCreate: React.FC<Props> = (props) => {
                                     icon='arrow-pointer'
                                     onClick={() => openPopupFileManager(document.body, {
                                         type: 'document',
-                                        selected: documentInfo.attachmentId ? [documentInfo.attachmentId] : [],
+                                        selected: documentInfo.attachment_id ? [documentInfo.attachment_id] : [],
                                         onSelect: (selected: number[]) => {
                                             setDocumentInfo({
                                                 ...documentInfo,
-                                                attachmentId: selected.length ? selected[0] : null
+                                                attachment_id: selected.length ? selected[0] : null
                                             })
                                         }
                                     })}
                                     disabled={fetching}
-                            >{documentInfo.attachmentId ? 'Заменить' : 'Выбрать / Загрузить'}</Button>
+                            >{documentInfo.attachment_id ? 'Заменить' : 'Выбрать / Загрузить'}</Button>
                         </div>
                         : null
                     }
@@ -159,7 +159,7 @@ const PopupDocumentCreate: React.FC<Props> = (props) => {
                                   checked={!!documentInfo.is_active}
                                   onChange={(e: React.MouseEvent, value: boolean) => setDocumentInfo({
                                       ...documentInfo,
-                                      active: value ? 1 : 0
+                                      is_active: value ? 1 : 0
                                   })}
                         />
                     </div>

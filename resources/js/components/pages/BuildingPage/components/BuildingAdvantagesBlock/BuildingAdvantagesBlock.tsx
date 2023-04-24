@@ -12,7 +12,7 @@ const defaultProps: Props = {
 }
 
 const BuildingAdvantagesBlock: React.FC<Props> = (props): React.ReactElement | null => {
-    if (!props.building.advantages || !props.building.advantages.length) {
+    if (!props.building.info.advantages || !props.building.info.advantages.length) {
         return null
     }
 
@@ -21,7 +21,7 @@ const BuildingAdvantagesBlock: React.FC<Props> = (props): React.ReactElement | n
             <h2>Преимущества</h2>
 
             <div className={classes.info}>
-                {props.building.advantages.map((item: string, index: number) => {
+                {props.building.info.advantages.map((item: string, index: number) => {
                     const advantage = buildingAdvantages.find(element => element.key === item)
 
                     if (!advantage) {

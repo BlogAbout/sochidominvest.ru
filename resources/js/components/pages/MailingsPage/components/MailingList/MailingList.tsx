@@ -155,7 +155,9 @@ const MailingList: React.FC<Props> = (props): React.ReactElement => {
                                 <ListCell className={classes.name}>{mailing.name}</ListCell>
                                 <ListCell className={classes.type}>{getMailingTypeText(mailing.type)}</ListCell>
                                 <ListCell className={classes.status}>{getMailingStatusText(mailing.status)}</ListCell>
-                                <ListCell className={classes.count}>{mailing.countRecipients}</ListCell>
+                                <ListCell className={classes.count}>
+                                    {mailing.recipients ? mailing.recipients.length : 0}
+                                </ListCell>
                             </ListRow>
                         )
                     })

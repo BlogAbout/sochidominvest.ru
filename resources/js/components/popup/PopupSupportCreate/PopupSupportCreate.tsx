@@ -32,15 +32,14 @@ const defaultProps: Props = {
 const PopupSupportCreate: React.FC<Props> = (props): React.ReactElement => {
     const [feed, setFeed] = useState<IFeed>({
         id: null,
-        author: null,
-        phone: null,
-        name: null,
         title: '',
         type: 'feed',
+        status: 'new',
+        phone: null,
+        name: null,
         object_id: props.objectId || null,
         object_type: props.objectType || null,
-        active: 1,
-        status: 'new'
+        is_active: 1
     })
 
     const [message, setMessage] = useState<IFeedMessage>({

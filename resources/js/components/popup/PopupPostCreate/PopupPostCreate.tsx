@@ -38,12 +38,11 @@ const cx = classNames.bind(classes)
 const PopupPostCreate: React.FC<Props> = (props) => {
     const [post, setPost] = useState<IPost>(props.post || {
         id: null,
-        postId: null,
         name: '',
         description: '',
-        author: null,
         type: 'common',
-        active: 1
+        post_id: null,
+        is_active: 1
     })
 
     const [fetching, setFetching] = useState(false)
@@ -109,9 +108,9 @@ const PopupPostCreate: React.FC<Props> = (props) => {
                     <div className={classes.field}>
                         <Label text='Родительская должность'/>
 
-                        <PostBox posts={post.postId ? [post.postId] : []}
+                        <PostBox posts={post.post_id ? [post.post_id] : []}
                                  excludePosts={post.id ? [post.id] : []}
-                                 onSelect={(value: number[]) => setPost({...post, postId: value[0]})}
+                                 onSelect={(value: number[]) => setPost({...post, post_id: value[0]})}
                                  placeHolder='Выберите родительскую должность'
                                  styleType='minimal'
                         />

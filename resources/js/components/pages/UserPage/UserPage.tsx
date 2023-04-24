@@ -3,13 +3,9 @@ import {useParams} from 'react-router-dom'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
 import {rolesList} from '../../../helpers/userHelper'
-import {getTariffText} from '../../../helpers/tariffHelper'
-import {getFormatDate} from '../../../helpers/dateHelper'
 import {IUser} from '../../../@types/IUser'
 import {IBuilding} from '../../../@types/IBuilding'
 import {IArticle} from '../../../@types/IArticle'
-import {ILog} from '../../../@types/ILog'
-import UtilService from '../../../api/UtilService'
 import BuildingService from '../../../api/BuildingService'
 import ArticleService from '../../../api/ArticleService'
 import PanelView from '../../views/PanelView/PanelView'
@@ -32,10 +28,8 @@ const UserPage: React.FC = (): React.ReactElement => {
     const [user, setUser] = useState<IUser>({} as IUser)
     const [buildings, setBuildings] = useState<IBuilding[]>([])
     const [articles, setArticles] = useState<IArticle[]>([])
-    const [logs, setLogs] = useState<ILog[]>([])
     const [fetchingBuildings, setFetchingBuildings] = useState(false)
     const [fetchingArticles, setFetchingArticles] = useState(false)
-    const [fetchingLogs, setFetchingLogs] = useState(false)
 
     const {users, fetching, role} = useTypedSelector(state => state.userReducer)
     const {fetchUserList} = useActions()
@@ -149,70 +143,55 @@ const UserPage: React.FC = (): React.ReactElement => {
         )
     }
 
-    // Блок статистики действий
-    const renderStatisticAction = (): React.ReactElement => {
+    // Блок информации
+    const renderUserInfo = (): React.ReactElement => {
+        const userRole = rolesList.find(item => item.key === user.role_id?.toString())
+
         return (
             <div className={classes.data}>
-                <Title type='h2'>Статистика действий</Title>
+                <BlockingElement fetching={fetching} className={classes.container}>
+                    <Title type='h2'>Информация</Title>
 
-                <InfoList type='log'
-                          logs={logs}
-                          fetching={fetchingLogs}
-                          onSave={() => fetchLogHandler()}
-                />
+                    <div className={classes.row}>
+                        <div className={classes.label}>Имя:</div>
+                        <div className={classes.param}>{user.name}</div>
+                    </div>
+                    {user.post ?
+                        <div className={classes.row}>
+                            <div className={classes.label}>Должность:</div>
+                            <div className={classes.param}>{user.post.name}</div>
+                        </div>
+                        : null}
+                    <div className={classes.row}>
+                        <div className={classes.label}>Email:</div>
+                        <div className={classes.param}>{user.email}</div>
+                    </div>
+                    <div className={classes.row}>
+                        <div className={classes.label}>Телефон:</div>
+                        <div className={classes.param}>{user.phone}</div>
+                    </div>
+                    <div className={classes.row}>
+                        <div className={classes.label}>Роль:</div>
+                        <div className={classes.param}>{userRole ? userRole.text : ''}</div>
+                    </div>
+                    {/*<div className={classes.row}>*/}
+                    {/*    <div className={classes.label}>Тариф:</div>*/}
+                    {/*    <div className={classes.param}>{getTariffText(user.tariff)}</div>*/}
+                    {/*</div>*/}
+                    <div className={classes.row}>
+                        <div className={classes.label}>Дата окончания тарифа:</div>
+                        <div className={classes.param}>
+                            {/*{user.tariff !== 'free' ? getFormatDate(user.tariffExpired) : 'Бессрочно'}*/}
+                        </div>
+                    </div>
+                    <div className={classes.row}>
+                        <div className={classes.label}>Заблокирован:</div>
+                        <div className={classes.param}>{user.is_block ? 'да' : 'нет'}</div>
+                    </div>
+                </BlockingElement>
             </div>
         )
     }
-
-    // Блок информации
-    // const renderUserInfo = (): React.ReactElement => {
-    //     const userRole = rolesList.find(item => item.key === user.role)
-    //
-    //     return (
-    //         <div className={classes.data}>
-    //             <BlockingElement fetching={fetching} className={classes.container}>
-    //                 <Title type='h2'>Информация</Title>
-    //
-    //                 <div className={classes.row}>
-    //                     <div className={classes.label}>Имя:</div>
-    //                     <div className={classes.param}>{user.firstName}</div>
-    //                 </div>
-    //                 {user.post ?
-    //                     <div className={classes.row}>
-    //                         <div className={classes.label}>Должность:</div>
-    //                         <div className={classes.param}>{user.postName}</div>
-    //                     </div>
-    //                     : null}
-    //                 <div className={classes.row}>
-    //                     <div className={classes.label}>Email:</div>
-    //                     <div className={classes.param}>{user.email}</div>
-    //                 </div>
-    //                 <div className={classes.row}>
-    //                     <div className={classes.label}>Телефон:</div>
-    //                     <div className={classes.param}>{user.phone}</div>
-    //                 </div>
-    //                 <div className={classes.row}>
-    //                     <div className={classes.label}>Роль:</div>
-    //                     <div className={classes.param}>{userRole ? userRole.text : ''}</div>
-    //                 </div>
-    //                 <div className={classes.row}>
-    //                     <div className={classes.label}>Тариф:</div>
-    //                     <div className={classes.param}>{getTariffText(user.tariff)}</div>
-    //                 </div>
-    //                 <div className={classes.row}>
-    //                     <div className={classes.label}>Дата окончания тарифа:</div>
-    //                     <div className={classes.param}>
-    //                         {user.tariff !== 'free' ? getFormatDate(user.tariffExpired) : 'Бессрочно'}
-    //                     </div>
-    //                 </div>
-    //                 <div className={classes.row}>
-    //                     <div className={classes.label}>Заблокирован:</div>
-    //                     <div className={classes.param}>{user.block ? 'да' : 'нет'}</div>
-    //                 </div>
-    //             </BlockingElement>
-    //         </div>
-    //     )
-    // }
 
     return (
         <PanelView pageTitle={!user ? 'Пользователи' : user.name}>
@@ -229,10 +208,9 @@ const UserPage: React.FC = (): React.ReactElement => {
                     <Empty message='Пользователь не найден'/>
                     :
                     <div className={classes.information}>
-                        {/*{renderUserInfo()}*/}
+                        {renderUserInfo()}
                         {renderStatisticBuilding()}
                         {renderStatisticArticle()}
-                        {renderStatisticAction()}
                     </div>
                 }
             </Wrapper>

@@ -1,26 +1,23 @@
 import React from 'react'
 import {getFieldTypeText} from '../../../../../helpers/storeHelper'
-import {ICategory, IProduct} from '../../../../../@types/IStore'
+import {IProduct} from '../../../../../@types/IStore'
 import Title from '../../../../ui/Title/Title'
 import classes from './ProductAdvancedBlock.module.scss'
 
 interface Props {
     product: IProduct
-    categories: ICategory[]
 }
 
 const defaultProps: Props = {
     product: {} as IProduct,
-    categories: []
 }
 
 const ProductAdvancedBlock: React.FC<Props> = (props): React.ReactElement | null => {
-    if (!props.product.fields || !Object.keys(props.product.fields).length || !props.categories.length) {
+    if (!props.product.fields || !Object.keys(props.product.fields).length) {
         return null
     }
 
-    const category = props.categories.find((category: ICategory) => category.id === props.product.category_id)
-    if (!category || !category.fields.length) {
+    if (!props.product.category || !props.product.category.fields || !props.product.category.fields.length) {
         return null
     }
 
@@ -31,7 +28,7 @@ const ProductAdvancedBlock: React.FC<Props> = (props): React.ReactElement | null
                     <Title type='h2'>Общие характеристики</Title>
 
                     {Object.keys(props.product.fields).map((key: string) => {
-                        if (!category.fields.includes(key) || !props.product.fields[key]) {
+                        if (!props.product.category || !props.product.category.fields.includes(key) || !props.product.fields[key]) {
                             return null
                         }
 

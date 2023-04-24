@@ -33,7 +33,6 @@ const defaultProps: Props = {
 const QuestionList: React.FC<Props> = (props): React.ReactElement => {
     const [fetching, setFetching] = useState(props.fetching)
 
-    // Редактирование
     const onEditHandler = (question: IQuestion) => {
         openPopupQuestionCreate(document.body, {
             question: question,
@@ -41,7 +40,6 @@ const QuestionList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Удаление
     const onRemoveHandler = (question: IQuestion) => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить вопрос: "${question.name}"?`,
@@ -73,7 +71,6 @@ const QuestionList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Открытие контекстного меню на элементе
     const onContextMenuHandler = (question: IQuestion, e: React.MouseEvent) => {
         e.preventDefault()
 
@@ -108,7 +105,7 @@ const QuestionList: React.FC<Props> = (props): React.ReactElement => {
                                      isDisabled={!question.is_active}
                             >
                                 <ListCell className={classes.name}>{question.name}</ListCell>
-                                <ListCell className={classes.author}>{question.authorName}</ListCell>
+                                <ListCell className={classes.author}>{question.author ? question.author.name : ''}</ListCell>
                                 <ListCell className={classes.type}>{getQuestionTypeText(question.type)}</ListCell>
                             </ListRow>
                         )

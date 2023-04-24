@@ -36,24 +36,24 @@ const defaultProps: Props = {
 }
 
 const DocumentBuilding: React.FC<Props> = ({building, styles}) => {
-    const passedInfo = getPassedText(building.passed)
-    const districtText = getDistrictText(building.district, building.districtZone)
-    const houseClass = buildingClasses.find(item => item.key === building.houseClass)
-    const material = buildingMaterials.find(item => item.key === building.material)
-    const houseType = buildingFormat.find(item => item.key === building.houseType)
-    const entranceHouse = buildingEntrance.find(item => item.key === building.entranceHouse)
-    const parking = buildingParking.find(item => item.key === building.parking)
-    const territory = buildingTerritory.find(item => item.key === building.territory)
-    const gas = buildingGas.find(item => item.key === building.gas)
-    const heating = buildingHeating.find(item => item.key === building.heating)
-    const electricity = buildingElectricity.find(item => item.key === building.electricity)
-    const sewerage = buildingSewerage.find(item => item.key === building.sewerage)
-    const waterSupply = buildingWaterSupply.find(item => item.key === building.waterSupply)
-    const contract = amountContract.find(item => item.key === building.amountContract)
+    const passedInfo = getPassedText(building.info.passed)
+    const districtText = getDistrictText(building.info.district, building.info.district_zone)
+    const houseClass = buildingClasses.find(item => item.key === building.info.house_class)
+    const material = buildingMaterials.find(item => item.key === building.info.material)
+    const houseType = buildingFormat.find(item => item.key === building.info.house_type)
+    const entranceHouse = buildingEntrance.find(item => item.key === building.info.entrance_house)
+    const parking = buildingParking.find(item => item.key === building.info.parking)
+    const territory = buildingTerritory.find(item => item.key === building.info.territory)
+    const gas = buildingGas.find(item => item.key === building.info.gas)
+    const heating = buildingHeating.find(item => item.key === building.info.heating)
+    const electricity = buildingElectricity.find(item => item.key === building.info.electricity)
+    const sewerage = buildingSewerage.find(item => item.key === building.info.sewerage)
+    const waterSupply = buildingWaterSupply.find(item => item.key === building.info.water_supply)
+    const contract = amountContract.find(item => item.key === building.info.amount_contract)
     const type = buildingTypes.find(item => item.key === building.type)
 
-    let payments: string[] = paymentsList.filter((item: ISelector) => building.payments?.includes(item.key)).map((item: ISelector) => item.text)
-    let formalizations: string[] = formalizationList.filter((item: ISelector) => building.formalization?.includes(item.key)).map((item: ISelector) => item.text)
+    let payments: string[] = paymentsList.filter((item: ISelector) => building.info.payments?.includes(item.key)).map((item: ISelector) => item.text)
+    let formalizations: string[] = formalizationList.filter((item: ISelector) => building.info.formalization?.includes(item.key)).map((item: ISelector) => item.text)
 
     return (
         <View style={styles.content}>
@@ -68,16 +68,16 @@ const DocumentBuilding: React.FC<Props> = ({building, styles}) => {
                 {building.type === 'building' ?
                     <>
                         <Text style={styles.textMiddle}>
-                            {building.countCheckers || 0} {declension(building.countCheckers || 0, ['квартира', 'квартиры', 'квартир'], true)}
+                            {declension(building.checkers ? building.checkers.length : 0, ['квартира', 'квартиры', 'квартир'])}
                         </Text>
                         <Text style={styles.textMiddle}>
-                            Мин. цена за м&sup2;: {numberWithSpaces(round(building.costMinUnit || 0, 0))} руб.
+                            Мин. цена за м&sup2;: {numberWithSpaces(round(building.cost_min_unit || 0, 0))} руб.
                         </Text>
                         <Text style={styles.textMiddle}>
-                            Мин. цена: {numberWithSpaces(round(building.costMin || 0, 0))} руб.
+                            Мин. цена: {numberWithSpaces(round(building.cost_min || 0, 0))} руб.
                         </Text>
                         <Text style={styles.textMiddle}>
-                            Площади, м&sup2;: {building.areaMin || 0} - {building.areaMax || 0}
+                            Площади, м&sup2;: {building.area_min || 0} - {building.area_max || 0}
                         </Text>
                     </>
                     :
@@ -102,16 +102,16 @@ const DocumentBuilding: React.FC<Props> = ({building, styles}) => {
                 {parking ? <Text style={styles.textDefault}>Паркинг: {parking.text}</Text> : null}
                 {territory ? <Text style={styles.textDefault}>Территория: {territory.text}</Text> : null}
                 {entranceHouse ? <Text style={styles.textDefault}>Подъезд к дому: {entranceHouse.text}</Text> : null}
-                {building.ceilingHeight ?
-                    <Text style={styles.textDefault}>Высота потолков: {building.ceilingHeight} м.</Text>
+                {building.info.ceiling_height ?
+                    <Text style={styles.textDefault}>Высота потолков: {building.info.ceiling_height} м.</Text>
                     : null}
-                {building.maintenanceCost && building.maintenanceCost > 0 ?
+                {building.info.maintenance_cost && building.info.maintenance_cost > 0 ?
                     <Text style={styles.textDefault}>Стоимость
-                        обслуживания: {building.maintenanceCost} руб./м&sup2;</Text>
+                        обслуживания: {building.info.maintenance_cost} руб./м&sup2;</Text>
                     : null
                 }
-                {building.distanceSea && building.distanceSea > 0 ?
-                    <Text style={styles.textDefault}>Расстояние до моря: {building.distanceSea} м.</Text>
+                {building.info.distance_sea && building.info.distance_sea > 0 ?
+                    <Text style={styles.textDefault}>Расстояние до моря: {building.info.distance_sea} м.</Text>
                     : null
                 }
             </View>
@@ -134,7 +134,7 @@ const DocumentBuilding: React.FC<Props> = ({building, styles}) => {
                 {type ? <Text style={styles.textDefault}>Тип недвижимости: {type.text}</Text> : null}
                 {contract ? <Text style={styles.textDefault}>Сумма в договоре: {contract.text}</Text> : null}
                 <Text style={styles.textDefault}>Продажа для нерезидентов
-                    России: {!!building.saleNoResident ? 'Доступно' : 'Не доступно'}</Text>
+                    России: {!!building.info.is_sale_no_resident ? 'Доступно' : 'Не доступно'}</Text>
             </View>
 
             {payments.length ?
@@ -145,10 +145,10 @@ const DocumentBuilding: React.FC<Props> = ({building, styles}) => {
                 : null
             }
 
-            {building.advantages ?
+            {building.info.advantages ?
                 <View style={styles.block}>
                     <Text style={{...styles.textMiddle, color: '#075ea5'}}>Преимущества</Text>
-                    <Text style={styles.textDefault}>{building.advantages.map((item: string) => {
+                    <Text style={styles.textDefault}>{building.info.advantages.map((item: string) => {
                         const advantage = buildingAdvantages.find(element => element.key === item)
 
                         if (!advantage) {

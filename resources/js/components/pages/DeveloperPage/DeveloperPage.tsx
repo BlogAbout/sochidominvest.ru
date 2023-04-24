@@ -125,10 +125,10 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
 
             if (value !== '') {
                 setFilterBuilding(buildings.filter((building: IBuilding) => {
-                    return building.developers.includes(developerId) && (compareText(building.name, value) || (building.address && compareText(building.address, value)))
+                    return building.developer_ids && building.developer_ids.includes(developerId) && (compareText(building.name, value) || (building.address && compareText(building.address, value)))
                 }))
             } else {
-                setFilterBuilding(buildings.filter((building: IBuilding) => building.developers.includes(developerId)))
+                setFilterBuilding(buildings.filter((building: IBuilding) => building.developer_ids && building.developer_ids.includes(developerId)))
             }
         } else {
             setFilterBuilding([])

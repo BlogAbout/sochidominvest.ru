@@ -1,15 +1,8 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
-import {sortAttachments} from '../../../helpers/attachmentHelper'
-import {allowForRole, allowForTariff} from '../../../helpers/accessHelper'
-import {IFilter} from '../../../@types/IFilter'
 import {IArticle} from '../../../@types/IArticle'
-import {IAttachment} from '../../../@types/IAttachment'
 import {IBuilding} from '../../../@types/IBuilding'
-import ArticleService from '../../../api/ArticleService'
-import UtilService from '../../../api/UtilService'
 import BuildingService from '../../../api/BuildingService'
-import AttachmentService from '../../../api/AttachmentService'
 import Wrapper from '../../ui/Wrapper/Wrapper'
 import Title from '../../ui/Title/Title'
 import DefaultView from '../../views/DefaultView/DefaultView'
@@ -50,13 +43,7 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
     const navigate = useNavigate()
 
     const [fetchingBuilding, setFetchingBuilding] = useState(false)
-    const [fetchingArticles, setFetchingArticles] = useState(false)
-    const [fetchingImages, setFetchingImages] = useState(false)
-    const [fetchingVideos, setFetchingVideos] = useState(false)
     const [building, setBuilding] = useState<IBuilding>({} as IBuilding)
-    const [articles, setArticles] = useState<IArticle[]>([])
-    const [images, setImages] = useState<IAttachment[]>([])
-    const [videos, setVideos] = useState<IAttachment[]>([])
     const [views, setViews] = useState<number>(0)
 
     useEffect(() => {
@@ -65,15 +52,8 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
 
     useEffect(() => {
         onUpdateViews()
-
-        onFetchArticles()
-
-        onFetchImages()
-
-        onFetchVideos()
     }, [building])
 
-    // Загрузка данных объекта недвижимости
     const onFetchBuilding = (): void => {
         if (params.id) {
             const buildingId = parseInt(params.id)
@@ -81,90 +61,11 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
             setFetchingBuilding(true)
 
             BuildingService.fetchBuildingById(buildingId)
-                .then((response: any) => {
-                    setBuilding(response.data.data)
-                })
+                .then((response: any) => setBuilding(response.data.data))
                 .catch((error: any) => {
                     console.error('Ошибка загрузки объекта недвижимости', error)
                 })
-                .finally(() => {
-                    setFetchingBuilding(false)
-                })
-        }
-    }
-
-    // Загрузка связанных статей
-    const onFetchArticles = (): void => {
-        if (building.articles && building.articles.length) {
-            const filter: IFilter = {
-                active: [0, 1],
-                id: building.articles
-            }
-
-            if (props.isPublic) {
-                filter.publish = 1
-            }
-
-            setFetchingArticles(true)
-
-            ArticleService.fetchArticles(filter)
-                .then((response) => {
-                    setArticles(response.data.data)
-                })
-                .catch((error: any) => {
-                    console.error('Ошибка загрузки связанных статей', error)
-                })
-                .finally(() => {
-                    setFetchingArticles(false)
-                })
-        }
-    }
-
-    // Загрузка фотогалереи объекта недвижимости
-    const onFetchImages = (): void => {
-        if (building.images && building.images.length) {
-            setFetchingImages(true)
-
-            const filter: IFilter = {
-                active: [0, 1],
-                id: building.images,
-                type: 'image'
-            }
-
-            AttachmentService.fetchAttachments(filter)
-                .then((response: any) => {
-                    setImages(sortAttachments(response.data.data, building.images))
-                })
-                .catch((error: any) => {
-                    console.error('Ошибка загрузки фотогалереи объекта недвижимости', error)
-                })
-                .finally(() => {
-                    setFetchingImages(false)
-                })
-        }
-    }
-
-    // Загрузка фотогалереи объекта недвижимости
-    const onFetchVideos = (): void => {
-        if (building.videos && building.videos.length) {
-            setFetchingVideos(true)
-
-            const filter: IFilter = {
-                active: [0, 1],
-                id: building.videos,
-                type: 'video'
-            }
-
-            AttachmentService.fetchAttachments(filter)
-                .then((response: any) => {
-                    setVideos(sortAttachments(response.data.data, building.videos))
-                })
-                .catch((error: any) => {
-                    console.error('Ошибка загрузки видео объекта недвижимости', error)
-                })
-                .finally(() => {
-                    setFetchingVideos(false)
-                })
+                .finally(() => setFetchingBuilding(false))
         }
     }
 
@@ -182,7 +83,7 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
     }
 
     const pageTitle = useMemo(() => {
-        return !building ? 'Недвижимость' : !building.metaTitle ? building.name : building.metaTitle
+        return !building ? 'Недвижимость' : !building.meta_title ? building.name : building.meta_title
     }, [building])
 
     const showPanels = useMemo((): boolean => {
@@ -192,7 +93,7 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
 
     // Отображение списка связанных статей
     const renderArticlesList = (): React.ReactElement | null => {
-        if (!building.articles || !building.articles.length || !articles || !articles.length) {
+        if (!building.articles || !building.articles.length) {
             return null
         }
 
@@ -200,8 +101,8 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
             <div className={classes.relations}>
                 <Title type='h2'>Связанные статьи</Title>
 
-                <BlockingElement fetching={fetchingBuilding || fetchingArticles} className={classes.list}>
-                    {articles.map((article: IArticle) => {
+                <BlockingElement fetching={fetchingBuilding} className={classes.list}>
+                    {building.articles.map((article: IArticle) => {
                         return (
                             <ArticleItem key={article.id}
                                          article={article}
@@ -223,11 +124,11 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
                 <Grid>
                     <GridColumn width='60%'>
                         <Gallery alt={building.name}
-                                 images={images}
-                                 videos={videos}
+                                 images={building.images || []}
+                                 videos={building.videos || []}
                                  type='carousel'
-                                 fetching={fetchingImages || fetchingVideos}
-                                 avatar={building.avatarId}
+                                 fetching={fetchingBuilding}
+                                 avatar={building.info.avatar_id}
                                  className={classes.gallery}
                         />
                     </GridColumn>

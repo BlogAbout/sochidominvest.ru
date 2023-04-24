@@ -111,7 +111,7 @@ const PopupBuildingSelector: React.FC<Props> = (props) => {
     const search = (value: string) => {
         setSearchText(value)
 
-        const prepareBuildings = props.onlyRent ? buildings.filter((building: IBuilding) => building.rent === 1) : buildings
+        const prepareBuildings = props.onlyRent ? buildings.filter((building: IBuilding) => building.is_rent === 1) : buildings
 
         if (value.trim() !== '') {
             setFilterBuilding(prepareBuildings.filter((building: IBuilding) => {

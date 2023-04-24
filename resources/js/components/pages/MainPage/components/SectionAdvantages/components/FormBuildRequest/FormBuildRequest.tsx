@@ -33,15 +33,14 @@ const FormBuildRequest: React.FC = (): React.ReactElement => {
 
         const feed: IFeed = {
             id: null,
-            author: null,
-            phone: formData.phone,
-            name: formData.name,
             title: `Заявка на помощь в ${formData.type === 'buy' ? 'покупке' : 'аренде'} недвижимости`,
             type: 'feed',
+            status: 'new',
+            phone: formData.phone,
+            name: formData.name,
             object_id: null,
             object_type: null,
-            active: 1,
-            status: 'new'
+            is_active: 1
         }
 
         setFetching(true)

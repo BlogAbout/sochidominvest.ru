@@ -61,8 +61,10 @@ const CompilationPage: React.FC = (): React.ReactElement => {
     }, [compilation])
 
     useEffect(() => {
-        if (buildings && buildings.length && compilation.buildings && compilation.buildings.length) {
-            setFilterBuilding(buildings.filter((building: IBuilding) => building.id && compilation.buildings && compilation.buildings.includes(building.id)))
+        if (buildings && buildings.length && compilation.building_ids && compilation.building_ids.length) {
+            setFilterBuilding(buildings.filter((building: IBuilding) => {
+                return building.id && compilation.building_ids && compilation.building_ids.includes(building.id)
+            }))
         } else {
             setFilterBuilding([])
         }
@@ -140,18 +142,16 @@ const CompilationPage: React.FC = (): React.ReactElement => {
     // Удаление объекта из подборки
     const onRemoveBuildingFromCompilationHandler = (building: IBuilding, compilationId?: number) => {
         if (compilationId && building.id) {
-            // CompilationService.removeBuildingFromCompilation(compilationId, building.id)
-            //     .then(() => {
-            //         onSaveHandler()
-            //     })
-            //     .catch((error: any) => {
-            //         console.error('Ошибка удаления из подборки', error)
-            //
-            //         openPopupAlert(document.body, {
-            //             title: 'Ошибка!',
-            //             text: error.data.data
-            //         })
-            //     })
+            CompilationService.removeBuildingFromCompilation(compilationId, building.id)
+                .then(() => onSaveHandler())
+                .catch((error: any) => {
+                    console.error('Ошибка удаления из подборки', error)
+
+                    openPopupAlert(document.body, {
+                        title: 'Ошибка!',
+                        text: error.data.data
+                    })
+                })
         }
     }
 
@@ -192,12 +192,11 @@ const CompilationPage: React.FC = (): React.ReactElement => {
             id: null,
             name: '',
             content: compilation.id.toString(),
-            contentHtml: '',
+            content_html: '',
             type: 'compilation',
-            author: userId,
-            active: 1,
             status: 0,
-            countRecipients: 0
+            author_id: userId,
+            is_active: 1
         }
 
         openPopupMailingCreate(document.body, {

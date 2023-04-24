@@ -29,29 +29,12 @@ const ProductPage: React.FC = (): React.ReactElement => {
     const params = useParams<StoreProductPageProps>()
 
     const [fetchingProduct, setFetchingProduct] = useState(false)
-    const [fetchingImages, setFetchingImages] = useState(false)
-    const [fetchingVideos, setFetchingVideos] = useState(false)
     const [product, setProduct] = useState<IProduct>({} as IProduct)
-    const [images, setImages] = useState<IAttachment[]>([])
-    const [videos, setVideos] = useState<IAttachment[]>([])
-
-    const {categories} = useTypedSelector(state => state.storeReducer)
-
-    const {fetchCategoryList} = useActions()
 
     useEffect(() => {
         onFetchProduct()
     }, [params.id])
 
-    useEffect(() => {
-        onFetchImages()
-
-        onFetchVideos()
-
-        fetchCategoryList({active: [0, 1]})
-    }, [product])
-
-    // Загрузка данных объекта недвижимости
     const onFetchProduct = (): void => {
         if (params.id) {
             const productId = parseInt(params.id)
@@ -60,55 +43,13 @@ const ProductPage: React.FC = (): React.ReactElement => {
 
             StoreService.fetchProductById(productId)
                 .then((response: any) => setProduct(response.data.data))
-                .catch((error: any) => {
-                    console.error('Ошибка загрузки товара', error)
-                })
+                .catch((error: any) => console.error('Ошибка загрузки товара', error))
                 .finally(() => setFetchingProduct(false))
         }
     }
 
-    // Загрузка фотогалереи
-    const onFetchImages = (): void => {
-        if (product.images && product.images.length) {
-            setFetchingImages(true)
-
-            const filter: IFilter = {
-                active: [0, 1],
-                id: product.images,
-                type: 'image'
-            }
-
-            AttachmentService.fetchAttachments(filter)
-                .then((response: any) => setImages(sortAttachments(response.data.data, product.images)))
-                .catch((error: any) => {
-                    console.error('Ошибка загрузки фотогалереи товара', error)
-                })
-                .finally(() => setFetchingImages(false))
-        }
-    }
-
-    // Загрузка фотогалереи
-    const onFetchVideos = (): void => {
-        if (product.videos && product.videos.length) {
-            setFetchingVideos(true)
-
-            const filter: IFilter = {
-                active: [0, 1],
-                id: product.videos,
-                type: 'video'
-            }
-
-            AttachmentService.fetchAttachments(filter)
-                .then((response: any) => setVideos(sortAttachments(response.data.data, product.videos)))
-                .catch((error: any) => {
-                    console.error('Ошибка загрузки видео товара', error)
-                })
-                .finally(() => setFetchingVideos(false))
-        }
-    }
-
     const pageTitle = useMemo(() => {
-        return !product ? 'Товар' : !product.metaTitle ? product.name : product.metaTitle
+        return !product ? 'Товар' : !product.meta_title ? product.name : product.meta_title
     }, [product])
 
     // Вывод содержимого объекта недвижимости
@@ -120,18 +61,17 @@ const ProductPage: React.FC = (): React.ReactElement => {
                 <Grid className={classes.headInfo}>
                     <GridColumn width='60%'>
                         <Gallery alt={product.name}
-                                 images={images}
-                                 videos={videos}
+                                 images={product.images || []}
+                                 videos={product.videos || []}
                                  type='carousel'
-                                 fetching={fetchingImages || fetchingVideos}
-                                 avatar={product.avatarId}
+                                 fetching={fetchingProduct}
+                                 avatar={product.avatar_id}
                                  className={classes.gallery}
                         />
                     </GridColumn>
 
                     <GridColumn width='40%'>
                         <ProductInfoBlock product={product}
-                                          categories={categories}
                                           onSave={() => onFetchProduct()}
                         />
                     </GridColumn>
@@ -140,7 +80,7 @@ const ProductPage: React.FC = (): React.ReactElement => {
                 <Grid className={classes.info}>
                     <GridColumn>
                         {product.description && product.description.trim() !== '' ?
-                            <div className={classes.BuildingDescriptionBlock}>
+                            <div className={classes.description}>
                                 <Title type='h2'>Описание</Title>
 
                                 <div className={classes.text}
@@ -150,7 +90,7 @@ const ProductPage: React.FC = (): React.ReactElement => {
                             : null
                         }
 
-                        <ProductAdvancedBlock product={product} categories={categories}/>
+                        <ProductAdvancedBlock product={product}/>
                     </GridColumn>
                 </Grid>
             </BlockingElement>

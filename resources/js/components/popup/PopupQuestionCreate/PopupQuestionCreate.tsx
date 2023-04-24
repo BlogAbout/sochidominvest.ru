@@ -39,9 +39,8 @@ const PopupQuestionCreate: React.FC<Props> = (props) => {
         id: null,
         name: '',
         description: '',
-        author: null,
         type: 'common',
-        active: 1
+        is_active: 1
     })
 
     const [fetching, setFetching] = useState(false)

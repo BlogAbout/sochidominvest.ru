@@ -133,7 +133,7 @@ const PostList: React.FC<Props> = (props): React.ReactElement => {
                                     {renderArrowTree(post)}
                                     {post.name}
                                 </ListCell>
-                                <ListCell className={classes.author}>{post.authorName}</ListCell>
+                                <ListCell className={classes.author}>{post.author ? post.author.name : ''}</ListCell>
                                 <ListCell className={classes.type}>{getPostTypeText(post.type)}</ListCell>
                             </ListRow>
                         )

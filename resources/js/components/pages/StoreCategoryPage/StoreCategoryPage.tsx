@@ -57,7 +57,7 @@ const CategoryPage: React.FC = (): React.ReactElement => {
 
     useEffect(() => {
         if (products && products.length) {
-            setFilterProduct(products.filter((product: IProduct) => product.categoryId === category.id))
+            setFilterProduct(products.filter((product: IProduct) => product.category_id === category.id))
         } else {
             setFilterProduct([])
         }
@@ -77,14 +77,13 @@ const CategoryPage: React.FC = (): React.ReactElement => {
             openPopupProductCreate(document.body, {
                 product: {
                     id: null,
-                    categoryId: category.id,
+                    category_id: category.id,
                     name: '',
                     cost: 0,
-                    active: 1,
-                    author: 0,
-                    images: [],
-                    videos: [],
-                    fields: {}
+                    image_ids: [],
+                    video_ids: [],
+                    fields: {},
+                    is_active: 1
                 },
                 onSave: () => {
                     onSaveHandler()
@@ -93,7 +92,6 @@ const CategoryPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    // Редактирование
     const onEditHandler = (product: IProduct) => {
         openPopupProductCreate(document.body, {
             product: product,
@@ -103,7 +101,6 @@ const CategoryPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Удаление
     const onRemoveHandler = (product: IProduct) => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${product.name}?`,
@@ -160,7 +157,6 @@ const CategoryPage: React.FC = (): React.ReactElement => {
                 >{category.name}</Title>
 
                 <ProductTill list={filterProduct}
-                             categories={categories}
                              fetching={fetching || fetchingStore}
                              onClick={(product: IProduct) => onClickHandler(product)}
                              onContextMenu={(product: IProduct, e: React.MouseEvent) => onContextMenuItem(product, e)}

@@ -35,8 +35,8 @@ const BuildingDocumentsBlock: React.FC<Props> = (props): React.ReactElement => {
 
         const filter: IFilter = {
             active: [0, 1],
-            object_id: [props.building.id],
-            object_type: 'building'
+            objectId: [props.building.id],
+            objectType: 'building'
         }
 
         DocumentService.fetchDocuments(filter)
@@ -56,22 +56,24 @@ const BuildingDocumentsBlock: React.FC<Props> = (props): React.ReactElement => {
 
             {documents && documents.length ?
                 documents.map((document: IDocument) => {
-                    if (document.type === 'file') {
-                        return (
-                            <p key={document.id}>
-                                <a href={`${configuration.apiUrl}uploads/document/${document.url}`}
-                                   target='_blank'
-                                >{document.name}</a>
-                            </p>
-                        )
-                    } else {
-                        return (
-                            <p key={document.id}>
-                                <a href={document.content}
-                                   target='_blank'
-                                >{document.name}</a>
-                            </p>
-                        )
+                    if (document.attachment) {
+                        if (document.type === 'file') {
+                            return (
+                                <p key={document.id}>
+                                    <a href={`${configuration.apiUrl}uploads/document/${document.attachment.content}`}
+                                       target='_blank'
+                                    >{document.name}</a>
+                                </p>
+                            )
+                        } else {
+                            return (
+                                <p key={document.id}>
+                                    <a href={document.content}
+                                       target='_blank'
+                                    >{document.name}</a>
+                                </p>
+                            )
+                        }
                     }
                 })
                 : <Empty message='Отсутствует информация о документах'/>

@@ -3,7 +3,6 @@ import classNames from 'classnames/bind'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {declension} from '../../../../../../../helpers/stringHelper'
 import {numberWithSpaces, round} from '../../../../../../../helpers/numberHelper'
-import {getFormatDate} from '../../../../../../../helpers/dateHelper'
 import {
     formalizationList,
     getBuildingTypesText,
@@ -14,7 +13,6 @@ import {
 import {IBuilding} from '../../../../../../../@types/IBuilding'
 import {ISelector} from '../../../../../../../@types/ISelector'
 import {ITag} from '../../../../../../../@types/ITag'
-import {useTypedSelector} from '../../../../../../../hooks/useTypedSelector'
 import Avatar from '../../../../../../ui/Avatar/Avatar'
 import classes from './BuildingItem.module.scss'
 
@@ -63,38 +61,37 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const BuildingItem: React.FC<Props> = (props) => {
-    const {tags} = useTypedSelector(state => state.tagReducer)
-
     const buildingType = getBuildingTypesText(props.building.type)
-    const passedInfo = getPassedText(props.building.passed)
-    const districtText = getDistrictText(props.building.district, props.building.districtZone)
+    const passedInfo = getPassedText(props.building.info.passed)
+    const districtText = getDistrictText(props.building.info.district, props.building.info.district_zone)
 
     const renderOldPrice = () => {
-        if (!props.building.costOld || !props.building.cost) {
-            return null
-        }
-
-        if (props.building.costOld === props.building.cost) {
-            return null
-        }
-
-        if (props.building.costOld > props.building.cost) {
-            return (
-                <span className={classes.costDown}
-                      title={`Старая цена: ${numberWithSpaces(round(props.building.costOld || 0, 0))} руб.`}
-                >
-                    <FontAwesomeIcon icon='arrow-down'/>
-                </span>
-            )
-        } else {
-            return (
-                <span className={classes.costUp}
-                      title={`Старая цена: ${numberWithSpaces(round(props.building.costOld || 0, 0))} руб.`}
-                >
-                    <FontAwesomeIcon icon='arrow-up'/>
-                </span>
-            )
-        }
+        return null
+        // if (!props.building.costOld || !props.building.cost) {
+        //     return null
+        // }
+        //
+        // if (props.building.costOld === props.building.cost) {
+        //     return null
+        // }
+        //
+        // if (props.building.costOld > props.building.cost) {
+        //     return (
+        //         <span className={classes.costDown}
+        //               title={`Старая цена: ${numberWithSpaces(round(props.building.costOld || 0, 0))} руб.`}
+        //         >
+        //             <FontAwesomeIcon icon='arrow-down'/>
+        //         </span>
+        //     )
+        // } else {
+        //     return (
+        //         <span className={classes.costUp}
+        //               title={`Старая цена: ${numberWithSpaces(round(props.building.costOld || 0, 0))} руб.`}
+        //         >
+        //             <FontAwesomeIcon icon='arrow-up'/>
+        //         </span>
+        //     )
+        // }
     }
 
     return (
@@ -102,14 +99,15 @@ const BuildingItem: React.FC<Props> = (props) => {
              onClick={() => props.onClick(props.building)}
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.building)}
         >
-            <Avatar href={props.building.avatar} alt={props.building.name} width='100%'/>
+            <Avatar href={props.building.info.avatar ? props.building.info.avatar.content : ''}
+                    alt={props.building.name}
+                    width='100%'
+            />
 
-            {tags && tags.length && props.building.tags && props.building.tags.length ?
+            {props.building.tags && props.building.tags.length ?
                 <div className={classes.tags}>
-                    {props.building.tags.map((id: number) => {
-                        const findTag = tags.find((tag: ITag) => tag.id === id)
-
-                        return findTag ? <div key={findTag.id}>{findTag.name}</div> : null
+                    {props.building.tags.map((tag: ITag) => {
+                        return <div key={tag.id}>{tag.name}</div>
                     })}
                 </div>
                 : null
@@ -118,7 +116,7 @@ const BuildingItem: React.FC<Props> = (props) => {
             {passedInfo !== '' &&
             <div className={cx({
                 'passed': true,
-                'is': props.building.passed && props.building.passed.is
+                'is': props.building.info.passed && props.building.info.passed.is
             })}>
                 {passedInfo}
             </div>}
@@ -135,10 +133,10 @@ const BuildingItem: React.FC<Props> = (props) => {
                         <span>{props.building.date_created}</span>
                     </div>
 
-                    {props.building.authorName ?
-                        <div className={classes.icon} title={`Автор: ${props.building.authorName}`}>
+                    {props.building.author ?
+                        <div className={classes.icon} title={`Автор: ${props.building.author.name}`}>
                             <FontAwesomeIcon icon='user'/>
-                            <span>{props.building.authorName}</span>
+                            <span>{props.building.author.name}</span>
                         </div>
                         : null}
                 </div>
@@ -150,9 +148,9 @@ const BuildingItem: React.FC<Props> = (props) => {
                     <span>{props.building.address}</span>
                 </div>
 
-                {props.building.payments && props.building.payments.length ?
+                {props.building.info.payments && props.building.info.payments.length ?
                     <div className={classes.payments}>
-                        {props.building.payments.map((payment: string, index: number) => {
+                        {props.building.info.payments.map((payment: string, index: number) => {
                             const paymentInfo = paymentsList.find((item: ISelector) => item.key === payment)
                             if (paymentInfo) {
                                 return (
@@ -164,9 +162,9 @@ const BuildingItem: React.FC<Props> = (props) => {
                     : null
                 }
 
-                {props.building.formalization && props.building.formalization.length ?
+                {props.building.info.formalization && props.building.info.formalization.length ?
                     <div className={classes.payments}>
-                        {props.building.formalization.map((formalization: string, index: number) => {
+                        {props.building.info.formalization.map((formalization: string, index: number) => {
                             const formalizationInfo = formalizationList.find((item: ISelector) => item.key === formalization)
                             if (formalizationInfo) {
                                 return (
@@ -184,14 +182,14 @@ const BuildingItem: React.FC<Props> = (props) => {
 
                 {props.building.type === 'building' ?
                     <div className={classes.counter}>
-                        {declension(props.building.countCheckers || 0, ['квартира', 'квартиры', 'квартир'], false)}
+                        {declension(props.building.checkers ? props.building.checkers.length : 0, ['квартира', 'квартиры', 'квартир'], false)}
                     </div>
                     : null
                 }
 
                 <div className={classes.cost}>
                     {props.building.type === 'building'
-                        ? `От ${numberWithSpaces(round(props.building.costMin || 0, 0))} руб.`
+                        ? `От ${numberWithSpaces(round(props.building.cost_min || 0, 0))} руб.`
                         : `${numberWithSpaces(round(props.building.cost || 0, 0))} руб.`
                     }
 
@@ -200,14 +198,14 @@ const BuildingItem: React.FC<Props> = (props) => {
 
                 <div className={classes.costPer}>
                     {props.building.type === 'building'
-                        ? numberWithSpaces(round(props.building.costMinUnit || 0, 0))
+                        ? numberWithSpaces(round(props.building.cost_min_unit || 0, 0))
                         : numberWithSpaces(round(props.building.cost && props.building.area ? props.building.cost / props.building.area : 0, 0))
                     } руб. за м<sup>2</sup>
                 </div>
 
                 <div className={classes.area}>
                     {props.building.type === 'building'
-                        ? (props.building.areaMin || 0) + ' - ' + (props.building.areaMax || 0)
+                        ? (props.building.area_min || 0) + ' - ' + (props.building.area_max || 0)
                         : props.building.area || 0
                     } м<sup>2</sup>
                 </div>
