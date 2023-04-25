@@ -17,6 +17,6 @@ class BuildingInfo extends Model
 
     public function avatar()
     {
-        return $this->belongsTo(Attachment::class, 'avatar_id', 'id');
+        return $this->belongsTo(Attachment::class, 'avatar_id', 'id')->without(['author']);
     }
 }

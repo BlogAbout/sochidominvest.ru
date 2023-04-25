@@ -20,8 +20,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/notification', 'Notification\NotificationController');
     Route::apiResource('/partner', 'Partner\PartnerController');
     Route::apiResource('/post', 'Post\PostController');
-    Route::apiResource('/product', 'Product\ProductController');
-    Route::apiResource('/question', 'Question\QuestionController');
+    Route::apiResource('/product', 'Product\ProductController')->only(['store', 'update', 'destroy']);
+    Route::apiResource('/question', 'Question\QuestionController')->only(['store', 'update', 'destroy']);
     Route::apiResource('/setting', 'Setting\SettingController')->only(['index', 'store']);
     Route::apiResource('/tag', 'Tag\TagController');
     Route::apiResource('/tariff', 'Tariff\TariffController')->only(['index', 'show']);
@@ -32,3 +32,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 Route::apiResource('/article', 'Article\ArticleController')->only(['index', 'show']);
 Route::apiResource('/building', 'Building\BuildingController')->only(['index', 'show']);
+Route::apiResource('/question', 'Question\QuestionController')->only(['index', 'show']);
+Route::apiResource('/product', 'Product\ProductController')->only(['index', 'show']);

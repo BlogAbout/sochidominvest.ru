@@ -18,7 +18,7 @@ class Article extends Model
 
     public function avatar()
     {
-        return $this->belongsTo(Attachment::class, 'avatar_id', 'id');
+        return $this->belongsTo(Attachment::class, 'avatar_id', 'id')->without(['author']);
     }
 
     public function author()
@@ -28,17 +28,18 @@ class Article extends Model
 
     public function images()
     {
-        return $this->morphToMany(Attachment::class, 'object', 'sdi_images');
+        return $this->morphToMany(Attachment::class, 'object', 'sdi_images')->without(['author']);
     }
 
     public function videos()
     {
-        return $this->morphToMany(Attachment::class, 'object', 'sdi_videos');
+        return $this->morphToMany(Attachment::class, 'object', 'sdi_videos')->without(['author']);
     }
 
     public function relationBuildings()
     {
-        return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')->without(['relationArticles']);
+        return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')
+            ->without(['author', 'images', 'videos', 'relationDevelopers', 'relationAgents', 'relationContacts', 'relationDocuments', 'relationArticles']);
     }
 
     public function getDateCreatedFormatAttribute(): string

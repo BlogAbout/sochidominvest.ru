@@ -46,12 +46,12 @@ class Building extends Model
 
     public function images()
     {
-        return $this->morphToMany(Attachment::class, 'object', 'sdi_images');
+        return $this->morphToMany(Attachment::class, 'object', 'sdi_images')->without(['author']);
     }
 
     public function videos()
     {
-        return $this->morphToMany(Attachment::class, 'object', 'sdi_videos');
+        return $this->morphToMany(Attachment::class, 'object', 'sdi_videos')->without(['author']);
     }
 
     public function prices()
@@ -61,32 +61,32 @@ class Building extends Model
 
     public function checkers()
     {
-        return $this->hasMany(Checker::class, 'building_id', 'id')->without(['building']);
+        return $this->hasMany(Checker::class, 'building_id', 'id')->without(['author', 'building']);
     }
 
     public function relationDevelopers()
     {
-        return $this->morphedByMany(Developer::class, 'object', 'sdi_building_relations')->without(['relationBuildings']);
+        return $this->morphedByMany(Developer::class, 'object', 'sdi_building_relations')->without(['author', 'avatar', 'relationBuildings']);
     }
 
     public function relationAgents()
     {
-        return $this->morphedByMany(Agent::class, 'object', 'sdi_building_relations')->without(['relationBuildings']);
+        return $this->morphedByMany(Agent::class, 'object', 'sdi_building_relations')->without(['author', 'avatar', 'relationBuildings', 'contacts']);
     }
 
     public function relationContacts()
     {
-        return $this->morphedByMany(Contact::class, 'object', 'sdi_building_relations')->without(['relationBuildings']);
+        return $this->morphedByMany(Contact::class, 'object', 'sdi_building_relations')->without(['agent', 'avatar', 'relationBuildings']);
     }
 
     public function relationDocuments()
     {
-        return $this->morphedByMany(Document::class, 'object', 'sdi_building_relations')->without(['relationBuildings']);
+        return $this->morphedByMany(Document::class, 'object', 'sdi_building_relations')->without(['author', 'relationBuildings']);
     }
 
     public function relationArticles()
     {
-        return $this->morphedByMany(Article::class, 'object', 'sdi_building_relations')->without(['relationBuildings']);
+        return $this->morphedByMany(Article::class, 'object', 'sdi_building_relations')->without(['author', 'images', 'videos', 'relationBuildings']);
     }
 
     public function relationTags()
