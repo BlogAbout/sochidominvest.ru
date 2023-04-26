@@ -16,7 +16,7 @@ const SectionBanner: React.FC = (): React.ReactElement => {
 
     const {isAuth} = useTypedSelector(state => state.userReducer)
 
-    const signInHandler = () => {
+    const signInHandler = (): void => {
         if (isAuth) {
             navigate(RouteNames.P_DESKTOP)
         } else {

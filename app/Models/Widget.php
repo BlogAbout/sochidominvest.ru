@@ -16,7 +16,7 @@ class Widget extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class, 'author_id', 'id');
+        return $this->belongsTo(User::class, 'author_id', 'id')->without(['favorites']);
     }
 
     public function widgetItems()

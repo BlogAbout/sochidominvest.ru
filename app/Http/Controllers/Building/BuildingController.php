@@ -9,7 +9,6 @@ use App\Http\Resources\BuildingResource;
 use App\Models\Building;
 use App\Services\BuildingService;
 use Illuminate\Http\Request;
-use Symfony\Component\Console\Input\Input;
 
 class BuildingController extends Controller
 {
@@ -25,7 +24,7 @@ class BuildingController extends Controller
         $filter = $request->all();
 
         $buildings = Building::query()
-            ->when(isset($filter['id']), function($query) use($filter) {
+            ->when(isset($filter['id']), function ($query) use ($filter) {
                 $query->whereIn('id', $filter['id']);
             })
             ->when(isset($filter['active']), function ($query) use ($filter) {

@@ -41,7 +41,7 @@ class Building extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class, 'author_id', 'id');
+        return $this->belongsTo(User::class, 'author_id', 'id')->without(['favorites'])->without(['favorites']);
     }
 
     public function images()

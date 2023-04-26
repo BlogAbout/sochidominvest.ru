@@ -42,4 +42,4 @@ const BuildingAdvantagesBlock: React.FC<Props> = (props): React.ReactElement | n
 BuildingAdvantagesBlock.defaultProps = defaultProps
 BuildingAdvantagesBlock.displayName = 'BuildingAdvantagesBlock'
 
-export default BuildingAdvantagesBlock
+export default React.memo(BuildingAdvantagesBlock)

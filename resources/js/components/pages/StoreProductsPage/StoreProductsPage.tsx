@@ -33,8 +33,7 @@ const StoreProductsPage: React.FC = (): React.ReactElement => {
         fetchProductList({active: [0, 1]})
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!products || !products.length) {
@@ -50,7 +49,7 @@ const StoreProductsPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onClickHandler = (product: IProduct) => {
+    const onClickHandler = (product: IProduct): void => {
         navigate(`${RouteNames.STORE_PRODUCTS}/${product.id}`)
     }
 

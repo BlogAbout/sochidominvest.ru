@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import QuestionService from '../../../api/QuestionService'
 import {IFilterBase} from '../../../@types/IFilter'
 import {IQuestion} from '../../../@types/IQuestion'
@@ -13,7 +13,6 @@ import BlockingElement from '../../../components/ui/BlockingElement/BlockingElem
 import classes from './FaqPage.module.scss'
 
 const FaqPage: React.FC = (): React.ReactElement => {
-    const [isUpdate, setIsUpdate] = useState(true)
     const [questions, setQuestions] = useState<IQuestion[]>()
     const [searchText, setSearchText] = useState('')
     const [filterQuestion, setFilterQuestion] = useState<IQuestion[]>([])
@@ -21,28 +20,23 @@ const FaqPage: React.FC = (): React.ReactElement => {
     const [fetching, setFetching] = useState(false)
 
     useEffect(() => {
-        if (isUpdate) {
-            setFetching(true)
-
-            QuestionService.fetchQuestions({active: [1]})
-                .then((response: any) => {
-                    setQuestions(response.data.data)
-                })
-                .catch((error: any) => {
-                    console.error('Произошла ошибка загрузки данных', error)
-                })
-                .finally(() => {
-                    setFetching(false)
-                    setIsUpdate(false)
-                })
-        }
-    }, [isUpdate])
+        onFetchQuestions()
+    }, [])
 
     useEffect(() => {
         onFiltrationQuestions()
     }, [questions, searchText, selectedType])
 
-    const onFiltrationQuestions = () => {
+    const onFetchQuestions = (): void => {
+        setFetching(true)
+
+        QuestionService.fetchQuestions({active: [1]})
+            .then((response: any) => setQuestions(response.data.data))
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
+            .finally(() => setFetching(false))
+    }
+
+    const onFiltrationQuestions = (): void => {
         const resultSearch = search(searchText)
 
         if (!resultSearch || !resultSearch.length) {
@@ -54,8 +48,7 @@ const FaqPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): IQuestion[] => {
         setSearchText(value)
 
         if (!questions || !questions.length) {
@@ -71,49 +64,51 @@ const FaqPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onClickHandler = (question: IQuestion) => {
+    const onClickHandler = (question: IQuestion): void => {
         openPopupQuestionInfo(document.body, {
             question: question
         })
     }
 
-    const filterBaseButtons: IFilterBase[] = [
-        {
-            key: 'all',
-            title: 'Все',
-            icon: 'bookmark',
-            active: selectedType.includes('all'),
-            onClick: () => setSelectedType('all')
-        },
-        {
-            key: 'common',
-            title: 'Общие',
-            icon: 'bolt',
-            active: selectedType.includes('common'),
-            onClick: () => setSelectedType('common')
-        },
-        {
-            key: 'payment',
-            title: 'Оплата',
-            icon: 'money-bill-1-wave',
-            active: selectedType.includes('payment'),
-            onClick: () => setSelectedType('payment')
-        },
-        {
-            key: 'tariffs',
-            title: 'Тарифы',
-            icon: 'money-check',
-            active: selectedType.includes('tariffs'),
-            onClick: () => setSelectedType('tariffs')
-        },
-        {
-            key: 'other',
-            title: 'Другое',
-            icon: 'star',
-            active: selectedType.includes('other'),
-            onClick: () => setSelectedType('other')
-        }
-    ]
+    const filterBaseButtons: IFilterBase[] = useMemo((): IFilterBase[] => {
+        return [
+            {
+                key: 'all',
+                title: 'Все',
+                icon: 'bookmark',
+                active: selectedType.includes('all'),
+                onClick: () => setSelectedType('all')
+            },
+            {
+                key: 'common',
+                title: 'Общие',
+                icon: 'bolt',
+                active: selectedType.includes('common'),
+                onClick: () => setSelectedType('common')
+            },
+            {
+                key: 'payment',
+                title: 'Оплата',
+                icon: 'money-bill-1-wave',
+                active: selectedType.includes('payment'),
+                onClick: () => setSelectedType('payment')
+            },
+            {
+                key: 'tariffs',
+                title: 'Тарифы',
+                icon: 'money-check',
+                active: selectedType.includes('tariffs'),
+                onClick: () => setSelectedType('tariffs')
+            },
+            {
+                key: 'other',
+                title: 'Другое',
+                icon: 'star',
+                active: selectedType.includes('other'),
+                onClick: () => setSelectedType('other')
+            }
+        ]
+    }, [selectedType])
 
     return (
         <DefaultView pageTitle='Вопрос/Ответ'>

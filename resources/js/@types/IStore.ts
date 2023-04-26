@@ -42,6 +42,7 @@ export interface IProduct {
     meta_title?: string
     meta_description?: string
     views?: number | null
+    prices?: any[]
     created_at?: string | null
     updated_at?: string | null
     date_created?: string | null

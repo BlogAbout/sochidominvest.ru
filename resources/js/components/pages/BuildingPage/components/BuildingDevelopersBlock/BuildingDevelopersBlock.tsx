@@ -46,4 +46,4 @@ const BuildingDevelopersBlock: React.FC<Props> = (props): React.ReactElement => 
 BuildingDevelopersBlock.defaultProps = defaultProps
 BuildingDevelopersBlock.displayName = 'BuildingDevelopersBlock'
 
-export default BuildingDevelopersBlock
+export default React.memo(BuildingDevelopersBlock)

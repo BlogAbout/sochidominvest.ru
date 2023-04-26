@@ -16,7 +16,6 @@ interface Props extends PopupProps {
     buildingName: string
     list: IBuildingHousing
     housing: number
-    fetching: boolean
     housingList: number[]
 }
 
@@ -24,7 +23,6 @@ const defaultProps: Props = {
     buildingName: '',
     list: {} as IBuildingHousing,
     housing: 0,
-    fetching: false,
     housingList: []
 }
 
@@ -123,7 +121,7 @@ const PopupCheckerInfo: React.FC<Props> = (props) => {
                         <div className={classes.status}>Статус</div>
                     </div>
 
-                    <BlockingElement fetching={props.fetching} className={classes.list}>
+                    <BlockingElement fetching={false} className={classes.list}>
                         {props.list && props.list[housing] && props.list[housing].length && filteredCheckers.length ?
                             filteredCheckers.map((checker: IBuildingChecker) => {
                                 const status = checkerStatuses.find((item: ISelector) => item.key === checker.status)

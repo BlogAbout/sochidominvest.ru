@@ -61,6 +61,11 @@ class UserService
                 unset($data['image_ids']);
             }
 
+            if (isset($data['favorite_ids'])) {
+                $favoriteIds = $data['favorite_ids'];
+                unset($data['favorite_ids']);
+            }
+
             $user->update($data);
 
             if (isset($buildingIds)) {
@@ -69,6 +74,10 @@ class UserService
 
             if (isset($buildingIds)) {
                 $user->images()->sync($imageIds);
+            }
+
+            if (isset($favoriteIds)) {
+                $user->favorites()->sync($favoriteIds);
             }
 
             DB::commit();

@@ -12,32 +12,18 @@ import {getFormatDate} from '../../../helpers/dateHelper'
 import classes from './PopupPriceChart.module.scss'
 
 interface Props extends PopupProps {
-    buildingId: number
+    prices?: any[]
 }
 
 const defaultProps: Props = {
-    buildingId: 0
+    prices: []
 }
 
 const PopupPriceChart: React.FC<Props> = (props) => {
     const [prices, setPrices] = useState<{[key: string]: number}>({})
-    const [fetching, setFetching] = useState(false)
 
     useEffect(() => {
-        setFetching(true)
-
-        BuildingService.fetchBuildingPrices(props.buildingId)
-            .then((response: any) => {
-                setPrices(response.data.data)
-            })
-            .catch((error: any) => {
-                console.error('error', error)
-                openPopupAlert(document.body, {
-                    title: 'Ошибка!',
-                    text: error.data.data
-                })
-            })
-            .finally(() => setFetching(false))
+        // Todo: заполнить цены
 
         return () => {
             removePopup(props.blockId ? props.blockId : '')
@@ -99,7 +85,7 @@ const PopupPriceChart: React.FC<Props> = (props) => {
             <Header title='График цен' popupId={props.id || ''}/>
 
             <Content className={classes.popup}>
-                <BlockingElement fetching={fetching} className={classes.content}>
+                <BlockingElement fetching={false} className={classes.content}>
                     <div className={classes.info}>
                         {renderPriceChart()}
                     </div>

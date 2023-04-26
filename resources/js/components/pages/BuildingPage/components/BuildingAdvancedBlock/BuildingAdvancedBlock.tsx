@@ -44,8 +44,8 @@ const BuildingAdvancedBlock: React.FC<Props> = (props): React.ReactElement => {
     const contract = getBuildingAmountContractText(props.building.info.amount_contract)
     const type = getBuildingTypesText(props.building.type)
 
-    let payments: string[] = paymentsList.filter((item: ISelector) => props.building.info.payments?.includes(item.key)).map((item: ISelector) => item.text)
-    let formalizations: string[] = formalizationList.filter((item: ISelector) => props.building.info.formalization?.includes(item.key)).map((item: ISelector) => item.text)
+    const payments: string[] = paymentsList.filter((item: ISelector) => props.building.info.payments?.includes(item.key)).map((item: ISelector) => item.text)
+    const formalizations: string[] = formalizationList.filter((item: ISelector) => props.building.info.formalization?.includes(item.key)).map((item: ISelector) => item.text)
 
     return (
         <div className={classes.BuildingAdvancedBlock}>
@@ -208,4 +208,4 @@ const BuildingAdvancedBlock: React.FC<Props> = (props): React.ReactElement => {
 BuildingAdvancedBlock.defaultProps = defaultProps
 BuildingAdvancedBlock.displayName = 'BuildingAdvancedBlock'
 
-export default BuildingAdvancedBlock
+export default React.memo(BuildingAdvancedBlock)

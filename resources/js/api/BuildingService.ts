@@ -5,7 +5,7 @@ import {IFilter} from '../@types/IFilter'
 
 export default class BuildingService {
     static async fetchBuildingById(buildingId: number): Promise<AxiosResponse> {
-        return API.get(`/building/${buildingId}/info`)
+        return API.get(`/building/${buildingId}`)
     }
 
     static async fetchBuildings(filter: IFilter): Promise<AxiosResponse> {

@@ -54,4 +54,4 @@ const BuildingContactsBlock: React.FC<Props> = (props): React.ReactElement | nul
 BuildingContactsBlock.defaultProps = defaultProps
 BuildingContactsBlock.displayName = 'BuildingContactsBlock'
 
-export default BuildingContactsBlock
+export default React.memo(BuildingContactsBlock)

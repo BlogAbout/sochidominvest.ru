@@ -1,5 +1,6 @@
 import {IPost} from './IPost'
 import {IAttachment} from './IAttachment'
+import {IBuilding} from './IBuilding'
 
 export interface IUser {
     id: number | null
@@ -24,6 +25,8 @@ export interface IUser {
     date_last_active?: string | null
     date_created?: string | null
     date_updated?: string | null
+    favorite_ids?: number[] | null
+    favorites?: IBuilding[] | null
 }
 
 export interface IUserSetting {

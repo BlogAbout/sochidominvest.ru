@@ -32,4 +32,4 @@ const BuildingDescriptionBlock: React.FC<Props> = (props): React.ReactElement | 
 BuildingDescriptionBlock.defaultProps = defaultProps
 BuildingDescriptionBlock.displayName = 'BuildingDescriptionBlock'
 
-export default BuildingDescriptionBlock
+export default React.memo(BuildingDescriptionBlock)

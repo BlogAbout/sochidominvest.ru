@@ -32,7 +32,7 @@ class BuildingInfoResource extends JsonResource
             'electricity' => $this->electricity,
             'sewerage' => $this->sewerage,
             'water_supply' => $this->water_supply,
-            'advantages' => $this->advantages,
+            'advantages' => $this->advantages ? explode(',', $this->advantages) : [],
             'payments' => $this->payments,
             'formalization' => $this->formalization,
             'amount_contract' => $this->amount_contract,

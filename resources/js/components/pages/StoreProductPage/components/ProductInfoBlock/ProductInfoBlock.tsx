@@ -1,11 +1,13 @@
 import React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import classNames from 'classnames/bind'
 import {IProduct} from '../../../../../@types/IStore'
 import {IFeed} from '../../../../../@types/IFeed'
 import {numberWithSpaces, round} from '../../../../../helpers/numberHelper'
 import Title from '../../../../ui/Title/Title'
 import Button from '../../../../../components/form/Button/Button'
 import openPopupFeedCreate from '../../../../../components/popup/PopupFeedCreate/PopupFeedCreate'
+import openPopupPriceChart from '../../../../popup/PopupPriceChart/PopupPriceChart'
 import classes from './ProductInfoBlock.module.scss'
 
 interface Props {
@@ -18,9 +20,9 @@ const defaultProps: Props = {
     product: {} as IProduct
 }
 
-const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
+const cx = classNames.bind(classes)
 
-    // Вызов окна обратной связи
+const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
     const onFeedButtonHandler = (): void => {
         const feed: IFeed = {
             id: null,
@@ -41,20 +43,18 @@ const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
 
     // Вывод графика цен
     const renderDynamicChangePrices = (): React.ReactElement | null => {
-        // Todo
-        return null
-        // if (!props.product.id || !props.product.cost_old || !props.product.cost) {
-        //     return null
-        // }
-        //
-        // return (
-        //     <div className={cx({'icon': true, 'link': true})}
-        //          title='График цен'
-        //          onClick={() => openPopupPriceChart(document.body, {productId: props.product.id || 0})}
-        //     >
-        //         <FontAwesomeIcon icon='chart-line'/>
-        //     </div>
-        // )
+        if (!props.product.cost || !props.product.prices || !props.product.prices.length) {
+            return null
+        }
+
+        return (
+            <div className={cx({'icon': true, 'link': true})}
+                 title='График цен'
+                 onClick={() => openPopupPriceChart(document.body, {prices: props.product.prices})}
+            >
+                <FontAwesomeIcon icon='chart-line'/>
+            </div>
+        )
     }
 
     // Вывод старой цены
@@ -101,7 +101,10 @@ const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                 <div className={classes.row}>
 
                     <>
-                        <span>{numberWithSpaces(round(props.product.cost || 0, 0))} руб.</span>
+                        <span>
+                            {numberWithSpaces(round(props.product.cost || 0, 0))} руб.
+                            {renderOldPrice()}
+                        </span>
                         <span>Цена</span>
                     </>
                 </div>
@@ -155,4 +158,4 @@ const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
 ProductInfoBlock.defaultProps = defaultProps
 ProductInfoBlock.displayName = 'ProductInfoBlock'
 
-export default ProductInfoBlock
+export default React.memo(ProductInfoBlock)

@@ -1,5 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {IArticle} from '../../../@types/IArticle'
 import {IBuilding} from '../../../@types/IBuilding'
 import BuildingService from '../../../api/BuildingService'
@@ -44,15 +45,10 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
 
     const [fetchingBuilding, setFetchingBuilding] = useState(false)
     const [building, setBuilding] = useState<IBuilding>({} as IBuilding)
-    const [views, setViews] = useState<number>(0)
 
     useEffect(() => {
         onFetchBuilding()
     }, [params.id])
-
-    useEffect(() => {
-        onUpdateViews()
-    }, [building])
 
     const onFetchBuilding = (): void => {
         if (params.id) {
@@ -69,29 +65,14 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
         }
     }
 
-    // Обновление счетчика просмотров
-    const onUpdateViews = (): void => {
-        if (building.id) {
-            // UtilService.updateViews('building', building.id)
-            //     .then(() => {
-            //         setViews(building.views ? building.views + 1 : 1)
-            //     })
-            //     .catch((error: any) => {
-            //         console.error('Ошибка регистрации количества просмотров', error)
-            //     })
-        }
-    }
-
     const pageTitle = useMemo(() => {
         return !building ? 'Недвижимость' : !building.meta_title ? building.name : building.meta_title
     }, [building])
 
     const showPanels = useMemo((): boolean => {
-        // return allowForRole(['director', 'administrator', 'manager']) || allowForTariff(['business', 'effectivePlus'])
-        return true
+        return checkRules([Rules.AUTH, Rules.MORE_TARIFF_BASE])
     }, [props.role])
 
-    // Отображение списка связанных статей
     const renderArticlesList = (): React.ReactElement | null => {
         if (!building.articles || !building.articles.length) {
             return null
@@ -115,7 +96,6 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
         )
     }
 
-    // Вывод содержимого объекта недвижимости
     const renderBuildingContent = (): React.ReactElement => {
         return (
             <BlockingElement fetching={fetchingBuilding}
@@ -135,7 +115,7 @@ const BuildingPage: React.FC<Props> = (props): React.ReactElement => {
 
                     <GridColumn width='40%'>
                         <BuildingInfoBlock building={building}
-                                           views={views}
+                                           views={building.views || 0}
                                            isRent={props.isRent}
                                            onSave={() => onFetchBuilding()}
                         />

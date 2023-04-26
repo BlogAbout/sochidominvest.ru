@@ -16,12 +16,12 @@ class Feed extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class, 'author_id', 'id');
+        return $this->belongsTo(User::class, 'author_id', 'id')->without(['favorites']);
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id')->without(['favorites'])->without(['favorites']);
     }
 
     public function getDateCreatedFormatAttribute(): string

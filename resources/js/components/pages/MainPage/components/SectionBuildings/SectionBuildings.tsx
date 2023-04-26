@@ -20,12 +20,7 @@ const SectionBuildings: React.FC = (): React.ReactElement => {
     const [fetching, setFetching] = useState(false)
 
     useEffect(() => {
-            setFetching(true)
-
-            BuildingService.fetchBuildings({active: [1], publish: 1})
-                .then((response: any) => setBuildings(response.data.data))
-                .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
-                .finally(() => setFetching(false))
+        onFetchBuildingsHandler()
     }, [])
 
     useEffect(() => {
@@ -43,6 +38,15 @@ const SectionBuildings: React.FC = (): React.ReactElement => {
 
         setFilteredBuildings(listBuildings)
     }, [buildings])
+
+    const onFetchBuildingsHandler = (): void => {
+        setFetching(true)
+
+        BuildingService.fetchBuildings({active: [1], publish: 1})
+            .then((response: any) => setBuildings(response.data.data))
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
+            .finally(() => setFetching(false))
+    }
 
     return (
         <section className={classes.SectionBuildings}>

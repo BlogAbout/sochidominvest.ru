@@ -48,4 +48,4 @@ const ProductAdvancedBlock: React.FC<Props> = (props): React.ReactElement | null
 ProductAdvancedBlock.defaultProps = defaultProps
 ProductAdvancedBlock.displayName = 'ProductAdvancedBlock'
 
-export default ProductAdvancedBlock
+export default React.memo(ProductAdvancedBlock)

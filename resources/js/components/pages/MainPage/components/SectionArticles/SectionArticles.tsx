@@ -19,17 +19,19 @@ const SectionArticles: React.FC = (): React.ReactElement => {
     const [articles, setArticles] = useState<IArticle[]>([])
 
     useEffect(() => {
+        onFetchArticlesHandler()
+    }, [])
+
+    const onFetchArticlesHandler = (): void => {
         setFetching(true)
 
         ArticleService.fetchArticles({active: [1], publish: 1})
             .then((response: any) => setArticles(response.data.data))
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
             .finally(() => setFetching(false))
-    }, [])
+    }
 
-    const renderItems = () => {
+    const renderItems = (): React.ReactElement[] => {
         const showArticles: IArticle[] = []
 
         for (let i = 0; i < 3; i++) {

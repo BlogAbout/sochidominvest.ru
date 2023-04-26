@@ -93,14 +93,14 @@ const BuildingsPage: React.FC<Props> = (props): React.ReactElement => {
     }, [countPerPage, filterBuilding, searchText])
 
     const mapState: MapState = {
-        center: [55.76, 37.64],
+        center: [43.58546746362987, 39.72878169502838],
         zoom: 10,
         controls: [],
         type: 'yandex#map'
     }
 
     // Получение значений фильтра с главной страницы либо первоначальное состояние
-    function getFiltersInit() {
+    function getFiltersInit(): any {
         const mainPageFilterStr = localStorage.getItem('mainPageFilter')
 
         if (mainPageFilterStr) {
@@ -128,7 +128,7 @@ const BuildingsPage: React.FC<Props> = (props): React.ReactElement => {
     }
 
     // Загрузка списка объектов недвижимости
-    const onFetchBuildings = () => {
+    const onFetchBuildings = (): void => {
         setFetching(true)
 
         const filter: IFilter = {
@@ -141,19 +141,13 @@ const BuildingsPage: React.FC<Props> = (props): React.ReactElement => {
         }
 
         BuildingService.fetchBuildings(filter)
-            .then((response: any) => {
-                setBuildings(response.data.data)
-            })
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
-            .finally(() => {
-                setFetching(false)
-            })
+            .then((response: any) => setBuildings(response.data.data))
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
+            .finally(() => setFetching(false))
     }
 
     // Прокрутка страницы вверх и возвращение на первую страницу
-    const onScrollContainerTopHandler = (refElement: React.MutableRefObject<any>) => {
+    const onScrollContainerTopHandler = (refElement: React.MutableRefObject<any>): void => {
         if (refElement && currentPage > 1) {
             if (refElement.current && refElement.current.scrollTop) {
                 refElement.current.scrollTop = 0
@@ -163,14 +157,12 @@ const BuildingsPage: React.FC<Props> = (props): React.ReactElement => {
         }
     }
 
-    // Изменение режима отображения
-    const onChangeLayoutHandler = (value: 'list' | 'till' | 'map') => {
+    const onChangeLayoutHandler = (value: 'list' | 'till' | 'map'): void => {
         setLayout(value)
         changeLayout('buildings', value)
     }
 
-    // Фильтрация объектов недвижимости
-    const onFilterBuildingHandler = (filtersParams: any) => {
+    const onFilterBuildingHandler = (filtersParams: any): void => {
         setFilters(filtersParams)
 
         if (!buildings || !buildings.length) {
@@ -198,6 +190,12 @@ const BuildingsPage: React.FC<Props> = (props): React.ReactElement => {
         }
 
         localStorage.removeItem('mainPageFilter')
+    }
+
+    const onClickOnBuilding = (buildingId: number | null) => {
+        if (buildingId) {
+            navigate(`${directoryUrl}/${buildingId}`)
+        }
     }
 
     // Отображение объектов недвижимости в режиме списка
@@ -232,15 +230,17 @@ const BuildingsPage: React.FC<Props> = (props): React.ReactElement => {
                                        cadastral_number={building.type === 'land' ? building.info.cadastral_number : null}
                                        onContextMenu={() => {
                                        }}
-                                       onClick={() => navigate(`${directoryUrl}/${building.id}`)}
+                                       onClick={() => onClickOnBuilding(building.id)}
                             />
                         )
                     })
                     : <Empty message='Нет объектов недвижимости'/>
                 }
 
-                {buildings.length && readMoreElementRef ?
-                    <div className={classes.readMoreElementRef} ref={readMoreElementRef}/> : null}
+                {buildings.length && readMoreElementRef
+                    ? <div className={classes.readMoreElementRef} ref={readMoreElementRef}/>
+                    : null
+                }
             </BlockingElement>
         )
     }
@@ -268,7 +268,7 @@ const BuildingsPage: React.FC<Props> = (props): React.ReactElement => {
                                         return (
                                             <BuildingPlacemark key={building.id}
                                                                building={building}
-                                                               onClick={() => navigate(`${directoryUrl}/${building.id}`)}
+                                                               onClick={() => onClickOnBuilding(building.id)}
                                             />
                                         )
                                     })

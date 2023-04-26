@@ -17,40 +17,28 @@ import classes from './ArticlesPage.module.scss'
 const ArticlesPage: React.FC = (): React.ReactElement => {
     const navigate = useNavigate()
 
-    const [isUpdate, setIsUpdate] = useState(true)
     const [articles, setArticles] = useState<IArticle[]>()
     const [filterArticle, setFilterArticle] = useState<IArticle[]>([])
     const [selectedType, setSelectedType] = useState<string>('all')
     const [fetching, setFetching] = useState(false)
 
     useEffect(() => {
-        if (isUpdate) {
-            onFetchArticles()
-        }
-    }, [isUpdate])
+        onFetchArticles()
+    }, [])
 
     useEffect(() => {
         onFiltrationArticles()
     }, [articles, selectedType])
 
-    // Загрузка списка статей
     const onFetchArticles = (): void => {
         setFetching(true)
 
         ArticleService.fetchArticles({active: [1], publish: 1})
-            .then((response: any) => {
-                setArticles(response.data.data)
-            })
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
-            .finally(() => {
-                setFetching(false)
-                setIsUpdate(false)
-            })
+            .then((response: any) => setArticles(response.data.data))
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
+            .finally(() => setFetching(false))
     }
 
-    // Фильтрация статей
     const onFiltrationArticles = (): void => {
         if (!articles || !articles.length) {
             setFilterArticle([])
@@ -61,7 +49,6 @@ const ArticlesPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    // Массив кнопок для фильтра
     const filterBaseButtons: IFilterBase[] = useMemo((): IFilterBase[] => {
         return [
             {
@@ -131,4 +118,4 @@ const ArticlesPage: React.FC = (): React.ReactElement => {
 
 ArticlesPage.displayName = 'ArticlesPage'
 
-export default ArticlesPage
+export default React.memo(ArticlesPage)

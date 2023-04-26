@@ -17,11 +17,7 @@ class User extends Authenticatable
     protected $table = 'sdi_users';
     protected $guarded = false;
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+    protected $with = ['favorites'];
     protected $hidden = [
         'password',
         'remember_token',

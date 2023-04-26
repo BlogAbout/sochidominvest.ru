@@ -26,7 +26,7 @@ const FormFilterBuildings: React.FC = (): React.ReactElement => {
         maxCost: null
     })
 
-    const findBuildingsHandler = () => {
+    const findBuildingsHandler = (): void => {
         localStorage.setItem('mainPageFilter', JSON.stringify(selectedFilter))
 
         navigate(RouteNames.BUILDING)

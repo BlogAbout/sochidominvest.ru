@@ -3,14 +3,14 @@ import {PDFDownloadLink} from '@react-pdf/renderer'
 import {useNavigate} from 'react-router-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import classNames from 'classnames/bind'
+import UserService from '../../../../../api/UserService'
 import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
-import {useActions} from '../../../../../hooks/useActions'
 import {RouteNames} from '../../../../../helpers/routerHelper'
 import {IBuilding} from '../../../../../@types/IBuilding'
 import {ITag} from '../../../../../@types/ITag'
+import {IUser} from '../../../../../@types/IUser'
 import {configuration} from '../../../../../helpers/utilHelper'
-import {allowForRole} from '../../../../../helpers/accessHelper'
-import {getFormatDate} from '../../../../../helpers/dateHelper'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import {declension} from '../../../../../helpers/stringHelper'
 import {getDistrictText, getPassedText} from '../../../../../helpers/buildingHelper'
 import {numberWithSpaces, round} from '../../../../../helpers/numberHelper'
@@ -47,37 +47,31 @@ const cx = classNames.bind(classes)
 const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
     const navigate = useNavigate()
 
+    const [userData, setUserData] = useState<IUser | null>(null)
     const [favorites, setFavorites] = useState<number[]>([])
     const [showCopyText, setShowCopyText] = useState(false)
 
     const {user} = useTypedSelector(state => state.userReducer)
-    const {tags} = useTypedSelector(state => state.tagReducer)
-
-    const {fetchTagList} = useActions()
 
     useEffect(() => {
-        fetchTagList()
-    }, [props.building])
+        setUserData(user)
+    }, [user])
 
     useEffect(() => {
-        if (props.building && user.id) {
-            onFetchFavorites()
+        if (userData && userData.favorites && userData.favorites.length) {
+            const ids: number[] = []
+
+            userData.favorites.forEach((building: IBuilding) => {
+                if (building.id) {
+                    ids.push(building.id)
+                }
+            })
+
+            setFavorites(ids)
         } else {
             setFavorites([])
         }
-    }, [props.building, user])
-
-    const onFetchFavorites = (): void => {
-        if (!props.building.id) {
-            return
-        }
-
-        // FavoriteService.fetchFavorites()
-        //     .then((response: any) => setFavorites(response.data.data))
-        //     .catch((error: any) => {
-        //         console.error('Ошибка загрузки избранного', error)
-        //     })
-    }
+    }, [props.building, userData])
 
     // Вызов окна обратной связи
     const onFeedButtonHandler = (type: 'callback' | 'get-document' | 'get-presentation' | 'get-view'): void => {
@@ -95,35 +89,28 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Добавление объекта в избранное
-    const addBuildingToFavorite = () => {
+    // Добавление/удаление объекта в избранное
+    const onChangeBuildingToFavorite = () => {
         if (props.building.id) {
-            // FavoriteService.addFavorite(props.building.id)
-            //     .then((response: any) => setFavorites(response.data.data))
-            //     .catch((error: any) => {
-            //         console.error('Ошибка добавления в избранное', error)
-            //
-            //         openPopupAlert(document.body, {
-            //             title: 'Ошибка!',
-            //             text: error.data.data
-            //         })
-            //     })
-        }
-    }
+            if (favorites.includes(props.building.id)) {
+                setFavorites(favorites.filter((id: number) => id !== props.building.id))
+            } else {
+                setFavorites([...favorites, props.building.id])
+            }
 
-    // Удаление объекта из избранного
-    const removeBuildingFromFavorite = () => {
-        if (props.building.id) {
-            // FavoriteService.removeFavorite(props.building.id)
-            //     .then((response: any) => setFavorites(response.data.data))
-            //     .catch((error: any) => {
-            //         console.error('Ошибка удаления из избранного', error)
-            //
-            //         openPopupAlert(document.body, {
-            //             title: 'Ошибка!',
-            //             text: error.data.data
-            //         })
-            //     })
+            const updateUser: IUser = JSON.parse(JSON.stringify(user))
+            updateUser.favorite_ids = favorites
+
+            UserService.saveUser(updateUser)
+                .then((response: any) => setUserData(response.data.data))
+                .catch((error: any) => {
+                    console.error('Ошибка обновления избранного', error)
+
+                    openPopupAlert(document.body, {
+                        title: 'Ошибка!',
+                        text: error.data.data
+                    })
+                })
         }
     }
 
@@ -137,49 +124,45 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
 
     // Вывод графика цен
     const renderDynamicChangePrices = (): React.ReactElement | null => {
-        return null
-        // if (props.isRent) {
-        //     return null
-        // }
-        //
-        // if (!props.building.id || !props.building.costOld || !props.building.cost) {
-        //     return null
-        // }
-        //
-        // return (
-        //     <div className={cx({'icon': true, 'link': true})}
-        //          title='График цен'
-        //          onClick={() => openPopupPriceChart(document.body, {buildingId: props.building.id || 0})}
-        //     >
-        //         <FontAwesomeIcon icon='chart-line'/>
-        //     </div>
-        // )
+        if (props.isRent || !props.building.cost || !props.building.prices || !props.building.prices.length) {
+            return null
+        }
+
+        return (
+            <div className={cx({'icon': true, 'link': true})}
+                 title='График цен'
+                 onClick={() => openPopupPriceChart(document.body, {prices: props.building.prices})}
+            >
+                <FontAwesomeIcon icon='chart-line'/>
+            </div>
+        )
     }
 
     // Вывод старой цены
     const renderOldPrice = (): React.ReactElement | null => {
-        return null
-        // if (!props.isRent || !props.building.costOld || !props.building.cost || props.building.costOld === props.building.cost) {
-        //     return null
-        // }
-        //
-        // if (props.building.costOld > props.building.cost) {
-        //     return (
-        //         <span className={classes.costDown}
-        //               title={`Старая цена: ${numberWithSpaces(round(props.building.costOld || 0, 0))} руб.`}
-        //         >
-        //             <FontAwesomeIcon icon='arrow-down'/>
-        //         </span>
-        //     )
-        // } else {
-        //     return (
-        //         <span className={classes.costUp}
-        //               title={`Старая цена: ${numberWithSpaces(round(props.building.costOld || 0, 0))} руб.`}
-        //         >
-        //             <FontAwesomeIcon icon='arrow-up'/>
-        //         </span>
-        //     )
-        // }
+        if (props.isRent || !props.building.prices || !props.building.prices.length || !props.building.cost) {
+            return null
+        }
+
+        const costOld: number = props.building.prices[0]
+
+        if (costOld > props.building.cost) {
+            return (
+                <span className={classes.costDown}
+                      title={`Старая цена: ${numberWithSpaces(round(costOld, 0))} руб.`}
+                >
+                    <FontAwesomeIcon icon='arrow-down'/>
+                </span>
+            )
+        } else {
+            return (
+                <span className={classes.costUp}
+                      title={`Старая цена: ${numberWithSpaces(round(costOld, 0))} руб.`}
+                >
+                    <FontAwesomeIcon icon='arrow-up'/>
+                </span>
+            )
+        }
     }
 
     const renderMetaInformation = (): React.ReactElement => {
@@ -343,15 +326,15 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
 
         return (
             <div className={classes.buttonsAdmin}>
-                {/*{allowForRole(['director', 'administrator', 'manager'], user.role) || props.building.author === user.id ?*/}
-                {/*    <Button type='apply'*/}
-                {/*            icon='pen-to-square'*/}
-                {/*            onClick={onClickEditHandler.bind(this)}*/}
-                {/*            className='marginRight'*/}
-                {/*            title='Редактировать'*/}
-                {/*    />*/}
-                {/*    : null*/}
-                {/*}*/}
+                {checkRules([Rules.EDIT_BUILDING], props.building.author_id) ?
+                    <Button type='apply'
+                            icon='pen-to-square'
+                            onClick={onClickEditHandler.bind(this)}
+                            className='marginRight'
+                            title='Редактировать'
+                    />
+                    : null
+                }
 
                 <Button type='regular'
                         icon='question'
@@ -378,35 +361,35 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                         title='Задать вопрос'
                 />
 
-                {/*{props.building.id && allowForRole(['director', 'administrator', 'manager'], user.role) ?*/}
-                {/*    <Button type='regular'*/}
-                {/*            icon='plus'*/}
-                {/*            onClick={() => {*/}
-                {/*                if (props.building.id) {*/}
-                {/*                    // Todo*/}
-                {/*                    openPopupCompilationSelector(document.body, {*/}
-                {/*                        onSelect: (value: number[]) => {*/}
-                {/*                        }*/}
-                {/*                    })*/}
-                {/*                }*/}
-                {/*            }}*/}
-                {/*            className='marginRight'*/}
-                {/*            title='Добавить в подборку'*/}
-                {/*    />*/}
-                {/*    : null*/}
-                {/*}*/}
+                {props.building.id && checkRules([Rules.EDIT_COMPILATION]) ?
+                    <Button type='regular'
+                            icon='plus'
+                            onClick={() => {
+                                if (props.building.id) {
+                                    // Todo
+                                    openPopupCompilationSelector(document.body, {
+                                        onSelect: (value: number[]) => {
+                                        }
+                                    })
+                                }
+                            }}
+                            className='marginRight'
+                            title='Добавить в подборку'
+                    />
+                    : null
+                }
 
                 {props.building.id && favorites.length && favorites.includes(props.building.id) ?
                     <Button type='apply'
                             icon='heart'
-                            onClick={removeBuildingFromFavorite.bind(this)}
+                            onClick={onChangeBuildingToFavorite.bind(this)}
                             className='marginRight'
                             title='Удалить из избранного'
                     />
                     :
                     <Button type='regular'
                             icon='heart'
-                            onClick={addBuildingToFavorite.bind(this)}
+                            onClick={onChangeBuildingToFavorite.bind(this)}
                             className='marginRight'
                             title='Добавить в избранное'
                     />
@@ -452,7 +435,8 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
             {renderMetaInformation()}
 
             {props.building.type !== 'land' && passedInfo !== '' ?
-                <div className={cx({'passed': true, 'is': props.building.info.passed && props.building.info.passed.is})}>
+                <div
+                    className={cx({'passed': true, 'is': props.building.info.passed && props.building.info.passed.is})}>
                     <span>{passedInfo}</span>
                 </div>
                 : null
@@ -465,7 +449,7 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                 : null
             }
 
-            {tags && tags.length && props.building.tags && props.building.tags.length ?
+            {props.building.tags && props.building.tags.length ?
                 <div className={classes.tags}>
                     {props.building.tags.map((tag: ITag) => <div key={tag.id}>{tag.name}</div>)}
                 </div>

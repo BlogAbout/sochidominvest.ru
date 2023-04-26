@@ -55,7 +55,6 @@ const ArticlePage: React.FC<Props> = (props): React.ReactElement => {
         return !article ? 'Статьи' : !article.meta_title ? article.name : article.meta_title
     }, [article])
 
-    // Отображение списка связанных объектов недвижимости
     const renderBuildingsList = (): React.ReactElement | null => {
         if (!article.buildings || !article.buildings.length) {
             return null
@@ -83,7 +82,6 @@ const ArticlePage: React.FC<Props> = (props): React.ReactElement => {
         )
     }
 
-    // Вывод содержимого статьи
     const renderArticleContent = (): React.ReactElement => {
         return (
             <BlockingElement fetching={fetchingArticle} className={classes.block}>
@@ -139,7 +137,7 @@ const ArticlePage: React.FC<Props> = (props): React.ReactElement => {
                     <div className={classes.content}>
                         {article && article.id
                             ? renderArticleContent()
-                            : <Empty message='Объект недвижимости не найден'/>
+                            : <Empty message='Статья не найдена'/>
                         }
                     </div>
 

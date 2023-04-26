@@ -1,14 +1,11 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import {IDocument} from '../../../../../@types/IDocument'
 import {IBuilding} from '../../../../../@types/IBuilding'
-import {IFilter} from '../../../../../@types/IFilter'
-import DocumentService from '../../../../../api/DocumentService'
+import {configuration} from '../../../../../helpers/utilHelper'
 import BlockingElement from '../../../../../components/ui/BlockingElement/BlockingElement'
 import Empty from '../../../../../components/ui/Empty/Empty'
 import Title from '../../../../ui/Title/Title'
-import openPopupAlert from '../../../../popup/PopupAlert/PopupAlert'
 import classes from './BuildingDocumentsBlock.module.scss'
-import {configuration} from "../../../../../helpers/utilHelper";
 
 interface Props {
     building: IBuilding
@@ -19,43 +16,12 @@ const defaultProps: Props = {
 }
 
 const BuildingDocumentsBlock: React.FC<Props> = (props): React.ReactElement => {
-    const [fetching, setFetching] = useState(false)
-    const [documents, setDocuments] = useState<IDocument[]>([])
-
-    useEffect(() => {
-        onFetchDocuments()
-    }, [props.building.id])
-
-    const onFetchDocuments = (): void => {
-        if (!props.building || !props.building.id) {
-            return
-        }
-
-        setFetching(true)
-
-        const filter: IFilter = {
-            active: [0, 1],
-            objectId: [props.building.id],
-            objectType: 'building'
-        }
-
-        DocumentService.fetchDocuments(filter)
-            .then((response: any) => setDocuments(response.data.data))
-            .catch((error: any) => {
-                openPopupAlert(document.body, {
-                    title: 'Ошибка!',
-                    text: error.data.data
-                })
-            })
-            .finally(() => setFetching(false))
-    }
-
     return (
-        <BlockingElement fetching={fetching} className={classes.BuildingDocumentsBlock}>
+        <BlockingElement fetching={false} className={classes.BuildingDocumentsBlock}>
             <Title type='h2'>Документы</Title>
 
-            {documents && documents.length ?
-                documents.map((document: IDocument) => {
+            {props.building.documents && props.building.documents.length ?
+                props.building.documents.map((document: IDocument) => {
                     if (document.attachment) {
                         if (document.type === 'file') {
                             return (
@@ -85,4 +51,4 @@ const BuildingDocumentsBlock: React.FC<Props> = (props): React.ReactElement => {
 BuildingDocumentsBlock.defaultProps = defaultProps
 BuildingDocumentsBlock.displayName = 'BuildingDocumentsBlock'
 
-export default BuildingDocumentsBlock
+export default React.memo(BuildingDocumentsBlock)

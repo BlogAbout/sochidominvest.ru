@@ -8,12 +8,28 @@ use App\Http\Requests\Question\UpdateRequest;
 use App\Http\Resources\QuestionResource;
 use App\Models\Question;
 use Exception;
+use Illuminate\Http\Request;
 
 class QuestionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $questions = Question::all();
+        $filter = $request->all();
+
+        $questions = Question::query()
+            ->when(isset($filter['id']), function ($query) use ($filter) {
+                $query->whereIn('id', $filter['id']);
+            })
+            ->when(isset($filter['active']), function ($query) use ($filter) {
+                $query->whereIn('is_active', $filter['active']);
+            })
+            ->when(isset($filter['author']), function ($query) use ($filter) {
+                $query->whereIn('author', $filter['author']);
+            })
+            ->when(isset($filter['type']), function ($query) use ($filter) {
+                $query->where('type', '=', $filter['type']);
+            })
+            ->get();
 
         return QuestionResource::collection($questions)->response()->setStatusCode(200);
     }

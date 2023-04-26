@@ -8,6 +8,7 @@ use App\Http\Requests\Article\UpdateRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Services\ArticleService;
+use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
@@ -18,9 +19,27 @@ class ArticleController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::all();
+        $filter = $request->all();
+
+        $articles = Article::query()
+            ->when(isset($filter['id']), function ($query) use ($filter) {
+                $query->whereIn('id', $filter['id']);
+            })
+            ->when(isset($filter['active']), function ($query) use ($filter) {
+                $query->whereIn('is_active', $filter['active']);
+            })
+            ->when(isset($filter['publish']), function ($query) use ($filter) {
+                $query->where('is_publish', '=', $filter['publish']);
+            })
+            ->when(isset($filter['author']), function ($query) use ($filter) {
+                $query->whereIn('author', $filter['author']);
+            })
+            ->when(isset($filter['type']), function ($query) use ($filter) {
+                $query->where('type', '=', $filter['type']);
+            })
+            ->get();
 
         return ArticleResource::collection($articles)->response()->setStatusCode(200);
     }

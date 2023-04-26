@@ -6,7 +6,7 @@ import openPopupFeedCreate from '../../../../popup/PopupFeedCreate/PopupFeedCrea
 import classes from './SectionCallback.module.scss'
 
 const SectionCallback: React.FC = (): React.ReactElement => {
-    const showCallbackFormHandler = () => {
+    const showCallbackFormHandler = (): void => {
         openPopupFeedCreate(document.body, {
             type: 'callback'
         })

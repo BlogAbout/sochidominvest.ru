@@ -8,6 +8,7 @@ use App\Http\Requests\Product\UpdateRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\ProductService;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -18,9 +19,21 @@ class ProductController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
+        $filter = $request->all();
+
+        $products = Product::query()
+            ->when(isset($filter['id']), function ($query) use ($filter) {
+                $query->whereIn('id', $filter['id']);
+            })
+            ->when(isset($filter['active']), function ($query) use ($filter) {
+                $query->whereIn('is_active', $filter['active']);
+            })
+            ->when(isset($filter['author']), function ($query) use ($filter) {
+                $query->whereIn('author', $filter['author']);
+            })
+            ->get();
 
         return ProductResource::collection($products)->response()->setStatusCode(200);
     }

@@ -48,6 +48,7 @@ export interface IBuilding {
     tags?: ITag[] | null
     checkers?: IBuildingChecker[] | null
     rentData?: IBuildingRent
+    prices?: any[]
     created_at?: string | null
     updated_at?: string | null
     date_created?: string | null

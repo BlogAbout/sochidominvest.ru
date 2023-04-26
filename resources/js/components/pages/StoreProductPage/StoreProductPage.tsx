@@ -1,14 +1,8 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import {useParams} from 'react-router-dom'
 import {converter} from '../../../helpers/utilHelper'
-import {sortAttachments} from '../../../helpers/attachmentHelper'
-import {useTypedSelector} from '../../../hooks/useTypedSelector'
-import {useActions} from '../../../hooks/useActions'
-import {IFilter} from '../../../@types/IFilter'
-import {IAttachment} from '../../../@types/IAttachment'
 import {IProduct} from '../../../@types/IStore'
 import StoreService from '../../../api/StoreService'
-import AttachmentService from '../../../api/AttachmentService'
 import Wrapper from '../../ui/Wrapper/Wrapper'
 import DefaultView from '../../views/DefaultView/DefaultView'
 import BlockingElement from '../../../components/ui/BlockingElement/BlockingElement'
@@ -52,7 +46,6 @@ const ProductPage: React.FC = (): React.ReactElement => {
         return !product ? 'Товар' : !product.meta_title ? product.name : product.meta_title
     }, [product])
 
-    // Вывод содержимого объекта недвижимости
     const renderProductContent = (): React.ReactElement => {
         return (
             <BlockingElement fetching={fetchingProduct}
