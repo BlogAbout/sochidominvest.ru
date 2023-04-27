@@ -1,26 +1,25 @@
-import {AxiosResponse} from 'axios'
-import API from '../axios.init'
+import axios, {AxiosResponse} from 'axios'
 import {IPost} from '../@types/IPost'
 import {IFilter} from '../@types/IFilter'
 
 export default class PostService {
     static async fetchPostById(postId: number): Promise<AxiosResponse> {
-        return API.get(`/post/${postId}`)
+        return axios.get(`/post/${postId}`)
     }
 
     static async fetchPosts(filter: IFilter): Promise<AxiosResponse> {
-        return API.get('/post', {params: filter})
+        return axios.get('/post', {params: filter})
     }
 
     static async savePost(post: IPost): Promise<AxiosResponse> {
         if (post.id) {
-            return API.patch(`/post/${post.id}`, post)
+            return axios.patch(`/post/${post.id}`, post)
         } else {
-            return API.post('/post', post)
+            return axios.post('/post', post)
         }
     }
 
     static async removePost(postId: number): Promise<AxiosResponse> {
-        return API.delete(`/post/${postId}`)
+        return axios.delete(`/post/${postId}`)
     }
 }

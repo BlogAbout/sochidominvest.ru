@@ -35,7 +35,7 @@ const SupportItem: React.FC<Props> = (props) => {
 
     const [fetching, setFetching] = useState(false)
 
-    const {role, userId} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
 
     const removeHandler = () => {
         openPopupAlert(document.body, {
@@ -120,18 +120,18 @@ const SupportItem: React.FC<Props> = (props) => {
     const onContextMenu = (e: React.MouseEvent) => {
         e.preventDefault()
 
-        if (['director', 'administrator', 'manager'].includes(role)) {
-            const menuItems = [
-                {text: 'Взять в обработку', onClick: () => processHandler()},
-                {text: 'Закрыть заявку', onClick: () => closeHandler()}
-            ]
-
-            if (['director', 'administrator'].includes(role)) {
-                menuItems.push({text: 'Удалить', onClick: () => removeHandler()})
-            }
-
-            openContextMenu(e, menuItems)
-        }
+        // if (['director', 'administrator', 'manager'].includes(role)) {
+        //     const menuItems = [
+        //         {text: 'Взять в обработку', onClick: () => processHandler()},
+        //         {text: 'Закрыть заявку', onClick: () => closeHandler()}
+        //     ]
+        //
+        //     if (['director', 'administrator'].includes(role)) {
+        //         menuItems.push({text: 'Удалить', onClick: () => removeHandler()})
+        //     }
+        //
+        //     openContextMenu(e, menuItems)
+        // }
     }
 
     const feedType = feedTypes.find((type: ISelector) => type.key === props.feed.type)
@@ -151,14 +151,14 @@ const SupportItem: React.FC<Props> = (props) => {
             <div className={classes.title}>{props.feed.title}</div>
             <div className={classes.status}>{feedStatus ? feedStatus.text : ''}</div>
 
-            {['director', 'administrator', 'manager'].includes(role) ?
-                <>
-                    <div className={classes.name}>{props.feed.name}</div>
-                    <div className={classes.phone}>{props.feed.phone}</div>
-                    <div className={classes.type}>{feedType ? feedType.text : ''}</div>
-                </>
-                : null
-            }
+            {/*{['director', 'administrator', 'manager'].includes(role) ?*/}
+            {/*    <>*/}
+            {/*        <div className={classes.name}>{props.feed.name}</div>*/}
+            {/*        <div className={classes.phone}>{props.feed.phone}</div>*/}
+            {/*        <div className={classes.type}>{feedType ? feedType.text : ''}</div>*/}
+            {/*    </>*/}
+            {/*    : null*/}
+            {/*}*/}
         </div>
     )
 }

@@ -1,5 +1,4 @@
-import {AxiosResponse} from 'axios'
-import API from '../axios.init'
+import axios, {AxiosResponse} from 'axios'
 
 export default class UploadService {
     // static async uploadFile(file: any, type: string, onUploadProgress: any, objectType?: string, object_id?: number): Promise<AxiosResponse> {
@@ -15,7 +14,7 @@ export default class UploadService {
     //         formData.append('object_id', objectId.toString())
     //     }
     //
-    //     return API.post('/upload-file', formData, {
+    //     return axios.post('/upload-file', formData, {
     //         headers: {
     //             'Content-Type': 'multipart/form-data',
     //         },

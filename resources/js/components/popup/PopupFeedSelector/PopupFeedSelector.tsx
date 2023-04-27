@@ -50,7 +50,7 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
     const [selectedFeeds, setSelectedFeeds] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
 
     useEffect(() => {
         return () => {
@@ -179,15 +179,15 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
     const onContextMenu = (e: React.MouseEvent, feed: IFeed) => {
         e.preventDefault()
 
-        if (['director', 'administrator', 'manager'].includes(role)) {
-            const menuItems = []
-
-            if (['director', 'administrator'].includes(role)) {
-                menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, feed)})
-            }
-
-            openContextMenu(e, menuItems)
-        }
+        // if (['director', 'administrator', 'manager'].includes(role)) {
+        //     const menuItems = []
+        //
+        //     if (['director', 'administrator'].includes(role)) {
+        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, feed)})
+        //     }
+        //
+        //     openContextMenu(e, menuItems)
+        // }
     }
 
     const renderSearch = () => {
@@ -201,10 +201,10 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?
-                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
-                    : null
-                }
+                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
+                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
+                {/*    : null*/}
+                {/*}*/}
             </div>
         )
     }

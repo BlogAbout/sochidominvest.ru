@@ -24,7 +24,7 @@ const DocumentList: React.FC<Props> = (props) => {
     const [fetching, setFetching] = useState(false)
     const [documents, setDocuments] = useState<IDocument[]>([])
 
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
 
     useEffect(() => {
         if (isUpdate && props.buildingId) {
@@ -97,15 +97,15 @@ const DocumentList: React.FC<Props> = (props) => {
     const onContextMenu = (e: React.MouseEvent, document: IDocument) => {
         e.preventDefault()
 
-        if (['director', 'administrator', 'manager'].includes(role)) {
-            const menuItems = [{text: 'Редактировать', onClick: () => updateHandler(document)}]
-
-            if (['director', 'administrator'].includes(role)) {
-                menuItems.push({text: 'Удалить', onClick: () => removeHandler(document)})
-            }
-
-            openContextMenu(e, menuItems)
-        }
+        // if (['director', 'administrator', 'manager'].includes(role)) {
+        //     const menuItems = [{text: 'Редактировать', onClick: () => updateHandler(document)}]
+        //
+        //     if (['director', 'administrator'].includes(role)) {
+        //         menuItems.push({text: 'Удалить', onClick: () => removeHandler(document)})
+        //     }
+        //
+        //     openContextMenu(e, menuItems)
+        // }
     }
 
     const onContextMenuCreate = (e: React.MouseEvent) => {

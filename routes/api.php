@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -15,7 +16,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/developer', 'Developer\DeveloperController');
     Route::apiResource('/document', 'Document\DocumentController');
     Route::apiResource('/external', 'ExternalUser\ExternalUserController');
-    Route::apiResource('/feed', 'Feed\FeedController');
+    Route::apiResource('/feed', 'Feed\FeedController')->only(['index', 'show', 'update', 'destroy']);
     Route::apiResource('/mail', 'Mail\MailController');
     Route::apiResource('/notification', 'Notification\NotificationController');
     Route::apiResource('/partner', 'Partner\PartnerController');
@@ -30,7 +31,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/widget', 'Widget\WidgetController');
 });
 
+Route::group(['namespace' => 'User'], function () {
+    Route::post('/auth', [UserController::class, 'authenticate']);
+    Route::post('/registration', [UserController::class, 'registration']);
+});
 Route::apiResource('/article', 'Article\ArticleController')->only(['index', 'show']);
 Route::apiResource('/building', 'Building\BuildingController')->only(['index', 'show']);
+Route::apiResource('/feed', 'Feed\FeedController')->only(['store']);
 Route::apiResource('/question', 'Question\QuestionController')->only(['index', 'show']);
 Route::apiResource('/product', 'Product\ProductController')->only(['index', 'show']);

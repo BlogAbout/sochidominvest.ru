@@ -50,7 +50,7 @@ const PopupUserSelector: React.FC<Props> = (props) => {
     const [selectedUsers, setSelectedUsers] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
     const {fetching: fetchingUserList, users} = useTypedSelector(state => state.userReducer)
     const {fetchUserList} = useActions()
 
@@ -120,23 +120,23 @@ const PopupUserSelector: React.FC<Props> = (props) => {
 
     // Добавление нового элемента
     const onClickAdd = (e: React.MouseEvent) => {
-        openPopupUserCreate(e.currentTarget, {
-            role: role,
-            onSave: () => {
-                setIsUpdate(true)
-            }
-        })
+        // openPopupUserCreate(e.currentTarget, {
+        //     role: role,
+        //     onSave: () => {
+        //         setIsUpdate(true)
+        //     }
+        // })
     }
 
     // Редактирование элемента
     const onClickEdit = (e: React.MouseEvent, user: IUser) => {
-        openPopupUserCreate(e.currentTarget, {
-            user: user,
-            role: role,
-            onSave: () => {
-                setIsUpdate(true)
-            }
-        })
+        // openPopupUserCreate(e.currentTarget, {
+        //     user: user,
+        //     role: role,
+        //     onSave: () => {
+        //         setIsUpdate(true)
+        //     }
+        // })
     }
 
     // Сохранение выбора
@@ -178,15 +178,15 @@ const PopupUserSelector: React.FC<Props> = (props) => {
     const onContextMenu = (e: React.MouseEvent, user: IUser) => {
         e.preventDefault()
 
-        if (['director', 'administrator', 'manager'].includes(role)) {
-            const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, user)}]
-
-            if (['director', 'administrator'].includes(role)) {
-                menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, user)})
-            }
-
-            openContextMenu(e, menuItems)
-        }
+        // if (['director', 'administrator', 'manager'].includes(role)) {
+        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, user)}]
+        //
+        //     if (['director', 'administrator'].includes(role)) {
+        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, user)})
+        //     }
+        //
+        //     openContextMenu(e, menuItems)
+        // }
     }
 
     const renderSearch = () => {
@@ -200,9 +200,9 @@ const PopupUserSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?
-                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
-                    : null}
+                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
+                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
+                {/*    : null}*/}
             </div>
         )
     }

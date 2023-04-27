@@ -1,46 +1,45 @@
-import {AxiosResponse} from 'axios'
-import API from '../axios.init'
+import axios, {AxiosResponse} from 'axios'
 import {ICategory, IProduct} from '../@types/IStore'
 import {IFilter} from '../@types/IFilter'
 
 export default class StoreService {
     static async fetchCategoryById(categoryId: number): Promise<AxiosResponse> {
-        return API.get(`/store/category/${categoryId}`)
+        return axios.get(`/store/category/${categoryId}`)
     }
 
     static async fetchCategories(filter: IFilter): Promise<AxiosResponse> {
-        return API.get('/store/category', {params: filter})
+        return axios.get('/store/category', {params: filter})
     }
 
     static async saveCategory(category: ICategory): Promise<AxiosResponse> {
         if (category.id) {
-            return API.patch(`/store/category/${category.id}`, category)
+            return axios.patch(`/store/category/${category.id}`, category)
         } else {
-            return API.post('/store/category', category)
+            return axios.post('/store/category', category)
         }
     }
 
     static async removeCategory(categoryId: number): Promise<AxiosResponse> {
-        return API.delete(`/store/category/${categoryId}`)
+        return axios.delete(`/store/category/${categoryId}`)
     }
 
     static async fetchProductById(productId: number): Promise<AxiosResponse> {
-        return API.get(`/store/product/${productId}`)
+        return axios.get(`/store/product/${productId}`)
     }
 
     static async fetchProducts(filter: IFilter): Promise<AxiosResponse> {
-        return API.get('/store/product', {params: filter})
+        return axios.get('/store/product', {params: filter})
     }
 
     static async saveProduct(product: IProduct): Promise<AxiosResponse> {
         if (product.id) {
-            return API.patch(`/store/product/${product.id}`, product)
+            return axios.patch(`/store/product/${product.id}`, product)
         } else {
-            return API.post('/store/product', product)
+            return axios.post('/store/product', product)
         }
     }
 
     static async removeProduct(productId: number): Promise<AxiosResponse> {
-        return API.delete(`/store/product/${productId}`)
+        return axios.delete(`/store/product/${productId}`)
     }
 }

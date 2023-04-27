@@ -31,7 +31,7 @@ const defaultProps: Props = {
 }
 
 const PopupBookingInfo: React.FC<Props> = (props) => {
-    const {userId} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
 
     const [booking, setBooking] = useState<IBooking>({
         id: null,
@@ -40,7 +40,7 @@ const PopupBookingInfo: React.FC<Props> = (props) => {
         status: 'new',
         buildingId: 0,
         buildingName: '',
-        userId: userId
+        userId: user.id || 0
     })
 
     const [fetching, setFetching] = useState(false)

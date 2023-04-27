@@ -1,26 +1,25 @@
-import {AxiosResponse} from 'axios'
-import API from '../axios.init'
+import axios, {AxiosResponse} from 'axios'
 import {IBusinessProcess} from '../@types/IBusinessProcess'
 import {IFilter} from '../@types/IFilter'
 
 export default class BusinessProcessService {
     static async fetchBusinessProcessById(businessProcessId: number): Promise<AxiosResponse> {
-        return API.get(`/business-process/${businessProcessId}`)
+        return axios.get(`/business-process/${businessProcessId}`)
     }
 
     static async fetchBusinessProcesses(filter: IFilter): Promise<AxiosResponse> {
-        return API.get('/business-process', {params: filter})
+        return axios.get('/business-process', {params: filter})
     }
 
     static async saveBusinessProcess(businessProcess: IBusinessProcess): Promise<AxiosResponse> {
         if (businessProcess.id) {
-            return API.patch(`/business-process/${businessProcess.id}`, businessProcess)
+            return axios.patch(`/business-process/${businessProcess.id}`, businessProcess)
         } else {
-            return API.post('/business-process', businessProcess)
+            return axios.post('/business-process', businessProcess)
         }
     }
 
     static async removeBusinessProcess(businessProcessId: number): Promise<AxiosResponse> {
-        return API.delete(`/business-process/${businessProcessId}`)
+        return axios.delete(`/business-process/${businessProcessId}`)
     }
 }

@@ -52,7 +52,7 @@ const PopupCategorySelector: React.FC<Props> = (props) => {
     const [selectedCategories, setSelectedCategories] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
     const {fetching: fetchingCategoryList, categories} = useTypedSelector(state => state.storeReducer)
     const {fetchCategoryList} = useActions()
 
@@ -178,15 +178,15 @@ const PopupCategorySelector: React.FC<Props> = (props) => {
     const onContextMenu = (e: React.MouseEvent, category: ICategory) => {
         e.preventDefault()
 
-        if (['director', 'administrator', 'manager'].includes(role)) {
-            const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, category)}]
-
-            if (['director', 'administrator'].includes(role)) {
-                menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, category)})
-            }
-
-            openContextMenu(e, menuItems)
-        }
+        // if (['director', 'administrator', 'manager'].includes(role)) {
+        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, category)}]
+        //
+        //     if (['director', 'administrator'].includes(role)) {
+        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, category)})
+        //     }
+        //
+        //     openContextMenu(e, menuItems)
+        // }
     }
 
     const renderSearch = () => {
@@ -200,9 +200,9 @@ const PopupCategorySelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?
-                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
-                    : null}
+                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
+                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
+                {/*    : null}*/}
             </div>
         )
     }

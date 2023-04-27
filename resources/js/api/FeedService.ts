@@ -1,26 +1,25 @@
-import {AxiosResponse} from 'axios'
-import API from '../axios.init'
+import axios, {AxiosResponse} from 'axios'
 import {IFeed} from '../@types/IFeed'
 import {IFilter} from '../@types/IFilter'
 
 export default class FeedService {
     static async fetchFeedById(feedId: number): Promise<AxiosResponse> {
-        return API.get(`/feed/${feedId}`)
+        return axios.get(`/feed/${feedId}`)
     }
 
     static async fetchFeeds(filter: IFilter): Promise<AxiosResponse> {
-        return API.get('/feed', {params: filter})
+        return axios.get('/feed', {params: filter})
     }
 
     static async saveFeed(feed: IFeed): Promise<AxiosResponse> {
         if (feed.id) {
-            return API.patch(`/feed/${feed.id}`, feed)
+            return axios.patch(`/feed/${feed.id}`, feed)
         } else {
-            return API.post('/feed', feed)
+            return axios.post('/feed', feed)
         }
     }
 
     static async removeFeed(feedId: number): Promise<AxiosResponse> {
-        return API.delete(`/feed/${feedId}`)
+        return axios.delete(`/feed/${feedId}`)
     }
 }

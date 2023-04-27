@@ -1,25 +1,24 @@
-import {AxiosResponse} from 'axios'
-import API from '../axios.init'
+import axios, {AxiosResponse} from 'axios'
 import {IBuildingChecker} from '../@types/IBuilding'
 
 export default class CheckerService {
     static async fetchCheckerById(checkerId: number): Promise<AxiosResponse> {
-        return API.get(`/checker/${checkerId}`)
+        return axios.get(`/checker/${checkerId}`)
     }
 
     static async fetchCheckers(buildingId: number): Promise<AxiosResponse> {
-        return API.get(`/${buildingId}/checker`)
+        return axios.get(`/${buildingId}/checker`)
     }
 
     static async saveChecker(checker: IBuildingChecker): Promise<AxiosResponse> {
         if (checker.id) {
-            return API.patch(`/checker/${checker.id}`, checker)
+            return axios.patch(`/checker/${checker.id}`, checker)
         } else {
-            return API.post('/checker', checker)
+            return axios.post('/checker', checker)
         }
     }
 
     static async removeChecker(checkerId: number): Promise<AxiosResponse> {
-        return API.delete(`/checker/${checkerId}`)
+        return axios.delete(`/checker/${checkerId}`)
     }
 }

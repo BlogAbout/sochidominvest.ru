@@ -22,7 +22,7 @@ const defaultProps: Props = {
 }
 
 const SupportList: React.FC<Props> = (props) => {
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
 
     return (
         <div className={classes.SupportList}>
@@ -31,14 +31,14 @@ const SupportList: React.FC<Props> = (props) => {
                 <div className={classes.title}>Заголовок</div>
                 <div className={classes.status}>Статус</div>
 
-                {['director', 'administrator', 'manager'].includes(role) ?
-                    <>
-                        <div className={classes.name}>Имя</div>
-                        <div className={classes.phone}>Телефон</div>
-                        <div className={classes.type}>Тип</div>
-                    </>
-                    : null
-                }
+                {/*{['director', 'administrator', 'manager'].includes(role) ?*/}
+                {/*    <>*/}
+                {/*        <div className={classes.name}>Имя</div>*/}
+                {/*        <div className={classes.phone}>Телефон</div>*/}
+                {/*        <div className={classes.type}>Тип</div>*/}
+                {/*    </>*/}
+                {/*    : null*/}
+                {/*}*/}
             </div>
 
             {props.feeds.length ?

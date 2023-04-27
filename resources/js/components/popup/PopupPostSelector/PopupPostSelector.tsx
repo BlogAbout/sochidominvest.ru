@@ -49,7 +49,7 @@ const PopupPostSelector: React.FC<Props> = (props) => {
     const [selectedPosts, setSelectedPosts] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
     const {fetching: fetchingPostList, posts} = useTypedSelector(state => state.postReducer)
     const {fetchPostList} = useActions()
 
@@ -175,15 +175,15 @@ const PopupPostSelector: React.FC<Props> = (props) => {
     const onContextMenu = (e: React.MouseEvent, post: IPost) => {
         e.preventDefault()
 
-        if (['director', 'administrator', 'manager'].includes(role)) {
-            const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, post)}]
-
-            if (['director', 'administrator'].includes(role)) {
-                menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, post)})
-            }
-
-            openContextMenu(e, menuItems)
-        }
+        // if (['director', 'administrator', 'manager'].includes(role)) {
+        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, post)}]
+        //
+        //     if (['director', 'administrator'].includes(role)) {
+        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, post)})
+        //     }
+        //
+        //     openContextMenu(e, menuItems)
+        // }
     }
 
     const renderLeftBox = () => {
@@ -214,9 +214,9 @@ const PopupPostSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?
-                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
-                    : null}
+                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
+                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
+                {/*    : null}*/}
             </div>
         )
     }

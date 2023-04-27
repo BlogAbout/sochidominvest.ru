@@ -49,7 +49,7 @@ const PopupContactSelector: React.FC<Props> = (props) => {
     const [selectedContacts, setSelectedContacts] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {userId} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
 
     useEffect(() => {
         if (!contacts.length || isUpdate) {
@@ -61,7 +61,7 @@ const PopupContactSelector: React.FC<Props> = (props) => {
         return () => {
             removePopup(props.blockId ? props.blockId : '')
         }
-    }, [isUpdate, userId])
+    }, [isUpdate, user.id])
 
     useEffect(() => {
         search(searchText)
@@ -69,7 +69,7 @@ const PopupContactSelector: React.FC<Props> = (props) => {
 
     // Загрузка контактов всех агентств пользователя
     const fetchContactsForAgentHandler = () => {
-        const filter: IFilter = {author: [userId], active: [0, 1]}
+        const filter: IFilter = {author: [user.id || 0], active: [0, 1]}
         if (props.includeAgents && props.includeAgents.length) {
             filter.agentId = props.includeAgents
         } else if (props.includeAgents !== undefined && !props.includeAgents.length) {

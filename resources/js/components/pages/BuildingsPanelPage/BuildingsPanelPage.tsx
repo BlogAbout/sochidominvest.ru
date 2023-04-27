@@ -73,7 +73,7 @@ const BuildingsPanelPage: React.FC = (): React.ReactElement => {
     const [apiKey, setApiKey] = useState('3ed788dc-edd5-4bce-8720-6cd8464b45bd')
     const [presetIcon, setPresetIcon] = useState('islands#blueIcon')
 
-    const {role, user} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
     const {buildings, fetching: fetchingBuilding} = useTypedSelector(state => state.buildingReducer)
     const {settings} = useTypedSelector(state => state.settingReducer)
     const {fetchBuildingList} = useActions()

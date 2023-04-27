@@ -40,7 +40,7 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
     const [fetching, setFetching] = useState(props.fetching)
     const [businessProcesses, setBusinessProcesses] = useState<IBusinessProcessesBySteps>({} as IBusinessProcessesBySteps)
 
-    const {userId, users} = useTypedSelector(state => state.userReducer)
+    const {users, user} = useTypedSelector(state => state.userReducer)
 
     useEffect(() => {
         const prepareBusinessProcesses: IBusinessProcessesBySteps = {} as IBusinessProcessesBySteps
@@ -231,7 +231,7 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
                                             <div className={classes.boardList}>
                                                 {businessProcesses[step] && businessProcesses[step].length ?
                                                     businessProcesses[step].map((businessProcess: IBusinessProcess, index: number) => {
-                                                        if (businessProcess.author_id !== userId && businessProcess.responsible_id !== userId) {
+                                                        if (businessProcess.author_id !== user.id && businessProcess.responsible_id !== user.id) {
                                                             return null
                                                         }
 

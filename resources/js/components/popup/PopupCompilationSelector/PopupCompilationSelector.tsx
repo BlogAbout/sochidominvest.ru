@@ -52,7 +52,7 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
     const [selectedCompilations, setSelectedCompilations] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
     const {fetching: fetchingCompilationList, compilations} = useTypedSelector(state => state.compilationReducer)
     const {fetchCompilationList} = useActions()
 
@@ -178,15 +178,15 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
     const onContextMenu = (e: React.MouseEvent, compilation: ICompilation) => {
         e.preventDefault()
 
-        if (['director', 'administrator', 'manager'].includes(role)) {
-            const menuItems = [{text: 'Редактировать', onClick: () => onClickEdit(compilation)}]
-
-            if (['director', 'administrator'].includes(role)) {
-                menuItems.push({text: 'Редактировать', onClick: () => onClickDelete(compilation)})
-            }
-
-            openContextMenu(e, menuItems)
-        }
+        // if (['director', 'administrator', 'manager'].includes(role)) {
+        //     const menuItems = [{text: 'Редактировать', onClick: () => onClickEdit(compilation)}]
+        //
+        //     if (['director', 'administrator'].includes(role)) {
+        //         menuItems.push({text: 'Редактировать', onClick: () => onClickDelete(compilation)})
+        //     }
+        //
+        //     openContextMenu(e, menuItems)
+        // }
     }
 
     const renderSearch = () => {
@@ -200,9 +200,9 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?
-                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
-                    : null}
+                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
+                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
+                {/*    : null}*/}
             </div>
         )
     }

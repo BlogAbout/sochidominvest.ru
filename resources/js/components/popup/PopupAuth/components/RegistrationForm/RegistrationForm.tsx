@@ -30,7 +30,7 @@ const RegistrationForm: React.FC<Props> = (props): React.ReactElement => {
         phone: '',
         email: '',
         password: '',
-        firstName: '',
+        name: '',
         role: 'subscriber'
     })
 
@@ -38,7 +38,7 @@ const RegistrationForm: React.FC<Props> = (props): React.ReactElement => {
         phone: '',
         email: '',
         password: '',
-        firstName: ''
+        name: ''
     })
 
     const [info, setInfo] = useState({
@@ -68,7 +68,7 @@ const RegistrationForm: React.FC<Props> = (props): React.ReactElement => {
             passwordError = 'Введите пароль'
         }
 
-        if (signUp.firstName === '') {
+        if (signUp.name === '') {
             nameError = 'Введите имя'
         }
 
@@ -76,7 +76,7 @@ const RegistrationForm: React.FC<Props> = (props): React.ReactElement => {
             phone: phoneError,
             email: emailError,
             password: passwordError,
-            firstName: nameError
+            name: nameError
         })
 
         return !(phoneError || emailError || passwordError || nameError)
@@ -121,20 +121,20 @@ const RegistrationForm: React.FC<Props> = (props): React.ReactElement => {
                    style='dark'
                    labelWidth={150}
             >
-                <TextBox value={signUp.firstName}
+                <TextBox value={signUp.name}
                          placeHolder='Имя'
-                         error={validationError.firstName !== ''}
-                         errorText={validationError.firstName}
+                         error={validationError.name !== ''}
+                         errorText={validationError.name}
                          onChange={(value: string) => {
                              setSignUp({
                                  ...signUp,
-                                 firstName: value
+                                 name: value
                              })
 
                              if (value.trim().length === 0) {
-                                 setValidationError({...validationError, firstName: 'Введите имя'})
+                                 setValidationError({...validationError, name: 'Введите имя'})
                              } else {
-                                 setValidationError({...validationError, firstName: ''})
+                                 setValidationError({...validationError, name: ''})
                              }
                          }}
                          styleType='minimal'
@@ -235,7 +235,7 @@ const RegistrationForm: React.FC<Props> = (props): React.ReactElement => {
 
             <div className={classes.buttons}>
                 <Button type='apply'
-                        disabled={info.fetching || validationError.firstName !== '' || validationError.email !== '' || validationError.phone !== '' || validationError.password !== ''}
+                        disabled={info.fetching || validationError.name !== '' || validationError.email !== '' || validationError.phone !== '' || validationError.password !== ''}
                         onClick={registrationHandler.bind(this)}
                 >Создать аккаунт</Button>
 

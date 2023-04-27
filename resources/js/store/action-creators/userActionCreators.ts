@@ -1,9 +1,10 @@
 import {UserAction, UserActionTypes} from '../@types/userTypes'
 import {RouteNames} from '../../helpers/routerHelper'
-import {IUser, IUserExternal, IUserSetting} from '../../@types/IUser'
+import {IUser, IUserExternal} from '../../@types/IUser'
 import {IFilter} from '../../@types/IFilter'
 import {AppDispatch} from '../reducers'
 import UserService from '../../api/UserService'
+import {AxiosResponse} from "axios";
 
 export const UserActionCreators = {
     setIsAuth: (auth: boolean): UserAction => ({
@@ -13,18 +14,6 @@ export const UserActionCreators = {
     setUser: (user: IUser): UserAction => ({
         type: UserActionTypes.USER,
         payload: user
-    }),
-    setUserRole: (role: 'director' | 'administrator' | 'manager' | 'subscriber'): UserAction => ({
-        type: UserActionTypes.USER_ROLE,
-        payload: role
-    }),
-    setUserId: (userId: number): UserAction => ({
-        type: UserActionTypes.USER_ID,
-        payload: userId
-    }),
-    setUserSetting: (setting: IUserSetting): UserAction => ({
-        type: UserActionTypes.USER_SETTING,
-        payload: setting
     }),
     setUsersOnline: (users: number[]): UserAction => ({
         type: UserActionTypes.USER_ONLINE,
@@ -46,28 +35,34 @@ export const UserActionCreators = {
         type: UserActionTypes.USER_ERROR,
         payload
     }),
-    setUserAuth: (user: IUser) => async (dispatch: AppDispatch) => {
-        localStorage.setItem('auth', 'true')
-        localStorage.setItem('user', user ? JSON.stringify(user) : '')
-        localStorage.setItem('id', user.id ? user.id.toString() : '')
-        // localStorage.setItem('token', user.token || '')
-        // localStorage.setItem('role', user.role || '')
-        localStorage.setItem('settings', user.settings ? JSON.stringify(user.settings) : '')
+    setUserAuth: (response: AxiosResponse) => async (dispatch: AppDispatch) => {
+        try {
+            if (response.status === 200) {
+                const user: IUser = response.data.data
 
-        dispatch(UserActionCreators.setIsAuth(true))
-        dispatch(UserActionCreators.setUser(user || {} as IUser))
-        // dispatch(UserActionCreators.setUserRole(user.role || ''))
-        dispatch(UserActionCreators.setUserId(user.id || 0))
-        dispatch(UserActionCreators.setUserSetting(user.settings || {} as IUserSetting))
+                localStorage.setItem('auth', 'true')
+                localStorage.setItem('user', JSON.stringify(user))
 
-        // window.location.replace(RouteNames.P_DESKTOP)
+                dispatch(UserActionCreators.setIsAuth(true))
+                dispatch(UserActionCreators.setUser(user))
+            } else {
+                localStorage.clear()
+                dispatch(UserActionCreators.setError('Ошибка авторизации'))
+            }
+        } catch (e) {
+            localStorage.clear()
+            dispatch(UserActionCreators.setError('Непредвиденная ошибка авторизации'))
+            console.error('Непредвиденная ошибка авторизации', e)
+        }
+
+        window.location.replace(RouteNames.P_DESKTOP)
     },
     logout: () => async (dispatch: AppDispatch) => {
         localStorage.clear()
 
         dispatch(UserActionCreators.setIsAuth(false))
 
-        // window.location.replace(RouteNames.MAIN)
+        window.location.replace(RouteNames.MAIN)
     },
     fetchUserList: (filter: IFilter) => async (dispatch: AppDispatch) => {
         dispatch(UserActionCreators.setFetching(true))
@@ -100,5 +95,5 @@ export const UserActionCreators = {
             dispatch(UserActionCreators.setError('Непредвиденная ошибка загрузки данных'))
             console.error('Непредвиденная ошибка загрузки данных', e)
         }
-    },
+    }
 }

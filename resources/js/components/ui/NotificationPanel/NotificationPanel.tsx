@@ -29,7 +29,7 @@ const NotificationPanel: React.FC<Props> = (props) => {
     const [selectedType, setSelectedType] = useState('new')
     const [filteredNotification, setFilteredNotification] = useState<INotification[]>([])
 
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
     const {notifications, fetching} = useTypedSelector(state => state.notificationReducer)
     const {fetchNotificationList, readNotificationAll} = useActions()
 
@@ -146,31 +146,31 @@ const NotificationPanel: React.FC<Props> = (props) => {
                 <NotificationList notifications={filteredNotification} fetching={fetching}/>
             </Content>
 
-            {['director', 'administrator', 'manager'].includes(role) || countNotification > 0 ?
-                <Footer>
-                    {['director', 'administrator', 'manager'].includes(role) &&
-                    <Button type='save'
-                            icon='plus'
-                            onClick={() => {
-                                openPopupNotificationCreate(document.body, {
-                                    onSave: () => {
-                                        setIsUpdate(true)
-                                    }
-                                })
-                            }}
-                            disabled={fetching}
-                    >Создать</Button>}
+            {/*{['director', 'administrator', 'manager'].includes(role) || countNotification > 0 ?*/}
+            {/*    <Footer>*/}
+            {/*        {['director', 'administrator', 'manager'].includes(role) &&*/}
+            {/*        <Button type='save'*/}
+            {/*                icon='plus'*/}
+            {/*                onClick={() => {*/}
+            {/*                    openPopupNotificationCreate(document.body, {*/}
+            {/*                        onSave: () => {*/}
+            {/*                            setIsUpdate(true)*/}
+            {/*                        }*/}
+            {/*                    })*/}
+            {/*                }}*/}
+            {/*                disabled={fetching}*/}
+            {/*        >Создать</Button>}*/}
 
-                    {countNotification > 0 &&
-                    <Button type='apply'
-                            icon='check'
-                            onClick={() => readNotificationAll()}
-                            disabled={fetching}
-                            className='marginLeft'
-                    >Прочитать все</Button>}
-                </Footer>
-                : null
-            }
+            {/*        {countNotification > 0 &&*/}
+            {/*        <Button type='apply'*/}
+            {/*                icon='check'*/}
+            {/*                onClick={() => readNotificationAll()}*/}
+            {/*                disabled={fetching}*/}
+            {/*                className='marginLeft'*/}
+            {/*        >Прочитать все</Button>}*/}
+            {/*    </Footer>*/}
+            {/*    : null*/}
+            {/*}*/}
         </div>
     )
 }

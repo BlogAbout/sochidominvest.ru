@@ -25,13 +25,13 @@ type UserItemPageParams = {
 const UserPage: React.FC = (): React.ReactElement => {
     const params = useParams<UserItemPageParams>()
 
-    const [user, setUser] = useState<IUser>({} as IUser)
+    const [userData, setUserData] = useState<IUser>({} as IUser)
     const [buildings, setBuildings] = useState<IBuilding[]>([])
     const [articles, setArticles] = useState<IArticle[]>([])
     const [fetchingBuildings, setFetchingBuildings] = useState(false)
     const [fetchingArticles, setFetchingArticles] = useState(false)
 
-    const {users, fetching, role} = useTypedSelector(state => state.userReducer)
+    const {users, fetching, user} = useTypedSelector(state => state.userReducer)
     const {fetchUserList} = useActions()
 
     useEffect(() => {
@@ -44,7 +44,7 @@ const UserPage: React.FC = (): React.ReactElement => {
             const userInfo = users.find((user: IUser) => user.id === userId)
 
             if (userInfo) {
-                setUser(userInfo)
+                setUserData(userInfo)
             }
         }
     }, [users])
@@ -53,20 +53,20 @@ const UserPage: React.FC = (): React.ReactElement => {
         fetchBuildingsHandler()
         fetchArticlesHandler()
         fetchLogHandler()
-    }, [user.id])
+    }, [userData.id])
 
     const fetchUsersHandler = () => {
         fetchUserList({active: [0, 1]})
     }
 
     const fetchBuildingsHandler = () => {
-        if (!user.id) {
+        if (!userData.id) {
             return
         }
 
         setFetchingBuildings(true)
 
-        BuildingService.fetchBuildings({active: [1], author: [user.id]})
+        BuildingService.fetchBuildings({active: [1], author: [userData.id]})
             .then((response: any) => setBuildings(response.data.data))
             .catch((error: any) => {
                 console.error(error)
@@ -75,13 +75,13 @@ const UserPage: React.FC = (): React.ReactElement => {
     }
 
     const fetchArticlesHandler = () => {
-        if (!user.id) {
+        if (!userData.id) {
             return
         }
 
         setFetchingArticles(true)
 
-        ArticleService.fetchArticles({active: [1], author: [user.id]})
+        ArticleService.fetchArticles({active: [1], author: [userData.id]})
             .then((response: any) => setArticles(response.data.data))
             .catch((error: any) => {
                 console.error(error)
@@ -90,13 +90,13 @@ const UserPage: React.FC = (): React.ReactElement => {
     }
 
     const fetchLogHandler = () => {
-        if (!user.id) {
+        if (!userData.id) {
             return
         }
         //
         // setFetchingLogs(true)
         //
-        // UtilService.fetchLogs({active: [1], userId: [user.id]})
+        // UtilService.fetchLogs({active: [1], userId: [userData.id]})
         //     .then((response: any) => setLogs(response.data.data))
         //     .catch((error: any) => {
         //         console.error(error)
@@ -106,11 +106,11 @@ const UserPage: React.FC = (): React.ReactElement => {
 
     // Редактирование пользователя
     const onClickEditHandler = () => {
-        openPopupUserCreate(document.body, {
-            user: user,
-            role: role,
-            onSave: () => fetchUsersHandler()
-        })
+        // openPopupUserCreate(document.body, {
+        //     user: userData,
+        //     role: role,
+        //     onSave: () => fetchUsersHandler()
+        // })
     }
 
     // Блок статистики по недвижимости
@@ -145,7 +145,7 @@ const UserPage: React.FC = (): React.ReactElement => {
 
     // Блок информации
     const renderUserInfo = (): React.ReactElement => {
-        const userRole = rolesList.find(item => item.key === user.role_id?.toString())
+        const userRole = rolesList.find(item => item.key === userData.role_id?.toString())
 
         return (
             <div className={classes.data}>
@@ -154,21 +154,21 @@ const UserPage: React.FC = (): React.ReactElement => {
 
                     <div className={classes.row}>
                         <div className={classes.label}>Имя:</div>
-                        <div className={classes.param}>{user.name}</div>
+                        <div className={classes.param}>{userData.name}</div>
                     </div>
-                    {user.post ?
+                    {userData.post ?
                         <div className={classes.row}>
                             <div className={classes.label}>Должность:</div>
-                            <div className={classes.param}>{user.post.name}</div>
+                            <div className={classes.param}>{userData.post.name}</div>
                         </div>
                         : null}
                     <div className={classes.row}>
                         <div className={classes.label}>Email:</div>
-                        <div className={classes.param}>{user.email}</div>
+                        <div className={classes.param}>{userData.email}</div>
                     </div>
                     <div className={classes.row}>
                         <div className={classes.label}>Телефон:</div>
-                        <div className={classes.param}>{user.phone}</div>
+                        <div className={classes.param}>{userData.phone}</div>
                     </div>
                     <div className={classes.row}>
                         <div className={classes.label}>Роль:</div>
@@ -176,17 +176,17 @@ const UserPage: React.FC = (): React.ReactElement => {
                     </div>
                     {/*<div className={classes.row}>*/}
                     {/*    <div className={classes.label}>Тариф:</div>*/}
-                    {/*    <div className={classes.param}>{getTariffText(user.tariff)}</div>*/}
+                    {/*    <div className={classes.param}>{getTariffText(userData.tariff)}</div>*/}
                     {/*</div>*/}
                     <div className={classes.row}>
                         <div className={classes.label}>Дата окончания тарифа:</div>
                         <div className={classes.param}>
-                            {/*{user.tariff !== 'free' ? getFormatDate(user.tariffExpired) : 'Бессрочно'}*/}
+                            {/*{userData.tariff !== 'free' ? getFormatDate(userData.tariffExpired) : 'Бессрочно'}*/}
                         </div>
                     </div>
                     <div className={classes.row}>
                         <div className={classes.label}>Заблокирован:</div>
-                        <div className={classes.param}>{user.is_block ? 'да' : 'нет'}</div>
+                        <div className={classes.param}>{userData.is_block ? 'да' : 'нет'}</div>
                     </div>
                 </BlockingElement>
             </div>
@@ -194,17 +194,17 @@ const UserPage: React.FC = (): React.ReactElement => {
     }
 
     return (
-        <PanelView pageTitle={!user ? 'Пользователи' : user.name}>
+        <PanelView pageTitle={!userData ? 'Пользователи' : userData.name}>
             <Wrapper isFull>
                 <Title type='h1'
                        addText='Редактировать'
                        onAdd={onClickEditHandler.bind(this)}
                        className={classes.title}
-                >{!user ? 'Пользователи' : user.name}</Title>
+                >{!userData ? 'Пользователи' : userData.name}</Title>
 
                 {fetching && <Preloader/>}
 
-                {!user || !user.id ?
+                {!userData || !userData.id ?
                     <Empty message='Пользователь не найден'/>
                     :
                     <div className={classes.information}>

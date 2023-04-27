@@ -14,7 +14,9 @@ class FeedService
         try {
             DB::beginTransaction();
 
-            $data['author_id'] = auth()->user()->id;
+            if (auth()->check()) {
+                $data['author_id'] = auth()->user()->id;
+            }
 
             if (isset($data['message_text'])) {
                 $messageNew = $data['message_text'];

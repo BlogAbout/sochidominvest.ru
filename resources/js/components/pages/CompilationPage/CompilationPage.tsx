@@ -32,7 +32,7 @@ const CompilationPage: React.FC = (): React.ReactElement => {
     const [filterBuilding, setFilterBuilding] = useState<IBuilding[]>([])
     const [fetching, setFetching] = useState(false)
 
-    const {userId, role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
     const {buildings, fetching: fetchingBuilding} = useTypedSelector(state => state.buildingReducer)
     const {compilations, fetching: fetchingCompilation} = useTypedSelector(state => state.compilationReducer)
     const {fetchBuildingList, fetchCompilationList} = useActions()
@@ -170,13 +170,13 @@ const CompilationPage: React.FC = (): React.ReactElement => {
             })
         }
 
-        if (['director', 'administrator', 'manager'].includes(role)) {
-            menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(building)})
-
-            if (['director', 'administrator'].includes(role)) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(building)})
-            }
-        }
+        // if (['director', 'administrator', 'manager'].includes(role)) {
+        //     menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(building)})
+        //
+        //     if (['director', 'administrator'].includes(role)) {
+        //         menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(building)})
+        //     }
+        // }
 
         if (menuItems.length) {
             openContextMenu(e, menuItems)
@@ -195,7 +195,7 @@ const CompilationPage: React.FC = (): React.ReactElement => {
             content_html: '',
             type: 'compilation',
             status: 0,
-            author_id: userId,
+            author_id: user.id,
             is_active: 1
         }
 

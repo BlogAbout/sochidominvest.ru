@@ -1,20 +1,11 @@
-import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios'
+import {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios'
 import {RouteNames} from './helpers/routerHelper'
-import {configuration} from './helpers/utilHelper'
 
 /**
  * <p>Обобщенная обработка запроса перед отправкой.</p>
  * @param config конфигурация Axios
  */
 const onRequest = (config: AxiosRequestConfig): AxiosRequestConfig => {
-    const token = localStorage.getItem('token')
-    if (token) {
-        config.headers = {
-            ...config.headers,
-            'Authorization': `Bearer ${token}`
-        }
-    }
-
     return config
 }
 
@@ -57,18 +48,9 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
  * <p>Внедряем хуки в interceptor.</p>
  * @param axiosInstance - Экспортируемый Axios.
  */
-function setupInterceptorsTo(axiosInstance: AxiosInstance): AxiosInstance {
+export function setupInterceptorsTo(axiosInstance: AxiosInstance): AxiosInstance {
     axiosInstance.interceptors.request.use(onRequest, onRequestError)
     axiosInstance.interceptors.response.use(onResponse, onResponseError)
 
     return axiosInstance
 }
-
-/**
- * <p>Подключаем interceptor из функции на экспортируемый Axios.</p>
- */
-const API = setupInterceptorsTo(axios.create({
-    baseURL: configuration.apiPath
-}))
-
-export default API

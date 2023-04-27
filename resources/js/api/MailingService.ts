@@ -1,30 +1,29 @@
-import {AxiosResponse} from 'axios'
-import API from '../axios.init'
+import axios, {AxiosResponse} from 'axios'
 import {IMailing, IMailingRecipient} from '../@types/IMailing'
 import {IFilter} from '../@types/IFilter'
 
 export default class FeedService {
     static async fetchMailingById(mailingId: number): Promise<AxiosResponse> {
-        return API.get(`/mailing/${mailingId}/info`)
+        return axios.get(`/mailing/${mailingId}/info`)
     }
 
     static async fetchMailings(filter: IFilter): Promise<AxiosResponse> {
-        return API.get('/mailing', {params: filter})
+        return axios.get('/mailing', {params: filter})
     }
 
     static async saveMailing(mailing: IMailing): Promise<AxiosResponse> {
         if (mailing.id) {
-            return API.patch(`/mailing/${mailing.id}`, mailing)
+            return axios.patch(`/mailing/${mailing.id}`, mailing)
         } else {
-            return API.post('/mailing', mailing)
+            return axios.post('/mailing', mailing)
         }
     }
 
     static async removeMailing(mailingId: number): Promise<AxiosResponse> {
-        return API.delete(`/mailing/${mailingId}`)
+        return axios.delete(`/mailing/${mailingId}`)
     }
 
     static async removeMailingRecipient(recipient: IMailingRecipient): Promise<AxiosResponse> {
-        return API.delete(`/mailing/${recipient.mailingId}/${recipient.userType}/${recipient.userId}`)
+        return axios.delete(`/mailing/${recipient.mailingId}/${recipient.userType}/${recipient.userId}`)
     }
 }

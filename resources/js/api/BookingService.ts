@@ -1,22 +1,21 @@
-import {AxiosResponse} from 'axios'
-import API from '../axios.init'
+import axios, {AxiosResponse} from 'axios'
 import {IBooking} from '../@types/IBooking'
 import {IFilter} from '../@types/IFilter'
 
 export default class BookingService {
     static async fetchBookingById(bookingId: number): Promise<AxiosResponse> {
-        return API.get(`/booking/${bookingId}`)
+        return axios.get(`/booking/${bookingId}`)
     }
 
     static async fetchBookings(filter: IFilter): Promise<AxiosResponse> {
-        return API.get('/booking', {params: filter})
+        return axios.get('/booking', {params: filter})
     }
 
     static async saveBooking(booking: IBooking): Promise<AxiosResponse> {
         if (booking.id) {
-            return API.patch(`/booking/${booking.id}`, booking)
+            return axios.patch(`/booking/${booking.id}`, booking)
         } else {
-            return API.post('/booking', booking)
+            return axios.post('/booking', booking)
         }
     }
 }

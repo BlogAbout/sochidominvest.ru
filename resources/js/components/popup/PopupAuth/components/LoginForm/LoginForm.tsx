@@ -72,8 +72,8 @@ const LoginForm: React.FC<Props> = (props): React.ReactElement => {
             })
 
             UserService.authUser(auth)
-                .then((response: any) => {
-                    setUserAuth(response.data.data)
+                .then((response) => {
+                    setUserAuth(response)
 
                     setInfo({
                         fetching: false,
@@ -85,7 +85,7 @@ const LoginForm: React.FC<Props> = (props): React.ReactElement => {
                 .catch((error: any) => {
                     setInfo({
                         fetching: false,
-                        error: error.data.data
+                        error: error && error.data ? error.data.message : 'Неверные E-mail или Пароль'
                     })
                 })
         }

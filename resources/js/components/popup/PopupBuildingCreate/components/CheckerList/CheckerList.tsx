@@ -27,7 +27,7 @@ const CheckerList: React.FC<Props> = (props) => {
     const [fetching, setFetching] = useState(false)
     const [checkers, setCheckers] = useState<IBuildingChecker[]>([])
 
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
 
     useEffect(() => {
         if (isUpdate && props.buildingId) {
@@ -75,15 +75,15 @@ const CheckerList: React.FC<Props> = (props) => {
     const onContextMenu = (e: React.MouseEvent, checker: IBuildingChecker) => {
         e.preventDefault()
 
-        if (['director', 'administrator', 'manager'].includes(role)) {
-            const menuItems = [{text: 'Редактировать', onClick: () => updateHandler(checker)}]
-
-            if (['director', 'administrator'].includes(role)) {
-                menuItems.push({text: 'Удалить', onClick: () => removeHandler(checker)})
-            }
-
-            openContextMenu(e, menuItems)
-        }
+        // if (['director', 'administrator', 'manager'].includes(role)) {
+        //     const menuItems = [{text: 'Редактировать', onClick: () => updateHandler(checker)}]
+        //
+        //     if (['director', 'administrator'].includes(role)) {
+        //         menuItems.push({text: 'Удалить', onClick: () => removeHandler(checker)})
+        //     }
+        //
+        //     openContextMenu(e, menuItems)
+        // }
     }
 
     // Удаление элемента

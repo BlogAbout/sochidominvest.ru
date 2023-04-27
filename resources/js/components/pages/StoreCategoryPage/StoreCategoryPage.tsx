@@ -28,7 +28,7 @@ const CategoryPage: React.FC = (): React.ReactElement => {
     const [filterProduct, setFilterProduct] = useState<IProduct[]>([])
     const [fetching, setFetching] = useState(false)
 
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
     const {products, categories, fetching: fetchingStore} = useTypedSelector(state => state.storeReducer)
     const {fetchProductList, fetchCategoryList} = useActions()
 
@@ -132,15 +132,15 @@ const CategoryPage: React.FC = (): React.ReactElement => {
     const onContextMenuItem = (product: IProduct, e: React.MouseEvent) => {
         e.preventDefault()
 
-        const menuItems = []
+        const menuItems: any[] = []
 
-        if (['director', 'administrator', 'manager'].includes(role)) {
-            menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(product)})
-
-            if (['director', 'administrator'].includes(role)) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(product)})
-            }
-        }
+        // if (['director', 'administrator', 'manager'].includes(role)) {
+        //     menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(product)})
+        //
+        //     if (['director', 'administrator'].includes(role)) {
+        //         menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(product)})
+        //     }
+        // }
 
         if (menuItems.length) {
             openContextMenu(e, menuItems)

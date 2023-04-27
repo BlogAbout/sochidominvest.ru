@@ -26,7 +26,7 @@ const Navigation: React.FC = (): React.ReactElement => {
 
     const [showMobileMenu, setShowMobileMenu] = useState(false)
     const [showUserPanel, setShowUserPanel] = useState(false)
-    const [user, setUser] = useState<IUser>({
+    const [userData, setUserData] = useState<IUser>({
         id: null,
         name: '',
         email: '',
@@ -37,14 +37,14 @@ const Navigation: React.FC = (): React.ReactElement => {
         tariff_id: null
     })
 
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
     const {logout} = useActions()
 
     useEffect(() => {
         const userUpdate: IUser | null = getUserFromStorage()
 
         if (userUpdate) {
-            setUser(userUpdate)
+            setUserData(userUpdate)
         }
 
         document.addEventListener('click', handleClickOutsideUserPanel)
@@ -74,14 +74,14 @@ const Navigation: React.FC = (): React.ReactElement => {
     }
 
     const onClickUserProfile = () => {
-        if (user && user.id) {
+        if (userData && userData.id) {
             openPopupUserCreate(document.body, {
                 user: null,
-                userId: user.id,
+                userId: userData.id,
                 onSave: () => {
                     const userUpdate: IUser | null = getUserFromStorage()
                     if (userUpdate) {
-                        setUser(userUpdate)
+                        setUserData(userUpdate)
                     }
                 }
             })
@@ -98,8 +98,8 @@ const Navigation: React.FC = (): React.ReactElement => {
             <nav className={cx({'Navigation': true, 'show': showMobileMenu})}>
                 <div className={cx({'userPanel': true, 'show': showUserPanel})} ref={refUserPanel}>
                     <div className={classes.userName}>
-                        <span className={classes.name}>{user.name}</span>
-                        {user.post ? <span className={classes.post}>{user.post.name}</span> : null}
+                        <span className={classes.name}>{userData.name}</span>
+                        {userData.post ? <span className={classes.post}>{userData.post.name}</span> : null}
                     </div>
 
                     <div className={classes.icon}
@@ -113,10 +113,10 @@ const Navigation: React.FC = (): React.ReactElement => {
                     <div className={classes.icon}
                          title='Глобальный поиск'
                          onClick={() => {
-                             openPopupSearchPanel(document.body, {
-                                 role: role,
-                                 navigate: navigate
-                             })
+                             // openPopupSearchPanel(document.body, {
+                             //     role: role,
+                             //     navigate: navigate
+                             // })
                          }}
                     >
                         <FontAwesomeIcon icon='magnifying-glass'/>
@@ -141,15 +141,19 @@ const Navigation: React.FC = (): React.ReactElement => {
                 </div>
 
                 <div className={classes.profile}
-                     title={`Редактировать профиль: ${user.name}`}
+                     title={`Редактировать профиль: ${userData.name}`}
                      onClick={() => {
-                         if (user && user.id) {
+                         if (userData && userData.id) {
                              setShowUserPanel(!showUserPanel)
                          }
                      }}
                      ref={refProfile}
                 >
-                    <Avatar href={user?.avatar ? user.avatar.content : null} alt={user?.name} width={46} height={46}/>
+                    <Avatar href={userData?.avatar ? userData.avatar.content : null}
+                            alt={userData?.name}
+                            width={46}
+                            height={46}
+                    />
                 </div>
 
                 <ul className={classes.menu}>

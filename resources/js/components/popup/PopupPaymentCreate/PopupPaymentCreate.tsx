@@ -34,7 +34,7 @@ const defaultProps: Props = {
 }
 
 const PopupPaymentCreate: React.FC<Props> = (props) => {
-    const {userId} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
 
     const [fetching, setFetching] = useState(false)
     const [sendLink, setSendLink] = useState(false)
@@ -42,7 +42,7 @@ const PopupPaymentCreate: React.FC<Props> = (props) => {
         id: null,
         name: '',
         status: 'new',
-        user_id: userId,
+        user_id: user.id,
         cost: 0
     })
 

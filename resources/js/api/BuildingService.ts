@@ -1,30 +1,29 @@
-import {AxiosResponse} from 'axios'
-import API from '../axios.init'
+import axios, {AxiosResponse} from 'axios'
 import {IBuilding} from '../@types/IBuilding'
 import {IFilter} from '../@types/IFilter'
 
 export default class BuildingService {
     static async fetchBuildingById(buildingId: number): Promise<AxiosResponse> {
-        return API.get(`/building/${buildingId}`)
+        return axios.get(`/building/${buildingId}`)
     }
 
     static async fetchBuildings(filter: IFilter): Promise<AxiosResponse> {
-        return API.get('/building', {params: filter})
+        return axios.get('/building', {params: filter})
     }
 
     static async saveBuilding(building: IBuilding): Promise<AxiosResponse> {
         if (building.id) {
-            return API.patch(`/building/${building.id}`, building)
+            return axios.patch(`/building/${building.id}`, building)
         } else {
-            return API.post('/building', building)
+            return axios.post('/building', building)
         }
     }
 
     static async removeBuilding(buildingId: number): Promise<AxiosResponse> {
-        return API.delete(`/building/${buildingId}`)
+        return axios.delete(`/building/${buildingId}`)
     }
 
     static async fetchBuildingPrices(buildingId: number): Promise<AxiosResponse> {
-        return API.get(`/building/${buildingId}/prices`)
+        return axios.get(`/building/${buildingId}/prices`)
     }
 }

@@ -33,7 +33,6 @@ class FeedController extends Controller
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        dd($data);
 
         return $this->service->store($data);
     }

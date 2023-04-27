@@ -50,7 +50,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
     const [fetchingAgents, setFetchingAgents] = useState(false)
     const [fetchingDevelopers, setFetchingDevelopers] = useState(false)
 
-    const {userId} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
     const {articles, fetching: fetchingArticles} = useTypedSelector(state => state.articleReducer)
     const {fetchArticleList} = useActions()
 
@@ -60,7 +60,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
 
     useEffect(() => {
         fetchUserHandler()
-    }, [userId])
+    }, [user.id])
 
     useEffect(() => {
         fetchFeedsHandler()
@@ -85,9 +85,9 @@ const DesktopPage: React.FC = (): React.ReactElement => {
 
     // Загрузка данных пользователя
     const fetchUserHandler = () => {
-        let findUserId = userId
+        let findUserId = user.id
 
-        if (!userId) {
+        if (!user.id) {
             const localStorageUserId = localStorage.getItem('id') || ''
 
             if (localStorageUserId) {
@@ -127,7 +127,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
     const fetchDevelopersHandler = () => {
         setFetchingDevelopers(true)
 
-        DeveloperService.fetchDevelopers({active: [0, 1], author: [userId]})
+        DeveloperService.fetchDevelopers({active: [0, 1], author: [user.id || 0]})
             .then((response: any) => setDevelopers(response.data.data))
             .catch((error: any) => {
                 console.error('Ошибка загрузки застройщиков пользователя', error)
@@ -139,7 +139,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
     const fetchAgentsHandler = () => {
         setFetchingAgents(true)
 
-        AgentService.fetchAgents({active: [0, 1], author: [userId]})
+        AgentService.fetchAgents({active: [0, 1], author: [user.id || 0]})
             .then((response: any) => setAgents(response.data.data))
             .catch((error: any) => {
                 console.error('Ошибка загрузки агентств пользователя', error)

@@ -33,6 +33,7 @@ interface Window {
     ym?: any
     events?: any
     WS?: any
+    location?: any
 }
 
 interface Document {

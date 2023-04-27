@@ -39,7 +39,7 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const PopupBookingCreate: React.FC<Props> = (props) => {
-    const {userId} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
 
     const [booking, setBooking] = useState<IBooking>({
         id: null,
@@ -48,7 +48,7 @@ const PopupBookingCreate: React.FC<Props> = (props) => {
         status: 'new',
         buildingId: props.buildingId || 0,
         buildingName: '',
-        userId: userId
+        userId: user.id || 0
     })
 
     const [isBusy, setIsBusy] = useState(false)

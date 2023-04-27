@@ -50,7 +50,7 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
     const [selectedAgents, setSelectedAgents] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {role, userId} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
 
     useEffect(() => {
         if (isUpdate) {
@@ -71,7 +71,7 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
     const loadAgentsHandler = () => {
         setFetching(true)
 
-        AgentService.fetchAgents({active: [0, 1], author: [userId]})
+        AgentService.fetchAgents({active: [0, 1], author: [user.id || 0]})
             .then((response: any) => {
                 setAgents(response.data.data)
             })
@@ -189,15 +189,15 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
     const onContextMenu = (e: React.MouseEvent, agent: IAgent) => {
         e.preventDefault()
 
-        if (['director', 'administrator', 'manager'].includes(role)) {
-            const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, agent)}]
-
-            if (['director', 'administrator'].includes(role)) {
-                menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, agent)})
-            }
-
-            openContextMenu(e, menuItems)
-        }
+        // if (['director', 'administrator', 'manager'].includes(role)) {
+        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, agent)}]
+        //
+        //     if (['director', 'administrator'].includes(role)) {
+        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, agent)})
+        //     }
+        //
+        //     openContextMenu(e, menuItems)
+        // }
     }
 
     const renderSearch = () => {
@@ -211,10 +211,10 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?
-                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
-                    : null
-                }
+                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
+                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
+                {/*    : null*/}
+                {/*}*/}
             </div>
         )
     }

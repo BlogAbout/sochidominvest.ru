@@ -46,7 +46,7 @@ const cx = classNames.bind(classes)
 const FileList: React.FC<Props> = (props) => {
     const [fetching, setFetching] = useState(false)
 
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
 
     const getDragItemStyle = (isDragging: boolean, draggableStyle: any) => ({
         userSelect: 'none',
@@ -116,13 +116,13 @@ const FileList: React.FC<Props> = (props) => {
             }
         }]
 
-        if (['director', 'administrator', 'manager'].includes(role)) {
-            menuItems.push({text: 'Редактировать', onClick: () => updateHandler(file)})
-
-            if (['director', 'administrator'].includes(role) && !props.onRemove) {
-                menuItems.push({text: 'Удалить', onClick: () => removeHandler(file)})
-            }
-        }
+        // if (['director', 'administrator', 'manager'].includes(role)) {
+        //     menuItems.push({text: 'Редактировать', onClick: () => updateHandler(file)})
+        //
+        //     if (['director', 'administrator'].includes(role) && !props.onRemove) {
+        //         menuItems.push({text: 'Удалить', onClick: () => removeHandler(file)})
+        //     }
+        // }
 
         if (props.onRemove) {
             menuItems.push({text: 'Удалить из списка', onClick: () => removeHandler(file)})

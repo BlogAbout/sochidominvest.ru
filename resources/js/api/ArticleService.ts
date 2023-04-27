@@ -1,26 +1,25 @@
-import {AxiosResponse} from 'axios'
-import API from '../axios.init'
+import axios, {AxiosResponse} from 'axios'
 import {IArticle} from '../@types/IArticle'
 import {IFilter} from '../@types/IFilter'
 
 export default class ArticleService {
     static async fetchArticleById(articleId: number): Promise<AxiosResponse> {
-        return API.get(`/article/${articleId}`)
+        return axios.get(`/article/${articleId}`)
     }
 
     static async fetchArticles(filter: IFilter): Promise<AxiosResponse> {
-        return API.get('/article', {params: filter})
+        return axios.get('/article', {params: filter})
     }
 
     static async saveArticle(article: IArticle): Promise<AxiosResponse> {
         if (article.id) {
-            return API.patch(`/article/${article.id}`, article)
+            return axios.patch(`/article/${article.id}`, article)
         } else {
-            return API.post('/article', article)
+            return axios.post('/article', article)
         }
     }
 
     static async removeArticle(articleId: number): Promise<AxiosResponse> {
-        return API.delete(`/article/${articleId}`)
+        return axios.delete(`/article/${articleId}`)
     }
 }

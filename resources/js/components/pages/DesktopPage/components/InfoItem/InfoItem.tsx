@@ -20,7 +20,7 @@ const defaultProps: Props = {
 }
 
 const InfoItem: React.FC<Props> = (props) => {
-    const {role} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
 
     // Редактирование
     const updateHandler = () => {
