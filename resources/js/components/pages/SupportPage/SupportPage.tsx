@@ -3,7 +3,7 @@ import {IFeed} from '../../../@types/IFeed'
 import {IFilterContent} from '../../../@types/IFilter'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {feedStatuses, feedTypes} from '../../../helpers/supportHelper'
-import {allowForRole} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {compareText} from '../../../helpers/filterHelper'
 import PanelView from '../../views/PanelView/PanelView'
 import Title from '../../ui/Title/Title'
@@ -35,62 +35,55 @@ const SupportPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [feeds, filters])
 
-    const fetchFeedsHandler = () => {
+    const fetchFeedsHandler = (): void => {
+        setFetching(true)
+
         FeedService.fetchFeeds({active: [0, 1]})
-            .then((response: any) => {
-                setFeeds(response.data.data)
-            })
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
-            .finally(() => {
-                setFetching(false)
-            })
+            .then((response: any) => setFeeds(response.data.data))
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
+            .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchFeedsHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!feeds || !feeds.length) {
             setFilterFeeds([])
         }
 
-        // if (allowForRole(['director', 'administrator', 'manager'], user.role)) {
-        //     if (value !== '') {
-        //         setFilterFeeds(filterItemsHandler(feeds.filter((feed: IFeed) => {
-        //             return compareText(feed.title, value) || (feed.name && compareText(feed.name, value)) || (feed.phone && compareText(feed.phone, value))
-        //         })))
-        //     } else {
-        //         setFilterFeeds(filterItemsHandler(feeds))
-        //     }
-        // } else {
-        //     if (value !== '') {
-        //         setFilterFeeds(filterItemsHandler(feeds.filter((feed: IFeed) => {
-        //             return (feed.author === user.id) &&
-        //                 (feed.title.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1 ||
-        //                     (feed.name && feed.name.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1) ||
-        //                     (feed.phone && feed.phone.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1))
-        //         })))
-        //     } else {
-        //         setFilterFeeds(filterItemsHandler(feeds.filter((feed: IFeed) => feed.author === user.id)))
-        //     }
-        // }
+        if (checkRules([Rules.IS_MANAGER])) {
+            if (value !== '') {
+                setFilterFeeds(filterItemsHandler(feeds.filter((feed: IFeed) => {
+                    return compareText(feed.title, value) || (feed.name && compareText(feed.name, value)) || (feed.phone && compareText(feed.phone, value))
+                })))
+            } else {
+                setFilterFeeds(filterItemsHandler(feeds))
+            }
+        } else {
+            if (value !== '') {
+                setFilterFeeds(filterItemsHandler(feeds.filter((feed: IFeed) => {
+                    return (feed.author === user.id) &&
+                        (feed.title.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1 ||
+                            (feed.name && feed.name.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1) ||
+                            (feed.phone && feed.phone.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1))
+                })))
+            } else {
+                setFilterFeeds(filterItemsHandler(feeds.filter((feed: IFeed) => feed.author === user.id)))
+            }
+        }
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupSupportCreate(document.body, {
             onSave: () => onSaveHandler()
         })
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IFeed[]) => {
+    const filterItemsHandler = (list: IFeed[]): IFeed[] => {
         if (!list || !list.length) {
             return []
         }
@@ -100,31 +93,30 @@ const SupportPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    const filtersContent: IFilterContent[] = []
-    // const filtersContent: IFilterContent[] = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'Тип',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: feedTypes,
-    //             selected: filters.types,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, types: values})
-    //             }
-    //         },
-    //         {
-    //             title: 'Статус',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: feedStatuses,
-    //             selected: filters.status,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, status: values})
-    //             }
-    //         }
-    //     ]
-    // }, [filters])
+    const filtersContent: IFilterContent[] = useMemo((): IFilterContent[] => {
+        return [
+            {
+                title: 'Тип',
+                type: 'checker',
+                multi: true,
+                items: feedTypes,
+                selected: filters.types,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, types: values})
+                }
+            },
+            {
+                title: 'Статус',
+                type: 'checker',
+                multi: true,
+                items: feedStatuses,
+                selected: filters.status,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, status: values})
+                }
+            }
+        ]
+    }, [filters])
 
     return (
         <PanelView pageTitle='Техническая поддержка'>

@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {IPost} from '../../../../../@types/IPost'
 import {getPostTypeText} from '../../../../../helpers/postHelper'
-import {allowForRole} from '../../../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import PostService from '../../../../../api/PostService'
 import ListHead from '../../../../ui/List/components/ListHead/ListHead'
 import ListCell from '../../../../ui/List/components/ListCell/ListCell'
@@ -33,18 +33,14 @@ const defaultProps: Props = {
 const PostList: React.FC<Props> = (props): React.ReactElement => {
     const [fetching, setFetching] = useState(props.fetching)
 
-    // Редактирование
-    const onEditHandler = (post: IPost) => {
+    const onEditHandler = (post: IPost): void => {
         openPopupPostCreate(document.body, {
             post: post,
-            onSave: () => {
-                props.onSave()
-            }
+            onSave: () => props.onSave()
         })
     }
 
-    // Удаление
-    const onRemoveHandler = (post: IPost) => {
+    const onRemoveHandler = (post: IPost): void => {
         // Todo: Проверить, что не содержит дочерние
         // Todo: При удалении предлагать переназначить должности пользователям
         openPopupAlert(document.body, {
@@ -57,18 +53,14 @@ const PostList: React.FC<Props> = (props): React.ReactElement => {
                             setFetching(true)
 
                             PostService.removePost(post.id)
-                                .then(() => {
-                                    props.onSave()
-                                })
+                                .then(() => props.onSave())
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
                                         text: error.data.data
                                     })
                                 })
-                                .finally(() => {
-                                    setFetching(false)
-                                })
+                                .finally(() => setFetching(false))
                         }
                     }
                 },
@@ -77,21 +69,20 @@ const PostList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenu = (post: IPost, e: React.MouseEvent) => {
+    const onContextMenu = (post: IPost, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        const menuItems = []
+        const menuItems: any[] = []
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
+        if (checkRules([Rules.EDIT_POST])) {
             menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(post)})
-
-            if (allowForRole(['director', 'administrator'])) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(post)})
-            }
-
-            openContextMenu(e, menuItems)
         }
+
+        if (checkRules([Rules.REMOVE_POST])) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(post)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     const renderArrowTree = (post: IPost): React.ReactElement | null => {

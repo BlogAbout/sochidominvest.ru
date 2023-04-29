@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
 import {compareText} from '../../../helpers/filterHelper'
-import {allowForRole} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {RouteNames} from '../../../helpers/routerHelper'
 import {ICategory} from '../../../@types/IStore'
 import PanelView from '../../views/PanelView/PanelView'
@@ -35,17 +35,15 @@ const StoreCategoriesPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [categories])
 
-    const fetchCategoriesHandler = () => {
+    const fetchCategoriesHandler = (): void => {
         fetchCategoryList({active: [0, 1]})
     }
 
-    // Обработчик изменений
     const onSaveHandler = () => {
         fetchCategoriesHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!categories || !categories.length) {
@@ -61,26 +59,24 @@ const StoreCategoriesPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onClickHandler = (category: ICategory) => {
+    const onClickHandler = (category: ICategory): void => {
         navigate(`${RouteNames.P_STORE_CATEGORIES}/${category.id}`)
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupCategoryCreate(document.body, {
             onSave: () => onSaveHandler()
         })
     }
 
-    // Редактирование
-    const onEditHandler = (category: ICategory) => {
+    const onEditHandler = (category: ICategory): void => {
         openPopupCategoryCreate(document.body, {
             category: category,
             onSave: () => onSaveHandler()
         })
     }
 
-    // Удаление
-    const onRemoveHandler = (category: ICategory) => {
+    const onRemoveHandler = (category: ICategory): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить "${category.name}"?`,
             buttons: [
@@ -107,26 +103,27 @@ const StoreCategoriesPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenuHandler = (category: ICategory, e: React.MouseEvent) => {
+    const onContextMenuHandler = (category: ICategory, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
-            const menuItems = [{text: 'Редактировать', onClick: () => onEditHandler(category)}]
+        const menuItems: any[] = []
 
-            if (allowForRole(['director', 'administrator'])) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(category)})
-            }
-
-            openContextMenu(e, menuItems)
+        if (checkRules([Rules.EDIT_CATEGORY])) {
+            menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(category)})
         }
+
+        if (checkRules([Rules.REMOVE_CATEGORY])) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(category)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     return (
         <PanelView pageTitle='Категории товаров'>
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onAddHandler.bind(this)}
+                       onAdd={checkRules([Rules.ADD_CATEGORY]) ? onAddHandler.bind(this) : undefined}
                        searchText={searchText}
                        onSearch={search.bind(this)}
                        className={classes.title}

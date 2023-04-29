@@ -3,6 +3,7 @@ import {IFilterContent} from '../../../@types/IFilter'
 import {IPost} from '../../../@types/IPost'
 import {compareText} from '../../../helpers/filterHelper'
 import {postTypes} from '../../../helpers/postHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import PostService from '../../../api/PostService'
 import Title from '../../ui/Title/Title'
 import Wrapper from '../../ui/Wrapper/Wrapper'
@@ -30,19 +31,13 @@ const PostsPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [posts, filters])
 
-    const fetchPostsHandler = () => {
+    const fetchPostsHandler = (): void => {
         setFetching(true)
 
         PostService.fetchPosts({active: [0, 1]})
-            .then((response: any) => {
-                setPosts(response.data.data)
-            })
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
-            .finally(() => {
-                setFetching(false)
-            })
+            .then((response: any) => setPosts(response.data.data))
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
+            .finally(() => setFetching(false))
     }
 
     // Рекурсия для древовидного списка
@@ -70,13 +65,11 @@ const PostsPage: React.FC = (): React.ReactElement => {
         return items
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchPostsHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!posts || !posts.length) {
@@ -92,14 +85,13 @@ const PostsPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupPostCreate(document.body, {
             onSave: () => onSaveHandler()
         })
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IPost[]) => {
+    const filterItemsHandler = (list: IPost[]): IPost[] => {
         if (!list || !list.length) {
             return []
         }
@@ -133,7 +125,7 @@ const PostsPage: React.FC = (): React.ReactElement => {
 
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onAddHandler.bind(this)}
+                       onAdd={checkRules([Rules.ADD_POST]) ? onAddHandler.bind(this) : undefined}
                        onFilter={() => setIsShowFilter(!isShowFilter)}
                        searchText={searchText}
                        onSearch={search.bind(this)}

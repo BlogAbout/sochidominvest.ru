@@ -2,9 +2,11 @@ import {getUserFromStorage} from './userHelper'
 
 export enum Rules {
     AUTH,
+    IS_MANAGER,
     MORE_TARIFF_FREE,
     MORE_TARIFF_BASE,
     MORE_TARIFF_BUSINESS,
+    SHOW_TARIFFS,
 
     SHOW_USERS,
     EDIT_USER,
@@ -18,13 +20,39 @@ export enum Rules {
     REMOVE_ARTICLE,
 
     EDIT_COMPILATION,
-    SHOW_TARIFFS,
+
+    SHOW_FEEDS,
+    PROCESS_FEED,
+    CLOSE_FEED,
+    REMOVE_FEED,
+
     SHOW_DEVELOPERS,
+    ADD_DEVELOPER,
+    EDIT_DEVELOPER,
+
     SHOW_AGENTS,
     ADD_AGENT,
-    ADD_DEVELOPER,
     EDIT_AGENT,
-    EDIT_DEVELOPER,
+
+    SHOW_CATEGORIES,
+    ADD_CATEGORY,
+    EDIT_CATEGORY,
+    REMOVE_CATEGORY,
+
+    SHOW_PRODUCTS,
+    ADD_PRODUCT,
+    EDIT_PRODUCT,
+    REMOVE_PRODUCT,
+
+    SHOW_QUESTIONS,
+    ADD_QUESTION,
+    EDIT_QUESTION,
+    REMOVE_QUESTION,
+
+    SHOW_POSTS,
+    ADD_POST,
+    EDIT_POST,
+    REMOVE_POST,
 }
 
 export const checkRules = (rules: Rules[] = [], id?: number | null) => {

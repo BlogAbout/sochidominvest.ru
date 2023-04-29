@@ -1,11 +1,10 @@
 import React, {useState} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
 import {RouteNames} from '../../../../../helpers/routerHelper'
 import {IBusinessProcess} from '../../../../../@types/IBusinessProcess'
 import {IFeed} from '../../../../../@types/IFeed'
 import {getFeedStatusesText, getFeedTypesText} from '../../../../../helpers/supportHelper'
-import {allowForRole} from '../../../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import FeedService from '../../../../../api/FeedService'
 import ListHead from '../../../../ui/List/components/ListHead/ListHead'
 import ListCell from '../../../../ui/List/components/ListCell/ListCell'
@@ -41,10 +40,7 @@ const FeedList: React.FC<Props> = (props): React.ReactElement => {
 
     const [fetching, setFetching] = useState(props.fetching)
 
-    const {user} = useTypedSelector(state => state.userReducer)
-
-    // Удаление заявки
-    const removeHandler = (feed: IFeed) => {
+    const removeHandler = (feed: IFeed): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить "${feed.title}"?`,
             buttons: [
@@ -55,18 +51,16 @@ const FeedList: React.FC<Props> = (props): React.ReactElement => {
                             setFetching(true)
 
                             FeedService.removeFeed(feed.id)
-                                .then(() => {
-                                    setFetching(false)
-                                    props.onSave()
-                                })
+                                .then(() => props.onSave())
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
                                         text: error.data.data
                                     })
 
-                                    setFetching(false)
+
                                 })
+                                .finally(() => setFetching(false))
                         }
                     }
                 },
@@ -76,7 +70,7 @@ const FeedList: React.FC<Props> = (props): React.ReactElement => {
     }
 
     // Отправка заявки в обработку
-    const processHandler = (feed: IFeed) => {
+    const processHandler = (feed: IFeed): void => {
         if (!feed.id) {
             return
         }
@@ -94,14 +88,12 @@ const FeedList: React.FC<Props> = (props): React.ReactElement => {
 
         openPopupBusinessProcessCreate(document.body, {
             businessProcess: businessProcess,
-            onSave: () => {
-                navigate(RouteNames.P_BP)
-            }
+            onSave: () => navigate(RouteNames.P_BP)
         })
     }
 
     // Закрытие заявки
-    const closeHandler = (feed: IFeed) => {
+    const closeHandler = (feed: IFeed): void => {
         const updateFeed = {...feed}
 
         updateFeed.status = 'close'
@@ -109,9 +101,7 @@ const FeedList: React.FC<Props> = (props): React.ReactElement => {
         setFetching(true)
 
         FeedService.saveFeed(updateFeed)
-            .then(() => {
-                props.onSave()
-            })
+            .then(() => props.onSave())
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
@@ -120,27 +110,27 @@ const FeedList: React.FC<Props> = (props): React.ReactElement => {
 
                 setFetching(false)
             })
-            .finally(() => {
-                setFetching(false)
-            })
+            .finally(() => setFetching(false))
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenu = (feed: IFeed, e: React.MouseEvent) => {
+    const onContextMenu = (feed: IFeed, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
-            const menuItems = [
-                {text: 'Взять в обработку', onClick: () => processHandler(feed)},
-                {text: 'Закрыть заявку', onClick: () => closeHandler(feed)}
-            ]
+        const menuItems: any[] = []
 
-            if (allowForRole(['director', 'administrator'])) {
-                menuItems.push({text: 'Удалить', onClick: () => removeHandler(feed)})
-            }
-
-            openContextMenu(e, menuItems)
+        if (checkRules([Rules.PROCESS_FEED])) {
+            menuItems.push({text: 'Взять в обработку', onClick: () => processHandler(feed)})
         }
+
+        if (checkRules([Rules.CLOSE_FEED])) {
+            menuItems.push({text: 'Закрыть заявку', onClick: () => closeHandler(feed)})
+        }
+
+        if (checkRules([Rules.REMOVE_FEED])) {
+            menuItems.push({text: 'Удалить', onClick: () => removeHandler(feed)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     return (
@@ -150,7 +140,7 @@ const FeedList: React.FC<Props> = (props): React.ReactElement => {
                 <ListCell className={classes.title}>Заголовок</ListCell>
                 <ListCell className={classes.status}>Статус</ListCell>
 
-                {allowForRole(['director', 'administrator', 'manager']) ?
+                {checkRules([Rules.IS_MANAGER]) ?
                     <>
                         <ListCell className={classes.name}>Имя</ListCell>
                         <ListCell className={classes.phone}>Телефон</ListCell>
@@ -176,7 +166,7 @@ const FeedList: React.FC<Props> = (props): React.ReactElement => {
                                 <ListCell className={classes.title}>{feed.title}</ListCell>
                                 <ListCell className={classes.status}>{getFeedStatusesText(feed.status)}</ListCell>
 
-                                {allowForRole(['director', 'administrator', 'manager']) ?
+                                {checkRules([Rules.IS_MANAGER]) ?
                                     <>
                                         <ListCell className={classes.name}>{feed.name}</ListCell>
                                         <ListCell className={classes.phone}>{feed.phone}</ListCell>

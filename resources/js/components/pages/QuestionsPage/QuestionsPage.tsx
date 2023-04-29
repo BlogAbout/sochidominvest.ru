@@ -3,6 +3,7 @@ import {IFilterContent} from '../../../@types/IFilter'
 import {IQuestion} from '../../../@types/IQuestion'
 import {compareText} from '../../../helpers/filterHelper'
 import {questionTypes} from '../../../helpers/questionHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import QuestionService from '../../../api/QuestionService'
 import Title from '../../ui/Title/Title'
 import Wrapper from '../../ui/Wrapper/Wrapper'
@@ -30,28 +31,20 @@ const QuestionsPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [questions, filters])
 
-    const fetchQuestionsHandler = () => {
+    const fetchQuestionsHandler = (): void => {
         setFetching(true)
 
         QuestionService.fetchQuestions({active: [0, 1]})
-            .then((response: any) => {
-                setQuestions(response.data.data)
-            })
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
-            .finally(() => {
-                setFetching(false)
-            })
+            .then((response: any) => setQuestions(response.data.data))
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
+            .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchQuestionsHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!questions || !questions.length) {
@@ -67,14 +60,13 @@ const QuestionsPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupQuestionCreate(document.body, {
             onSave: () => onSaveHandler()
         })
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IQuestion[]) => {
+    const filterItemsHandler = (list: IQuestion[]): IQuestion[] => {
         if (!list || !list.length) {
             return []
         }
@@ -84,21 +76,20 @@ const QuestionsPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    const filtersContent: IFilterContent[] = []
-    // const filtersContent: IFilterContent[] = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'Тип',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: questionTypes,
-    //             selected: filters.types,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, types: values})
-    //             }
-    //         }
-    //     ]
-    // }, [filters])
+    const filtersContent: IFilterContent[] = useMemo((): IFilterContent[] => {
+        return [
+            {
+                title: 'Тип',
+                type: 'checker',
+                multi: true,
+                items: questionTypes,
+                selected: filters.types,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, types: values})
+                }
+            }
+        ]
+    }, [filters])
 
     return (
         <PanelView pageTitle='Вопросы и ответы'>
@@ -109,7 +100,7 @@ const QuestionsPage: React.FC = (): React.ReactElement => {
 
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onAddHandler.bind(this)}
+                       onAdd={checkRules([Rules.ADD_QUESTION]) ? onAddHandler.bind(this) : undefined}
                        onFilter={() => setIsShowFilter(!isShowFilter)}
                        searchText={searchText}
                        onSearch={search.bind(this)}

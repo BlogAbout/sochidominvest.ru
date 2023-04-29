@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {IQuestion} from '../../../../../@types/IQuestion'
 import {getQuestionTypeText} from '../../../../../helpers/questionHelper'
-import {allowForRole} from '../../../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import QuestionService from '../../../../../api/QuestionService'
 import ListHead from '../../../../ui/List/components/ListHead/ListHead'
 import ListCell from '../../../../ui/List/components/ListCell/ListCell'
@@ -33,14 +33,14 @@ const defaultProps: Props = {
 const QuestionList: React.FC<Props> = (props): React.ReactElement => {
     const [fetching, setFetching] = useState(props.fetching)
 
-    const onEditHandler = (question: IQuestion) => {
+    const onEditHandler = (question: IQuestion): void => {
         openPopupQuestionCreate(document.body, {
             question: question,
             onSave: () => props.onSave()
         })
     }
 
-    const onRemoveHandler = (question: IQuestion) => {
+    const onRemoveHandler = (question: IQuestion): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить вопрос: "${question.name}"?`,
             buttons: [
@@ -51,18 +51,14 @@ const QuestionList: React.FC<Props> = (props): React.ReactElement => {
                             setFetching(true)
 
                             QuestionService.removeQuestion(question.id)
-                                .then(() => {
-                                    props.onSave()
-                                })
+                                .then(() => props.onSave())
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
                                         text: error.data.data
                                     })
                                 })
-                                .finally(() => {
-                                    setFetching(false)
-                                })
+                                .finally(() => setFetching(false))
                         }
                     }
                 },
@@ -71,18 +67,20 @@ const QuestionList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    const onContextMenuHandler = (question: IQuestion, e: React.MouseEvent) => {
+    const onContextMenuHandler = (question: IQuestion, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
-            const menuItems = [{text: 'Редактировать', onClick: () => onEditHandler(question)}]
+        const menuItems: any[] = []
 
-            if (allowForRole(['director', 'administrator'])) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(question)})
-            }
-
-            openContextMenu(e, menuItems)
+        if (checkRules([Rules.EDIT_QUESTION])) {
+            menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(question)})
         }
+
+        if (checkRules([Rules.REMOVE_QUESTION])) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(question)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     return (
@@ -105,7 +103,8 @@ const QuestionList: React.FC<Props> = (props): React.ReactElement => {
                                      isDisabled={!question.is_active}
                             >
                                 <ListCell className={classes.name}>{question.name}</ListCell>
-                                <ListCell className={classes.author}>{question.author ? question.author.name : ''}</ListCell>
+                                <ListCell
+                                    className={classes.author}>{question.author ? question.author.name : ''}</ListCell>
                                 <ListCell className={classes.type}>{getQuestionTypeText(question.type)}</ListCell>
                             </ListRow>
                         )

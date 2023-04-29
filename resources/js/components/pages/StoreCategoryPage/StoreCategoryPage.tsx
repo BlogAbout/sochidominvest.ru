@@ -3,6 +3,7 @@ import {useNavigate, useParams} from 'react-router-dom'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
 import {RouteNames} from '../../../helpers/routerHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {ICategory, IProduct} from '../../../@types/IStore'
 import Title from '../../ui/Title/Title'
 import Wrapper from '../../ui/Wrapper/Wrapper'
@@ -28,7 +29,6 @@ const CategoryPage: React.FC = (): React.ReactElement => {
     const [filterProduct, setFilterProduct] = useState<IProduct[]>([])
     const [fetching, setFetching] = useState(false)
 
-    const {user} = useTypedSelector(state => state.userReducer)
     const {products, categories, fetching: fetchingStore} = useTypedSelector(state => state.storeReducer)
     const {fetchProductList, fetchCategoryList} = useActions()
 
@@ -63,16 +63,15 @@ const CategoryPage: React.FC = (): React.ReactElement => {
         }
     }, [products])
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         setIsUpdate(true)
     }
 
-    const onClickHandler = (product: IProduct) => {
+    const onClickHandler = (product: IProduct): void => {
         navigate(`${RouteNames.STORE_PRODUCTS}/${product.id}`)
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         if (category.id) {
             openPopupProductCreate(document.body, {
                 product: {
@@ -92,16 +91,14 @@ const CategoryPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onEditHandler = (product: IProduct) => {
+    const onEditHandler = (product: IProduct): void => {
         openPopupProductCreate(document.body, {
             product: product,
-            onSave: () => {
-                onSaveHandler()
-            }
+            onSave: () => onSaveHandler()
         })
     }
 
-    const onRemoveHandler = (product: IProduct) => {
+    const onRemoveHandler = (product: IProduct): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${product.name}?`,
             buttons: [
@@ -128,19 +125,18 @@ const CategoryPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenuItem = (product: IProduct, e: React.MouseEvent) => {
+    const onContextMenuItem = (product: IProduct, e: React.MouseEvent): void => {
         e.preventDefault()
 
         const menuItems: any[] = []
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(product)})
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(product)})
-        //     }
-        // }
+        if (checkRules([Rules.EDIT_PRODUCT])) {
+            menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(product)})
+        }
+
+        if (checkRules([Rules.REMOVE_PRODUCT])) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(product)})
+        }
 
         if (menuItems.length) {
             openContextMenu(e, menuItems)
@@ -151,7 +147,7 @@ const CategoryPage: React.FC = (): React.ReactElement => {
         <PanelView pageTitle={category.name}>
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onAddHandler.bind(this)}
+                       onAdd={checkRules([Rules.ADD_PRODUCT]) ? onAddHandler.bind(this) : undefined}
                        addText='Создать товар'
                        className={classes.title}
                 >{category.name}</Title>

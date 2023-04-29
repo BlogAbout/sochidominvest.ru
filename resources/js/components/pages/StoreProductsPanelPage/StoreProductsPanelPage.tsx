@@ -4,7 +4,7 @@ import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
 import {changeLayout, getLayout} from '../../../helpers/utilHelper'
 import {compareText} from '../../../helpers/filterHelper'
-import {allowForRole} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {IProduct} from '../../../@types/IStore'
 import {RouteNames} from '../../../helpers/routerHelper'
 import PanelView from '../../views/PanelView/PanelView'
@@ -39,17 +39,15 @@ const StoreProductsPanelPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [products])
 
-    const fetchProductsHandler = () => {
+    const fetchProductsHandler = (): void => {
         fetchProductList({active: [0, 1]})
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchProductsHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!products || !products.length) {
@@ -65,24 +63,24 @@ const StoreProductsPanelPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onClickHandler = (product: IProduct) => {
+    const onClickHandler = (product: IProduct): void => {
         navigate(`${RouteNames.STORE_PRODUCTS}/${product.id}`)
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupProductCreate(document.body, {
             onSave: () => onSaveHandler()
         })
     }
 
-    const onEditHandler = (product: IProduct) => {
+    const onEditHandler = (product: IProduct): void => {
         openPopupProductCreate(document.body, {
             product: product,
             onSave: () => onSaveHandler()
         })
     }
 
-    const onRemoveHandler = (product: IProduct) => {
+    const onRemoveHandler = (product: IProduct): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить "${product.name}"?`,
             buttons: [
@@ -109,22 +107,23 @@ const StoreProductsPanelPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenuHandler = (product: IProduct, e: React.MouseEvent) => {
+    const onContextMenuHandler = (product: IProduct, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
-            const menuItems = [{text: 'Редактировать', onClick: () => onEditHandler(product)}]
+        const menuItems: any[] = []
 
-            if (allowForRole(['director', 'administrator'])) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(product)})
-            }
-
-            openContextMenu(e, menuItems)
+        if (checkRules([Rules.EDIT_PRODUCT])) {
+            menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(product)})
         }
+
+        if (checkRules([Rules.REMOVE_PRODUCT])) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(product)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
-    const onChangeLayoutHandler = (value: 'list' | 'till') => {
+    const onChangeLayoutHandler = (value: 'list' | 'till'): void => {
         setLayout(value)
         changeLayout('products', value)
     }
@@ -133,7 +132,7 @@ const StoreProductsPanelPage: React.FC = (): React.ReactElement => {
         <PanelView pageTitle='Товары'>
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onAddHandler.bind(this)}
+                       onAdd={checkRules([Rules.ADD_PRODUCT]) ? onAddHandler.bind(this) : undefined}
                        searchText={searchText}
                        onSearch={search.bind(this)}
                        className={classes.title}
