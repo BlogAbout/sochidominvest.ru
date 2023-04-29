@@ -3,7 +3,6 @@ import classNames from 'classnames/bind'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {IDeveloper} from '../../../../../../../@types/IDeveloper'
 import {getDeveloperTypeText} from '../../../../../../../helpers/developerHelper'
-import {getFormatDate} from '../../../../../../../helpers/dateHelper'
 import Avatar from '../../../../../../ui/Avatar/Avatar'
 import classes from './DeveloperItem.module.scss'
 

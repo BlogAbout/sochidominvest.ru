@@ -1,4 +1,5 @@
 import React from 'react'
+import {configuration} from '../../../../../helpers/utilHelper'
 import {IUser} from '../../../../../@types/IUser'
 import {IBuilding} from '../../../../../@types/IBuilding'
 import {IArticle} from '../../../../../@types/IArticle'
@@ -6,9 +7,7 @@ import {IDocument} from '../../../../../@types/IDocument'
 import {IDeveloper} from '../../../../../@types/IDeveloper'
 import {IAttachment} from '../../../../../@types/IAttachment'
 import {IPartner} from '../../../../../@types/IPartner'
-import {getFormatDate} from '../../../../../helpers/dateHelper'
 import classes from './SearchItem.module.scss'
-import {configuration} from "../../../../../helpers/utilHelper";
 
 interface Props {
     item: IUser | IBuilding | IArticle | IDocument | IDeveloper | IAttachment | IPartner

@@ -1,6 +1,5 @@
 import React, {useState} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {getFormatDate} from '../../../../../helpers/dateHelper'
 import {RouteNames} from '../../../../../helpers/routerHelper'
 import {ICompilation} from '../../../../../@types/ICompilation'
 import CompilationService from '../../../../../api/CompilationService'

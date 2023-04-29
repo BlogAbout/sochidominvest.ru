@@ -9,7 +9,6 @@ import Button from '../../form/Button/Button'
 import Title from '../../ui/Title/Title'
 import classes from './PopupQuestionInfo.module.scss'
 import {getQuestionTypeText} from '../../../helpers/questionHelper'
-import {getFormatDate} from '../../../helpers/dateHelper'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import Showdown from 'showdown'
 import {converter} from "../../../helpers/utilHelper";

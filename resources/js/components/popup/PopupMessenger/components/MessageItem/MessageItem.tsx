@@ -1,7 +1,6 @@
 import React from 'react'
 import classNames from 'classnames/bind'
 import {getUserAvatar, getUserName} from '../../../../../helpers/userHelper'
-import {getFormatDate} from '../../../../../helpers/dateHelper'
 import {isNewMessage} from '../../../../../helpers/messengerHelper'
 import {IMessage, IMessenger} from '../../../../../@types/IMessenger'
 import {IUser} from '../../../../../@types/IUser'
@@ -48,7 +47,7 @@ const MessageItem: React.FC<Props> = (props) => {
             <div className={classes.text}>
                 {props.message.text}
 
-                <div className={classes.date}>{getFormatDate(props.message.date_created)}</div>
+                <div className={classes.date}>{props.message.date_created}</div>
 
                 {(right && isNewCurrent) || isNewMember ?
                     <div className={classes.indicator}/>

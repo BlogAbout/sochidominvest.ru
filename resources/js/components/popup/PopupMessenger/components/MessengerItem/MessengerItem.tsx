@@ -1,7 +1,6 @@
 import React from 'react'
 import classNames from 'classnames/bind'
 import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
-import {getFormatDate} from '../../../../../helpers/dateHelper'
 import {findUser, getUserAvatar, getUserName} from '../../../../../helpers/userHelper'
 import {findMembersIds, isNewMessage} from '../../../../../helpers/messengerHelper'
 import {IMessenger} from '../../../../../@types/IMessenger'

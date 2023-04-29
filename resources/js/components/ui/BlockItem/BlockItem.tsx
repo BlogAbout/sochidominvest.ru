@@ -2,7 +2,6 @@ import React from 'react'
 import classNames from 'classnames/bind'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {converter} from '../../../helpers/utilHelper'
-import {getFormatDate} from '../../../helpers/dateHelper'
 import {numberWithSpaces, round} from '../../../helpers/numberHelper'
 import {declension} from '../../../helpers/stringHelper'
 import Avatar from '../../../components/ui/Avatar/Avatar'
@@ -158,9 +157,9 @@ const BlockItem: React.FC<Props> = (props): React.ReactElement => {
                     }
 
                     {props.date ?
-                        <div className={classes.icon} title={`Дата публикации: ${getFormatDate(props.date)}`}>
+                        <div className={classes.icon} title={`Дата публикации: ${props.date}`}>
                             <FontAwesomeIcon icon='calendar'/>
-                            <span>{getFormatDate(props.date)}</span>
+                            <span>{props.date}</span>
                         </div>
                         : null
                     }

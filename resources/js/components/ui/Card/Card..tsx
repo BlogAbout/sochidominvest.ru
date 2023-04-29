@@ -70,7 +70,7 @@ const Card: React.FC<Props> = (props) => {
                 {props.date ?
                     <div className={classes.row} title='Дата публикации'>
                         <FontAwesomeIcon icon='calendar'/>
-                        <span>{getFormatDate(props.date)}</span>
+                        <span>{props.date}</span>
                     </div>
                     : null
                 }
