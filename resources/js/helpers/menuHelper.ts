@@ -56,7 +56,8 @@ export const menuPanel: IMenuLink[] = [
         route: RouteNames.P_DESKTOP,
         title: 'Рабочий стол',
         icon: 'house',
-        hasRole: []
+        hasRole: [],
+        unavailable: false
     },
     {
         route: RouteNames.SEPARATOR,

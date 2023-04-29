@@ -37,7 +37,7 @@ class BuildingController extends Controller
                 $query->whereIn('is_rent', $filter['rent']);
             })
             ->when(isset($filter['author']), function ($query) use ($filter) {
-                $query->whereIn('author', $filter['author']);
+                $query->whereIn('author_id', $filter['author']);
             })
             ->when(isset($filter['type']), function ($query) use ($filter) {
                 $query->where('type', '=', $filter['type']);

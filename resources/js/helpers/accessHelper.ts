@@ -5,8 +5,26 @@ export enum Rules {
     MORE_TARIFF_FREE,
     MORE_TARIFF_BASE,
     MORE_TARIFF_BUSINESS,
+
+    SHOW_USERS,
+    EDIT_USER,
+    BLOCK_USER,
+    REMOVE_USER,
+
     EDIT_BUILDING,
-    EDIT_COMPILATION
+    REMOVE_BUILDING,
+
+    EDIT_ARTICLE,
+    REMOVE_ARTICLE,
+
+    EDIT_COMPILATION,
+    SHOW_TARIFFS,
+    SHOW_DEVELOPERS,
+    SHOW_AGENTS,
+    ADD_AGENT,
+    ADD_DEVELOPER,
+    EDIT_AGENT,
+    EDIT_DEVELOPER,
 }
 
 export const checkRules = (rules: Rules[] = [], id?: number | null) => {
@@ -27,11 +45,54 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
             case Rules.MORE_TARIFF_BUSINESS:
                 result = true
                 break
+            case Rules.SHOW_USERS:
+                result = true
+                break
+            case Rules.EDIT_USER:
+                result = true
+                break
+            case Rules.BLOCK_USER:
+                result = true
+                break
+            case Rules.REMOVE_USER:
+                result = true
+                break
             case Rules.EDIT_BUILDING:
                 // проверить, что id равен пользователю
                 result = true
                 break
+            case Rules.REMOVE_BUILDING:
+                // проверить, что id равен пользователю
+                result = true
+                break
+            case Rules.EDIT_ARTICLE:
+                result = true
+                break
+            case Rules.REMOVE_ARTICLE:
+                result = true
+                break
             case Rules.EDIT_COMPILATION:
+                result = true
+                break
+            case Rules.SHOW_TARIFFS:
+                result = true
+                break
+            case Rules.SHOW_DEVELOPERS:
+                result = true
+                break
+            case Rules.ADD_DEVELOPER:
+                result = true
+                break
+            case Rules.EDIT_DEVELOPER:
+                result = true
+                break
+            case Rules.SHOW_AGENTS:
+                result = true
+                break
+            case Rules.ADD_AGENT:
+                result = true
+                break
+            case Rules.EDIT_AGENT:
                 result = true
                 break
             default:

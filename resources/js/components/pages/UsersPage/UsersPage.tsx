@@ -5,7 +5,7 @@ import {rolesList} from '../../../helpers/userHelper'
 import {useActions} from '../../../hooks/useActions'
 import {compareText} from '../../../helpers/filterHelper'
 import {changeLayout, getLayout} from '../../../helpers/utilHelper'
-import {allowForRole} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {RouteNames} from '../../../helpers/routerHelper'
 import {IUser} from '../../../@types/IUser'
 import {IFilterContent} from '../../../@types/IFilter'
@@ -29,7 +29,7 @@ const UsersPage: React.FC = (): React.ReactElement => {
     const [filterUser, setFilterUser] = useState<IUser[]>([])
     const [isShowFilter, setIsShowFilter] = useState(false)
     const [filters, setFilters] = useState({
-        types: ['subscriber', 'manager', 'administrator', 'director'],
+        types: ['1', '2', '3', '4'],
         block: ['0', '1']
     })
     const [layout, setLayout] = useState<'list' | 'till'>(getLayout('users'))
@@ -45,17 +45,15 @@ const UsersPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [users, filters])
 
-    const fetchUsersHandler = () => {
+    const fetchUsersHandler = (): void => {
         fetchUserList({active: [0, 1]})
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchUsersHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!users || !users.length) {
@@ -71,32 +69,24 @@ const UsersPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onClickHandler = (user: IUser) => {
+    const onClickHandler = (user: IUser): void => {
         navigate(`${RouteNames.P_USER}/${user.id}`)
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupUserCreate(document.body, {
-            // role: user.role,
-            onSave: () => {
-                onSaveHandler()
-            }
+            onSave: () => onSaveHandler()
         })
     }
 
-    // Редактирование
-    const onEditHandler = (userEdit: IUser) => {
+    const onEditHandler = (userEdit: IUser): void => {
         openPopupUserCreate(document.body, {
             user: userEdit,
-            // role: user.role,
-            onSave: () => {
-                onSaveHandler()
-            }
+            onSave: () => onSaveHandler()
         })
     }
 
-    // Удаление
-    const onRemoveHandler = (userRemove: IUser) => {
+    const onRemoveHandler = (userRemove: IUser): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить "${userRemove.name}"?`,
             buttons: [
@@ -123,99 +113,92 @@ const UsersPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Блокировка пользователя
-    const onBlockingHandler = (userBlock: IUser) => {
+    const onBlockingHandler = (userBlock: IUser): void => {
         const userInfo: IUser = {...userBlock}
         userInfo.is_block = userBlock.is_block ? 0 : 1
 
         UserService.saveUser(userInfo)
-            .then(() => {
-                onSaveHandler()
-            })
+            .then(() => onSaveHandler())
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
                     text: error.data.data
                 })
             })
-            .finally(() => {
-                setFetching(false)
-            })
+            .finally(() => setFetching(false))
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenuHandler = (userItem: IUser, e: React.MouseEvent) => {
+    const onContextMenuHandler = (userItem: IUser, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        // if (allowForRole(['director', 'administrator', 'manager'], user.role)) {
-        //     const menuItems = [{
-        //         text: 'Редактировать',
-        //         onClick: () => onEditHandler(userItem)
-        //     }]
-        //
-        //     // if (userItem.role !== 'director') {
-        //     //     if (allowForRole(['director', 'administrator'], user.role)) {
-        //     //         menuItems.push({
-        //     //             text: userItem.block ? 'Разблокировать' : 'Заблокировать',
-        //     //             onClick: () => onBlockingHandler(userItem)
-        //     //         })
-        //     //         menuItems.push({
-        //     //             text: 'Удалить',
-        //     //             onClick: () => onRemoveHandler(userItem)
-        //     //         })
-        //     //     }
-        //     // }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.EDIT_USER])) {
+            menuItems.push({
+                text: 'Редактировать',
+                onClick: () => onEditHandler(userItem)
+            })
+        }
+
+        if (checkRules([Rules.BLOCK_USER])) {
+            menuItems.push({
+                text: userItem.is_block ? 'Разблокировать' : 'Заблокировать',
+                onClick: () => onBlockingHandler(userItem)
+            })
+        }
+
+        if (checkRules([Rules.REMOVE_USER])) {
+            menuItems.push({
+                text: 'Удалить',
+                onClick: () => onRemoveHandler(userItem)
+            })
+        }
+
+        openContextMenu(e, menuItems)
     }
 
-    const onChangeLayoutHandler = (value: 'list' | 'till') => {
+    const onChangeLayoutHandler = (value: 'list' | 'till'): void => {
         setLayout(value)
         changeLayout('users', value)
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IUser[]) => {
+    const filterItemsHandler = (list: IUser[]): IUser[] => {
         if (!list || !list.length) {
             return []
         }
 
-        return []
-
-        // return list.filter((item: IUser) => {
-        //     return filters.types.includes(item.role) && filters.block.includes(String(item.block))
-        // })
+        return list.filter((item: IUser) => {
+            return filters.block.includes(String(item.is_block))
+        })
     }
 
-    const filtersContent: IFilterContent[] = []
-    // const filtersContent: IFilterContent[] = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'Роль',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: rolesList,
-    //             selected: filters.types,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, types: values})
-    //             }
-    //         },
-    //         {
-    //             title: 'Заблокированные',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: [
-    //                 {key: '0', text: 'Не заблокированные'},
-    //                 {key: '1', text: 'Заблокированные'}
-    //             ],
-    //             selected: filters.block,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, block: values})
-    //             }
-    //         }
-    //     ]
-    // }, [filters])
+    const filtersContent: IFilterContent[] = useMemo((): IFilterContent[] => {
+        return [
+            {
+                title: 'Роль',
+                type: 'checker',
+                multi: true,
+                items: rolesList,
+                selected: filters.types,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, types: values})
+                }
+            },
+            {
+                title: 'Заблокированные',
+                type: 'checker',
+                multi: true,
+                items: [
+                    {key: '0', text: 'Не заблокированные'},
+                    {key: '1', text: 'Заблокированные'}
+                ],
+                selected: filters.block,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, block: values})
+                }
+            }
+        ]
+    }, [filters])
 
     return (
         <PanelView pageTitle='Пользователи'>
@@ -238,12 +221,12 @@ const UsersPage: React.FC = (): React.ReactElement => {
 
                 {layout === 'till'
                     ? <UserTill list={filterUser}
-                                fetching={fetching}
+                                fetching={fetching || fetchingUser}
                                 onClick={(user: IUser) => onClickHandler(user)}
                                 onContextMenu={(user: IUser, e: React.MouseEvent) => onContextMenuHandler(user, e)}
                     />
                     : <UserList list={filterUser}
-                                fetching={fetching}
+                                fetching={fetching || fetchingUser}
                                 onClick={(user: IUser) => onClickHandler(user)}
                                 onContextMenu={(user: IUser, e: React.MouseEvent) => onContextMenuHandler(user, e)}
                     />

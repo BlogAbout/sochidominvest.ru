@@ -5,10 +5,10 @@ import {IUser} from '../@types/IUser'
  * Список ролей
  */
 export const rolesList: ISelector[] = [
-    {key: 'subscriber', text: 'Подписчик', isRegistration: true},
-    {key: 'manager', text: 'Менеджер', isRegistration: false},
-    {key: 'administrator', text: 'Администратор', isRegistration: false},
-    {key: 'director', text: 'Директор', isRegistration: false, readOnly: true, hidden: true}
+    {key: '1', text: 'Подписчик', isRegistration: true},
+    {key: '2', text: 'Менеджер', isRegistration: false},
+    {key: '3', text: 'Администратор', isRegistration: false},
+    {key: '4', text: 'Директор', isRegistration: false, readOnly: true, hidden: true}
 ]
 
 export const getRoleUserText = (key: string) => {

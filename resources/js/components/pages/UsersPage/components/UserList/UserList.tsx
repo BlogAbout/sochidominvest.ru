@@ -1,8 +1,6 @@
 import React from 'react'
 import {IUser} from '../../../../../@types/IUser'
 import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
-import {getRoleUserText} from '../../../../../helpers/userHelper'
-import {getFormatDate} from '../../../../../helpers/dateHelper'
 import ListHead from '../../../../ui/List/components/ListHead/ListHead'
 import ListCell from '../../../../ui/List/components/ListCell/ListCell'
 import ListBody from '../../../../ui/List/components/ListBody/ListBody'
@@ -62,10 +60,10 @@ const UserList: React.FC<Props> = (props): React.ReactElement => {
 
                                     <span>{user.name}</span>
                                 </ListCell>
-                                {/*<ListCell className={classes.post}>{user.postName || '-'}</ListCell>*/}
+                                <ListCell className={classes.post}>{user.post ? user.post.name : '-'}</ListCell>
                                 <ListCell className={classes.email}>{user.email}</ListCell>
                                 <ListCell className={classes.phone}>{user.phone}</ListCell>
-                                {/*<ListCell className={classes.role}>{getRoleUserText(user.role)}</ListCell>*/}
+                                <ListCell className={classes.role}>{user.role ? user.role.name : ''}</ListCell>
                             </ListRow>
                         )
                     })

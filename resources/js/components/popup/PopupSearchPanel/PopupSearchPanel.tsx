@@ -22,12 +22,10 @@ import UtilService from '../../../api/UtilService'
 import classes from './PopupSearchPanel.module.scss'
 
 interface Props extends PopupProps {
-    role: string
     navigate: any
 }
 
 const defaultProps: Props = {
-    role: 'subscriber',
     navigate: null
 }
 
@@ -198,33 +196,33 @@ const PopupSearchPanel: React.FC<Props> = (props) => {
 
     const tabs: ITab = {} as ITab
 
-    if (['director', 'administrator', 'manager'].includes(props.role) && users.length) {
-        tabs['users'] = {title: 'Пользователи', render: renderUsersTab()}
-    }
-
-    if (buildings.length) {
-        tabs['buildings'] = {title: 'Объекты недвижимости', render: renderBuildingsTab()}
-    }
-
-    if (articles.length) {
-        tabs['articles'] = {title: 'Статьи', render: renderArticlesTab()}
-    }
-
-    if (documents.length) {
-        tabs['documents'] = {title: 'Документы', render: renderDocumentsTab()}
-    }
-
-    if (developers.length) {
-        tabs['developers'] = {title: 'Застройщики', render: renderDevelopersTab()}
-    }
-
-    if (attachments.length) {
-        tabs['attachments'] = {title: 'Вложения', render: renderAttachmentsTab()}
-    }
-
-    if (partners.length) {
-        tabs['partners'] = {title: 'Партнеры', render: renderPartnersTab()}
-    }
+    // if (['director', 'administrator', 'manager'].includes(props.role) && users.length) {
+    //     tabs['users'] = {title: 'Пользователи', render: renderUsersTab()}
+    // }
+    //
+    // if (buildings.length) {
+    //     tabs['buildings'] = {title: 'Объекты недвижимости', render: renderBuildingsTab()}
+    // }
+    //
+    // if (articles.length) {
+    //     tabs['articles'] = {title: 'Статьи', render: renderArticlesTab()}
+    // }
+    //
+    // if (documents.length) {
+    //     tabs['documents'] = {title: 'Документы', render: renderDocumentsTab()}
+    // }
+    //
+    // if (developers.length) {
+    //     tabs['developers'] = {title: 'Застройщики', render: renderDevelopersTab()}
+    // }
+    //
+    // if (attachments.length) {
+    //     tabs['attachments'] = {title: 'Вложения', render: renderAttachmentsTab()}
+    // }
+    //
+    // if (partners.length) {
+    //     tabs['partners'] = {title: 'Партнеры', render: renderPartnersTab()}
+    // }
 
     return (
         <Popup className={classes.PopupSearchPanel}>

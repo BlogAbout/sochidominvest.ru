@@ -24,7 +24,7 @@ const defaultProps: Props = {
 }
 
 const InfoList: React.FC<Props> = (props) => {
-    const renderArticleList = () => {
+    const renderArticleList = (): React.ReactElement | React.ReactElement[] | null => {
         if (!props.articles) {
             return null
         }
@@ -40,7 +40,7 @@ const InfoList: React.FC<Props> = (props) => {
         }
     }
 
-    const renderBuildingList = () => {
+    const renderBuildingList = (): React.ReactElement | React.ReactElement[] | null => {
         if (!props.buildings) {
             return null
         }
@@ -75,4 +75,4 @@ const InfoList: React.FC<Props> = (props) => {
 InfoList.defaultProps = defaultProps
 InfoList.displayName = 'InfoList'
 
-export default InfoList
+export default React.memo(InfoList)

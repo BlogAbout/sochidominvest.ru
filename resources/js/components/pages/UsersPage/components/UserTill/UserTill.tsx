@@ -1,7 +1,6 @@
 import React from 'react'
 import {IUser} from '../../../../../@types/IUser'
 import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
-import {getRoleUserText} from '../../../../../helpers/userHelper'
 import Empty from '../../../../ui/Empty/Empty'
 import BlockingElement from '../../../../../components/ui/BlockingElement/BlockingElement'
 import Card from '../../../../ui/Card/Card.'
@@ -38,15 +37,14 @@ const UserTill: React.FC<Props> = (props): React.ReactElement => {
                         return (
                             <Card key={user.id}
                                   title={user.name}
-                                  // avatar={user.avatar || ''}
-                                avatar={''}
-                                  // role={getRoleUserText(user.role)}
+                                  avatar={user.avatar ? user.avatar.content : ''}
+                                  role={user.role ? user.role.name : ''}
                                   phone={user.phone}
                                   email={user.email}
                                   indicatorColor={user.id && usersOnline.includes(user.id) ? 'green' : 'red'}
-                                  // indicatorText={user.id && usersOnline.includes(user.id) ? 'Online' : `Был в сети: ${getFormatDate(user.lastActive)}`}
-                                  // isDisabled={!user.is_active}
-                                  // isBlock={!!user.block}
+                                  indicatorText={user.id && usersOnline.includes(user.id) ? 'Online' : `Был в сети: ${user.date_last_active}`}
+                                  isDisabled={!user.is_active}
+                                  isBlock={!!user.is_block}
                                   onContextMenu={(e: React.MouseEvent) => props.onContextMenu(user, e)}
                                   onClick={() => props.onClick(user)}
                             />

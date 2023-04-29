@@ -3,7 +3,9 @@ import {Route, Routes} from 'react-router-dom'
 import {RouteNames} from '../../../helpers/routerHelper'
 import {ToastContainer} from 'react-toastify'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
+import {registerEventsEmitter, registerWebsocket} from '../../../helpers/eventsHelper'
 import {useActions} from '../../../hooks/useActions'
+import {IUser} from '../../../@types/IUser'
 import MainPage from '../../pages/MainPage/MainPage'
 import AboutPage from '../../pages/AboutPage/AboutPage'
 import PolicyPage from '../../pages/PolicyPage/PolicyPage'
@@ -50,13 +52,44 @@ import 'react-toastify/dist/ReactToastify.css'
 const AppRouter: React.FC = () => {
     const {isAuth, user} = useTypedSelector(state => state.userReducer)
 
-    const {fetchSettings} = useActions()
+    const {setIsAuth, setUser, setUsersOnline, fetchSettings} = useActions()
+
+    useEffect(() => {
+        registerEventsEmitter()
+
+        if (localStorage.getItem('auth')) {
+            setIsAuth(true)
+
+            const userJson = localStorage.getItem('user') || ''
+
+            if (userJson) {
+                const user: IUser = JSON.parse(userJson)
+                setUser(user)
+                registerWebsocket(user.id)
+            }
+        }
+
+        window.events.on('messengerUpdateOnlineUsers', updateOnlineUsers)
+
+        return () => {
+            window.events.removeListener('messengerUpdateOnlineUsers', updateOnlineUsers)
+        }
+    }, [])
 
     useEffect(() => {
         if (isAuth) {
             fetchSettings()
         }
     }, [isAuth])
+
+    // Обновление списка пользователей онлайн
+    const updateOnlineUsers = (usersString: string): void => {
+        if (usersString.trim() !== '') {
+            const listUsersIds: number[] = JSON.parse(usersString)
+
+            setUsersOnline(listUsersIds)
+        }
+    }
 
     return (
         <div className={classes.AppRouter}>

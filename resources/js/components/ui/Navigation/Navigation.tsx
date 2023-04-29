@@ -2,13 +2,11 @@ import React, {useEffect, useRef, useState} from 'react'
 import {Link, NavLink, useNavigate} from 'react-router-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import classNames from 'classnames/bind'
-import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
 import {RouteNames} from '../../../helpers/routerHelper'
 import {IMenuLink} from '../../../@types/IMenu'
 import {IUser} from '../../../@types/IUser'
 import {getUserFromStorage} from '../../../helpers/userHelper'
-import {allowForRole, allowForTariff} from '../../../helpers/accessHelper'
 import {menuPanel} from '../../../helpers/menuHelper'
 import MenuToggle from '../MenuToggle/MenuToggle'
 import Avatar from '../Avatar/Avatar'
@@ -37,7 +35,6 @@ const Navigation: React.FC = (): React.ReactElement => {
         tariff_id: null
     })
 
-    const {user} = useTypedSelector(state => state.userReducer)
     const {logout} = useActions()
 
     useEffect(() => {
@@ -65,21 +62,22 @@ const Navigation: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onToggleMobileMenuHandler = () => {
+    const onToggleMobileMenuHandler = (): void => {
         setShowMobileMenu(!showMobileMenu)
     }
 
-    const onHideMobileMenuHandler = () => {
+    const onHideMobileMenuHandler = (): void => {
         setShowMobileMenu(false)
     }
 
-    const onClickUserProfile = () => {
+    const onClickUserProfile = (): void => {
         if (userData && userData.id) {
             openPopupUserCreate(document.body, {
                 user: null,
                 userId: userData.id,
                 onSave: () => {
                     const userUpdate: IUser | null = getUserFromStorage()
+
                     if (userUpdate) {
                         setUserData(userUpdate)
                     }
@@ -113,10 +111,9 @@ const Navigation: React.FC = (): React.ReactElement => {
                     <div className={classes.icon}
                          title='Глобальный поиск'
                          onClick={() => {
-                             // openPopupSearchPanel(document.body, {
-                             //     role: role,
-                             //     navigate: navigate
-                             // })
+                             openPopupSearchPanel(document.body, {
+                                 navigate: navigate
+                             })
                          }}
                     >
                         <FontAwesomeIcon icon='magnifying-glass'/>
@@ -158,7 +155,7 @@ const Navigation: React.FC = (): React.ReactElement => {
 
                 <ul className={classes.menu}>
                     {menuPanel.map((link: IMenuLink, index: number) => {
-                        if (!allowForRole(link.hasRole) || !allowForTariff(link.hasTariff)) {
+                        if (link.unavailable) {
                             return null
                         }
 

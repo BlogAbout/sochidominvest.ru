@@ -33,7 +33,7 @@ class UserController extends Controller
             return (new UserResource(Auth::user()))->response()->setStatusCode(200);
         }
 
-        return response(['message' => 'Ошибка авторизации. Неверный E-mail или пароль.'])->setStatusCode(401);
+        return response(['message' => 'Ошибка авторизации. Неверный E-mail или пароль.'])->setStatusCode(422);
     }
 
     public function registration(RegistrationRequest $request)

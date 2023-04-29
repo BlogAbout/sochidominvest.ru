@@ -4,8 +4,7 @@ import {useNavigate} from 'react-router-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
-import {allowForRole, allowForTariff} from '../../../helpers/accessHelper'
-import {getTariffText} from '../../../helpers/tariffHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {RouteNames} from '../../../helpers/routerHelper'
 import {IUser} from '../../../@types/IUser'
 import {IFeed} from '../../../@types/IFeed'
@@ -22,9 +21,9 @@ import Wrapper from '../../ui/Wrapper/Wrapper'
 import PanelView from '../../views/PanelView/PanelView'
 import Avatar from '../../../components/ui/Avatar/Avatar'
 import Empty from '../../../components/ui/Empty/Empty'
+import FeedList from '../SupportPage/components/FeedList/FeedList'
 import AgentList from '../AgentsPage/components/AgentList/AgentList'
 import DeveloperList from '../DevelopersPage/components/DeveloperList/DeveloperList'
-import FeedList from '../SupportPage/components/FeedList/FeedList'
 import openPopupAgentCreate from '../../../components/popup/PopupAgentCreate/PopupAgentCreate'
 import openPopupAlert from '../../popup/PopupAlert/PopupAlert'
 import openPopupDeveloperCreate from '../../../components/popup/PopupDeveloperCreate/PopupDeveloperCreate'
@@ -64,11 +63,14 @@ const DesktopPage: React.FC = (): React.ReactElement => {
     useEffect(() => {
         fetchFeedsHandler()
 
-        // if (allowForRole(['director', 'administrator', 'manager'], userInfo.role) || (allowForRole(['subscriber']) && allowForTariff(['business', 'effectivePlus']))) {
-        //     fetchDevelopersHandler()
-        //     fetchAgentsHandler()
-        // }
-    }, [userInfo])
+        if (checkRules([Rules.SHOW_DEVELOPERS])) {
+            fetchDevelopersHandler()
+        }
+
+        if (checkRules([Rules.SHOW_AGENTS])) {
+            fetchAgentsHandler()
+        }
+    }, [userInfo.id])
 
     useEffect(() => {
         if (!articles || !articles.length) {
@@ -78,12 +80,12 @@ const DesktopPage: React.FC = (): React.ReactElement => {
         }
     }, [articles])
 
-    const fetchArticlesHandler = () => {
+    const fetchArticlesHandler = (): void => {
         fetchArticleList({active: [0, 1]})
     }
 
     // Загрузка данных пользователя
-    const fetchUserHandler = () => {
+    const fetchUserHandler = (): void => {
         let findUserId = user.id
 
         if (!user.id) {
@@ -99,15 +101,13 @@ const DesktopPage: React.FC = (): React.ReactElement => {
 
             UserService.fetchUserById(findUserId)
                 .then((response: any) => setUserInfo(response.data.data))
-                .catch((error: any) => {
-                    console.error('Ошибка загрузки данных пользователя', error)
-                })
+                .catch((error: any) => console.error('Ошибка загрузки данных пользователя', error))
                 .finally(() => setFetchingUser(false))
         }
     }
 
     // Загрузка данных о тикетах пользователя
-    const fetchFeedsHandler = () => {
+    const fetchFeedsHandler = (): void => {
         if (!userInfo || !userInfo.id) {
             return
         }
@@ -116,37 +116,31 @@ const DesktopPage: React.FC = (): React.ReactElement => {
 
         FeedService.fetchFeeds({active: [1], author: [userInfo.id]})
             .then((response: any) => setTickets(response.data.data))
-            .catch((error: any) => {
-                console.error('Ошибка загрузки тикетов пользователя', error)
-            })
+            .catch((error: any) => console.error('Ошибка загрузки тикетов пользователя', error))
             .finally(() => setFetchingTickets(false))
     }
 
     // Загрузка данных о застройщиках пользователя
-    const fetchDevelopersHandler = () => {
+    const fetchDevelopersHandler = (): void => {
         setFetchingDevelopers(true)
 
         DeveloperService.fetchDevelopers({active: [0, 1], author: [user.id || 0]})
             .then((response: any) => setDevelopers(response.data.data))
-            .catch((error: any) => {
-                console.error('Ошибка загрузки застройщиков пользователя', error)
-            })
+            .catch((error: any) => console.error('Ошибка загрузки застройщиков пользователя', error))
             .finally(() => setFetchingDevelopers(false))
     }
 
     // Загрузка данных об агентствах пользователя
-    const fetchAgentsHandler = () => {
+    const fetchAgentsHandler = (): void => {
         setFetchingAgents(true)
 
         AgentService.fetchAgents({active: [0, 1], author: [user.id || 0]})
             .then((response: any) => setAgents(response.data.data))
-            .catch((error: any) => {
-                console.error('Ошибка загрузки агентств пользователя', error)
-            })
+            .catch((error: any) => console.error('Ошибка загрузки агентств пользователя', error))
             .finally(() => setFetchingAgents(false))
     }
 
-    const onContextMenuAgent = (agent: IAgent, e: React.MouseEvent) => {
+    const onContextMenuAgent = (agent: IAgent, e: React.MouseEvent): void => {
         e.preventDefault()
 
         const menuItems = [
@@ -193,7 +187,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
         openContextMenu(e, menuItems)
     }
 
-    const onContextMenuDeveloper = (developer: IDeveloper, e: React.MouseEvent) => {
+    const onContextMenuDeveloper = (developer: IDeveloper, e: React.MouseEvent): void => {
         e.preventDefault()
 
         const menuItems = [
@@ -247,23 +241,24 @@ const DesktopPage: React.FC = (): React.ReactElement => {
 
                 <BlockingElement fetching={fetchingUser} className={classes.list}>
                     <div className={cx({'block': true, 'noClick': true})}>
-                        {/*<Avatar href={userInfo.avatar}*/}
-                        {/*        alt={userInfo.firstName}*/}
-                        {/*        width={110}*/}
-                        {/*        height={110}*/}
-                        {/*/>*/}
+                        <Avatar href={userInfo.avatar ? userInfo.avatar.content : ''}
+                                alt={userInfo.name}
+                                width={110}
+                                height={110}
+                        />
 
                         <div className={classes.meta}>
                             <div className={classes.row}>
                                 <div className={classes.label}>Имя:</div>
                                 <div className={classes.param}>{userInfo.name}</div>
                             </div>
-                            {/*{userInfo.post ?*/}
-                            {/*    <div className={classes.row}>*/}
-                            {/*        <div className={classes.label}>Должность:</div>*/}
-                            {/*        <div className={classes.param}>{userInfo.postName}</div>*/}
-                            {/*    </div>*/}
-                            {/*    : null}*/}
+                            {userInfo.post ?
+                                <div className={classes.row}>
+                                    <div className={classes.label}>Должность:</div>
+                                    <div className={classes.param}>{userInfo.post.name}</div>
+                                </div>
+                                : null
+                            }
                             <div className={classes.row}>
                                 <div className={classes.label}>Email:</div>
                                 <div className={classes.param}>{userInfo.email}</div>
@@ -280,7 +275,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
     }
 
     const renderTariffsInfo = (): React.ReactElement | null => {
-        if (!userInfo || !allowForRole(['subscriber'])) {
+        if (!userInfo || !checkRules([Rules.SHOW_TARIFFS])) {
             return null
         }
 
@@ -350,7 +345,8 @@ const DesktopPage: React.FC = (): React.ReactElement => {
             <div className={cx({'col': true, 'col-2': true})}>
                 <Title type='h2'>Активные тикеты</Title>
 
-                <FeedList list={tickets} fetching={fetchingTickets} onSave={() => {}} isCompact/>
+                <FeedList list={tickets} fetching={fetchingTickets} onSave={() => {
+                }} isCompact/>
             </div>
         )
     }
@@ -377,70 +373,74 @@ const DesktopPage: React.FC = (): React.ReactElement => {
     }
 
     const renderAgentsInfo = (): React.ReactElement | null => {
-        if (!allowForRole(['subscriber']) && !allowForTariff(['business', 'effectivePlus'])) {
+        if (!checkRules([Rules.SHOW_AGENTS])) {
             return null
         }
 
-        // const showAdd = allowForRole(['director', 'administrator', 'manager'], userInfo.role) || (allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business', 'effectivePlus'], userInfo.tariff))
-        // const isDisable = allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business'], userInfo.tariff) && agents.filter((agent: IAgent) => agent.is_active === 1).length > 0
-        // const emptyText = showAdd ? 'У Вас еще нет созданных агентств.' : 'На текущем тарифе не доступно.'
-        //
-        // return (
-        //     <div className={cx({'col': true, 'col-2': true})}>
-        //         <Title type='h2'
-        //                onAdd={() => showAdd ?
-        //                    openPopupAgentCreate(document.body, {
-        //                        isDisable: isDisable,
-        //                        onSave: () => fetchAgentsHandler()
-        //                    })
-        //                : undefined}
-        //         >Мои агентства</Title>
-        //
-        //         <AgentList list={agents}
-        //                    fetching={fetchingAgents}
-        //                    onClick={() => {}}
-        //                    onContextMenu={(agent: IAgent, e: React.MouseEvent) => onContextMenuAgent(agent, e)}
-        //                    emptyText={emptyText}
-        //                    isCompact
-        //         />
-        //     </div>
-        // )
-        return null
+        const showAdd = checkRules([Rules.ADD_AGENT])
+        const isDisable = false // allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business'], userInfo.tariff) && agents.filter((agent: IAgent) => agent.is_active === 1).length > 0
+        const emptyText = showAdd ? 'У Вас еще нет созданных агентств.' : 'На текущем тарифе не доступно.'
+
+        return (
+            <div className={cx({'col': true, 'col-2': true})}>
+                <Title type='h2'
+                       onAdd={() => showAdd ?
+                           openPopupAgentCreate(document.body, {
+                               isDisable: isDisable,
+                               onSave: () => fetchAgentsHandler()
+                           })
+                           : undefined}
+                >Мои агентства</Title>
+
+                <AgentList list={agents}
+                           fetching={fetchingAgents}
+                           onClick={() => {
+                           }}
+                           onContextMenu={(agent: IAgent, e: React.MouseEvent) => onContextMenuAgent(agent, e)}
+                           emptyText={emptyText}
+                           isCompact
+                />
+            </div>
+        )
     }
 
-    const renderDevelopersInfo = (): React.ReactElement => {
-        return <div/>
-        // const showAdd = allowForRole(['director', 'administrator', 'manager'], userInfo.role) || (allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business', 'effectivePlus'], userInfo.tariff))
-        // const isDisable = allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business'], userInfo.tariff) && developers.filter((developer: IDeveloper) => developer.is_active === 1).length > 0
-        // const emptyText = showAdd ? 'У Вас еще нет созданных застройщиков.' : 'На текущем тарифе не доступно.'
-        //
-        // return (
-        //     <div className={cx({'col': true, 'col-2': true})}>
-        //         <Title type='h2'
-        //                onAdd={() => showAdd ?
-        //                    openPopupDeveloperCreate(document.body, {
-        //                        isDisable: isDisable,
-        //                        onSave: () => fetchDevelopersHandler()
-        //                    })
-        //                : undefined}
-        //         >Мои застройщики</Title>
-        //
-        //         <DeveloperList list={developers}
-        //                        fetching={fetchingDevelopers}
-        //                        onClick={() => {}}
-        //                        onContextMenu={(developer: IDeveloper, e: React.MouseEvent) => onContextMenuDeveloper(developer, e)}
-        //                        emptyText={emptyText}
-        //                        isCompact
-        //         />
-        //     </div>
-        // )
+    const renderDevelopersInfo = (): React.ReactElement | null => {
+        if (!checkRules([Rules.SHOW_DEVELOPERS])) {
+            return null
+        }
+
+        const showAdd = checkRules([Rules.ADD_DEVELOPER])
+        const isDisable = false //allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business'], userInfo.tariff) && developers.filter((developer: IDeveloper) => developer.is_active === 1).length > 0
+        const emptyText = showAdd ? 'У Вас еще нет созданных застройщиков.' : 'На текущем тарифе не доступно.'
+
+        return (
+            <div className={cx({'col': true, 'col-2': true})}>
+                <Title type='h2'
+                       onAdd={() => showAdd ?
+                           openPopupDeveloperCreate(document.body, {
+                               isDisable: isDisable,
+                               onSave: () => fetchDevelopersHandler()
+                           })
+                           : undefined}
+                >Мои застройщики</Title>
+
+                <DeveloperList list={developers}
+                               fetching={fetchingDevelopers}
+                               onClick={() => {
+                               }}
+                               onContextMenu={(developer: IDeveloper, e: React.MouseEvent) => onContextMenuDeveloper(developer, e)}
+                               emptyText={emptyText}
+                               isCompact
+                />
+            </div>
+        )
     }
 
     return (
         <PanelView pageTitle='Рабочий стол'>
             <Wrapper isFull>
                 <Title type='h1'
-                       className={classes.title}
+                       className={classes.pageTitle}
                 >Рабочий стол</Title>
 
                 <BlockingElement fetching={false} className={classes.columns}>

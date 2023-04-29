@@ -9,6 +9,7 @@ export interface IMenuLink {
     hasRole?: ('director' | 'administrator' | 'manager' | 'subscriber')[]
     isSeparator?: boolean
     hasTariff?: ('free' | 'base' | 'business' | 'effectivePlus')[]
+    unavailable?: boolean
 }
 
 export interface ISubMenu {

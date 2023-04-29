@@ -28,6 +28,8 @@ export function registerEventsEmitter() {
  *
  * @param userId Идентификатор пользователя
  */
-export function registerWebsocket(userId: number) {
-    window.WS = new WS(userId)
+export function registerWebsocket(userId: number | null) {
+    if (userId) {
+        window.WS = new WS(userId)
+    }
 }

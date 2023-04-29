@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
-import {rolesList} from '../../../helpers/userHelper'
 import {IUser} from '../../../@types/IUser'
 import {IBuilding} from '../../../@types/IBuilding'
 import {IArticle} from '../../../@types/IArticle'
@@ -31,7 +30,7 @@ const UserPage: React.FC = (): React.ReactElement => {
     const [fetchingBuildings, setFetchingBuildings] = useState(false)
     const [fetchingArticles, setFetchingArticles] = useState(false)
 
-    const {users, fetching, user} = useTypedSelector(state => state.userReducer)
+    const {users, fetching} = useTypedSelector(state => state.userReducer)
     const {fetchUserList} = useActions()
 
     useEffect(() => {
@@ -52,14 +51,13 @@ const UserPage: React.FC = (): React.ReactElement => {
     useEffect(() => {
         fetchBuildingsHandler()
         fetchArticlesHandler()
-        fetchLogHandler()
     }, [userData.id])
 
-    const fetchUsersHandler = () => {
+    const fetchUsersHandler = (): void => {
         fetchUserList({active: [0, 1]})
     }
 
-    const fetchBuildingsHandler = () => {
+    const fetchBuildingsHandler = (): void => {
         if (!userData.id) {
             return
         }
@@ -68,13 +66,11 @@ const UserPage: React.FC = (): React.ReactElement => {
 
         BuildingService.fetchBuildings({active: [1], author: [userData.id]})
             .then((response: any) => setBuildings(response.data.data))
-            .catch((error: any) => {
-                console.error(error)
-            })
+            .catch((error: any) => console.error(error))
             .finally(() => setFetchingBuildings(false))
     }
 
-    const fetchArticlesHandler = () => {
+    const fetchArticlesHandler = (): void => {
         if (!userData.id) {
             return
         }
@@ -83,37 +79,17 @@ const UserPage: React.FC = (): React.ReactElement => {
 
         ArticleService.fetchArticles({active: [1], author: [userData.id]})
             .then((response: any) => setArticles(response.data.data))
-            .catch((error: any) => {
-                console.error(error)
-            })
+            .catch((error: any) => console.error(error))
             .finally(() => setFetchingArticles(false))
     }
 
-    const fetchLogHandler = () => {
-        if (!userData.id) {
-            return
-        }
-        //
-        // setFetchingLogs(true)
-        //
-        // UtilService.fetchLogs({active: [1], userId: [userData.id]})
-        //     .then((response: any) => setLogs(response.data.data))
-        //     .catch((error: any) => {
-        //         console.error(error)
-        //     })
-        //     .finally(() => setFetchingLogs(false))
+    const onClickEditHandler = (): void => {
+        openPopupUserCreate(document.body, {
+            user: userData,
+            onSave: () => fetchUsersHandler()
+        })
     }
 
-    // Редактирование пользователя
-    const onClickEditHandler = () => {
-        // openPopupUserCreate(document.body, {
-        //     user: userData,
-        //     role: role,
-        //     onSave: () => fetchUsersHandler()
-        // })
-    }
-
-    // Блок статистики по недвижимости
     const renderStatisticBuilding = (): React.ReactElement => {
         return (
             <div className={classes.data}>
@@ -128,7 +104,6 @@ const UserPage: React.FC = (): React.ReactElement => {
         )
     }
 
-    // Блок статистики по статьям
     const renderStatisticArticle = (): React.ReactElement => {
         return (
             <div className={classes.data}>
@@ -143,10 +118,7 @@ const UserPage: React.FC = (): React.ReactElement => {
         )
     }
 
-    // Блок информации
     const renderUserInfo = (): React.ReactElement => {
-        const userRole = rolesList.find(item => item.key === userData.role_id?.toString())
-
         return (
             <div className={classes.data}>
                 <BlockingElement fetching={fetching} className={classes.container}>
@@ -172,16 +144,16 @@ const UserPage: React.FC = (): React.ReactElement => {
                     </div>
                     <div className={classes.row}>
                         <div className={classes.label}>Роль:</div>
-                        <div className={classes.param}>{userRole ? userRole.text : ''}</div>
+                        <div className={classes.param}>{userData.role ? userData.role.name : ''}</div>
                     </div>
-                    {/*<div className={classes.row}>*/}
-                    {/*    <div className={classes.label}>Тариф:</div>*/}
-                    {/*    <div className={classes.param}>{getTariffText(userData.tariff)}</div>*/}
-                    {/*</div>*/}
+                    <div className={classes.row}>
+                        <div className={classes.label}>Тариф:</div>
+                        <div className={classes.param}>{''}</div>
+                    </div>
                     <div className={classes.row}>
                         <div className={classes.label}>Дата окончания тарифа:</div>
                         <div className={classes.param}>
-                            {/*{userData.tariff !== 'free' ? getFormatDate(userData.tariffExpired) : 'Бессрочно'}*/}
+                            {userData.tariff_expired !== 'free' ? userData.tariff_expired : 'Бессрочно'}
                         </div>
                     </div>
                     <div className={classes.row}>

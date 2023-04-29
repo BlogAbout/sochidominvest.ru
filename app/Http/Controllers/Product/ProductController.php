@@ -31,7 +31,7 @@ class ProductController extends Controller
                 $query->whereIn('is_active', $filter['active']);
             })
             ->when(isset($filter['author']), function ($query) use ($filter) {
-                $query->whereIn('author', $filter['author']);
+                $query->whereIn('author_id', $filter['author']);
             })
             ->get();
 

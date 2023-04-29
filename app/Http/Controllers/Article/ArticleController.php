@@ -34,7 +34,7 @@ class ArticleController extends Controller
                 $query->where('is_publish', '=', $filter['publish']);
             })
             ->when(isset($filter['author']), function ($query) use ($filter) {
-                $query->whereIn('author', $filter['author']);
+                $query->whereIn('author_id', $filter['author']);
             })
             ->when(isset($filter['type']), function ($query) use ($filter) {
                 $query->where('type', '=', $filter['type']);
