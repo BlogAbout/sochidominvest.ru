@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react'
 import {IFilter, IFilterContent} from '../../../@types/IFilter'
 import {IAttachment} from '../../../@types/IAttachment'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
-import {allowForTariff} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {compareText} from '../../../helpers/filterHelper'
 import {attachmentTypes} from '../../../helpers/attachmentHelper'
 import AttachmentService from '../../../api/AttachmentService'
@@ -37,25 +37,23 @@ const FilesPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [files, filters])
 
-    const fetchFilesHandler = () => {
+    const fetchFilesHandler = (): void => {
         setFetching(true)
 
         const filter: IFilter = {active: [0, 1]}
 
-        // if (user && user.id && user.role === 'subscriber' && allowForTariff(['base', 'business', 'effectivePlus'], user.tariff)) {
-        //     filter.author = [user.id]
-        // }
+        if (!checkRules([Rules.IS_MANAGER])) {
+            filter.author = [user.id]
+        }
 
         AttachmentService.fetchAttachments(filter)
             .then((response: any) => setFiles(response.data.data))
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
             .finally(() => setFetching(false))
     }
 
     // Обработчик изменений
-    const onSaveHandler = (attachment: IAttachment) => {
+    const onSaveHandler = (attachment: IAttachment): void => {
         if (files && files.length) {
             const findIndex = files.findIndex((file: IAttachment) => file.id === attachment.id)
 
@@ -63,7 +61,7 @@ const FilesPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onFullRemove = (attachment: IAttachment) => {
+    const onFullRemove = (attachment: IAttachment): void => {
         if (files && files.length) {
             const findIndex = files.findIndex((file: IAttachment) => file.id === attachment.id)
 
@@ -72,12 +70,11 @@ const FilesPage: React.FC = (): React.ReactElement => {
     }
 
     // Загрузка файла
-    const onUploadFile = (updateAttachments: IAttachment[]) => {
+    const onUploadFile = (updateAttachments: IAttachment[]): void => {
         setFiles([...updateAttachments, ...files])
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!files || !files.length) {
@@ -93,13 +90,12 @@ const FilesPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const uploadHandler = (type: 'image' | 'video' | 'document') => {
+    const uploadHandler = (type: 'image' | 'video' | 'document'): void => {
         setUploaderType(type)
         setShowUploader(true)
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IAttachment[]) => {
+    const filterItemsHandler = (list: IAttachment[]): IAttachment[] => {
         if (!list || !list.length) {
             return []
         }
@@ -110,10 +106,10 @@ const FilesPage: React.FC = (): React.ReactElement => {
     }
 
     // Меню выбора создания объекта
-    const onContextMenuHandler = (e: React.MouseEvent) => {
+    const onContextMenuHandler = (e: React.MouseEvent): void => {
         e.preventDefault()
 
-        const menuItems = [
+        const menuItems: any[] = [
             {text: 'Изображения', onClick: () => uploadHandler('image')},
             {text: 'Видео', onClick: () => uploadHandler('video')},
             {text: 'Документы', onClick: () => uploadHandler('document')}
@@ -122,21 +118,20 @@ const FilesPage: React.FC = (): React.ReactElement => {
         openContextMenu(e.currentTarget, menuItems)
     }
 
-    const filtersContent: IFilterContent[] = []
-    // const filtersContent: IFilterContent[] = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'Тип',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: attachmentTypes,
-    //             selected: filters.type,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, type: values})
-    //             }
-    //         }
-    //     ]
-    // }, [filters])
+    const filtersContent: IFilterContent[] = useMemo((): IFilterContent[] => {
+        return [
+            {
+                title: 'Тип',
+                type: 'checker',
+                multi: true,
+                items: attachmentTypes,
+                selected: filters.type,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, type: values})
+                }
+            }
+        ]
+    }, [filters])
 
     const renderUploader = (): React.ReactElement => {
         let labelTitle = ''

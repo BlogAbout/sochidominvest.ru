@@ -27,6 +27,7 @@ export interface IUser {
     date_updated?: string | null
     favorite_ids?: number[] | null
     favorites?: IBuilding[] | null
+    bp_ordering?: number[]
 }
 
 export interface IUserSetting {

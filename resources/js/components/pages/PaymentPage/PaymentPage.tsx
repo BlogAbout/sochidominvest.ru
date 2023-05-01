@@ -3,7 +3,7 @@ import {IFilter, IFilterContent} from '../../../@types/IFilter'
 import {ITransaction} from '../../../@types/ITransaction'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {compareText} from '../../../helpers/filterHelper'
-import {allowForTariff} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {paymentStatuses} from '../../../helpers/paymentHelper'
 import TransactionService from '../../../api/TransactionService'
 import Title from '../../ui/Title/Title'
@@ -35,30 +35,26 @@ const PaymentPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [payments, filters])
 
-    const fetchPaymentsHandler = () => {
+    const fetchPaymentsHandler = (): void => {
         setFetching(true)
 
         const filter: IFilter = {} as IFilter
 
-        // if (user && user.id && user.role === 'subscriber' && allowForTariff(['base', 'business', 'effectivePlus'], user.tariff)) {
-        //     filter.userId = [user.id]
-        // }
+        if (!checkRules([Rules.IS_MANAGER])) {
+            filter.userId = [user.id]
+        }
 
         TransactionService.fetchPayments(filter)
             .then((response: any) => setPayments(response.data.data))
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
             .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchPaymentsHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!payments || !payments.length) {
@@ -74,14 +70,13 @@ const PaymentPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onAddHandler = (type: 'createOrder') => {
+    const onAddHandler = (type: 'createOrder'): void => {
         openPopupPaymentCreate(document.body, {
             onSave: () => onSaveHandler()
         })
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: ITransaction[]) => {
+    const filterItemsHandler = (list: ITransaction[]): ITransaction[] => {
         if (!list || !list.length) {
             return []
         }
@@ -91,8 +86,7 @@ const PaymentPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Меню выбора создания платежа
-    const onContextMenu = (e: React.MouseEvent) => {
+    const onContextMenu = (e: React.MouseEvent): void => {
         e.preventDefault()
 
         const menuItems = [
@@ -102,21 +96,20 @@ const PaymentPage: React.FC = (): React.ReactElement => {
         openContextMenu(e.currentTarget, menuItems)
     }
 
-    const filtersContent: IFilterContent[] = []
-    // const filtersContent: IFilterContent[] = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'Статус',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: paymentStatuses,
-    //             selected: filters.status,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, status: values})
-    //             }
-    //         }
-    //     ]
-    // }, [filters])
+    const filtersContent: IFilterContent[] = useMemo((): IFilterContent[] => {
+        return [
+            {
+                title: 'Статус',
+                type: 'checker',
+                multi: true,
+                items: paymentStatuses,
+                selected: filters.status,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, status: values})
+                }
+            }
+        ]
+    }, [filters])
 
     return (
         <PanelView pageTitle='Платежи и транзакции'>
@@ -127,7 +120,7 @@ const PaymentPage: React.FC = (): React.ReactElement => {
 
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onContextMenu.bind(this)}
+                       onAdd={checkRules([Rules.ADD_PAYMENT]) ? onContextMenu.bind(this) : undefined}
                        onFilter={() => setIsShowFilter(!isShowFilter)}
                        searchText={searchText}
                        onSearch={search.bind(this)}

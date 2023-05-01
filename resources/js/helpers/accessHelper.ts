@@ -13,13 +13,17 @@ export enum Rules {
     BLOCK_USER,
     REMOVE_USER,
 
+    ADD_BUILDING,
     EDIT_BUILDING,
     REMOVE_BUILDING,
 
+    ADD_ARTICLE,
     EDIT_ARTICLE,
     REMOVE_ARTICLE,
 
+    ADD_COMPILATION,
     EDIT_COMPILATION,
+    REMOVE_COMPILATION,
 
     SHOW_FEEDS,
     PROCESS_FEED,
@@ -29,10 +33,12 @@ export enum Rules {
     SHOW_DEVELOPERS,
     ADD_DEVELOPER,
     EDIT_DEVELOPER,
+    REMOVE_DEVELOPER,
 
     SHOW_AGENTS,
     ADD_AGENT,
     EDIT_AGENT,
+    REMOVE_AGENT,
 
     SHOW_CATEGORIES,
     ADD_CATEGORY,
@@ -53,6 +59,29 @@ export enum Rules {
     ADD_POST,
     EDIT_POST,
     REMOVE_POST,
+
+    SHOW_PAYMENTS,
+    ADD_PAYMENT,
+    EDIT_PAYMENT,
+    COPY_PAYMENT,
+    REMOVE_PAYMENT,
+
+    SHOW_DOCUMENTS,
+    ADD_DOCUMENT,
+    EDIT_DOCUMENT,
+    REMOVE_DOCUMENT,
+
+    SHOW_MAILINGS,
+    ADD_MAILING,
+    EDIT_MAILING,
+    REMOVE_MAILING,
+
+    SHOW_BOOKINGS,
+    ADD_BOOKING,
+    EDIT_BOOKING,
+    REMOVE_BOOKING,
+
+    RUN_BUSINESS_PROCESS,
 }
 
 export const checkRules = (rules: Rules[] = [], id?: number | null) => {
@@ -112,6 +141,11 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
                 result = true
                 break
             case Rules.EDIT_DEVELOPER:
+                // проверить, что id равен пользователю
+                result = true
+                break
+            case Rules.REMOVE_DEVELOPER:
+                // проверить, что id равен пользователю
                 result = true
                 break
             case Rules.SHOW_AGENTS:
@@ -121,6 +155,17 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
                 result = true
                 break
             case Rules.EDIT_AGENT:
+                result = true
+                break
+            case Rules.SHOW_DOCUMENTS:
+                result = true
+                break
+            case Rules.EDIT_DOCUMENT:
+                // проверить, что id равен пользователю
+                result = true
+                break
+            case Rules.REMOVE_DOCUMENT:
+                // проверить, что id равен пользователю
                 result = true
                 break
             default:

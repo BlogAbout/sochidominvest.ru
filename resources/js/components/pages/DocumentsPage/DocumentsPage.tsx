@@ -3,7 +3,7 @@ import {IFilter, IFilterContent} from '../../../@types/IFilter'
 import {IDocument} from '../../../@types/IDocument'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {documentTypes} from '../../../helpers/documentHelper'
-import {allowForTariff} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {compareText} from '../../../helpers/filterHelper'
 import DocumentService from '../../../api/DocumentService'
 import Title from '../../ui/Title/Title'
@@ -35,30 +35,26 @@ const DocumentPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [documents, filters])
 
-    const fetchDocumentsHandler = () => {
+    const fetchDocumentsHandler = (): void => {
         setFetching(true)
 
         const filter: IFilter = {active: [0, 1]}
 
-        // if (user && user.id && user.role === 'subscriber' && allowForTariff(['base', 'business', 'effectivePlus'], user.tariff)) {
-        //     filter.author = [user.id]
-        // }
+        if (!checkRules([Rules.IS_MANAGER])) {
+            filter.author = [user.id]
+        }
 
         DocumentService.fetchDocuments(filter)
             .then((response: any) => setDocuments(response.data.data))
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
             .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchDocumentsHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!documents || !documents.length) {
@@ -74,8 +70,7 @@ const DocumentPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IDocument[]) => {
+    const filterItemsHandler = (list: IDocument[]): IDocument[] => {
         if (!list || !list.length) {
             return []
         }
@@ -86,7 +81,7 @@ const DocumentPage: React.FC = (): React.ReactElement => {
     }
 
     // Меню выбора создания объекта
-    const onContextMenuHandler = (e: React.MouseEvent) => {
+    const onContextMenuHandler = (e: React.MouseEvent): void => {
         e.preventDefault()
 
         const menuItems = [
@@ -119,21 +114,20 @@ const DocumentPage: React.FC = (): React.ReactElement => {
         openContextMenu(e.currentTarget, menuItems)
     }
 
-    const filtersContent: IFilterContent[] = []
-    // const filtersContent: IFilterContent[] = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'Тип',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: documentTypes,
-    //             selected: filters.type,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, type: values})
-    //             }
-    //         }
-    //     ]
-    // }, [filters])
+    const filtersContent: IFilterContent[] = useMemo((): IFilterContent[] => {
+        return [
+            {
+                title: 'Тип',
+                type: 'checker',
+                multi: true,
+                items: documentTypes,
+                selected: filters.type,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, type: values})
+                }
+            }
+        ]
+    }, [filters])
 
     return (
         <PanelView pageTitle='Документы'>

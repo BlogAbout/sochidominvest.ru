@@ -31,24 +31,20 @@ const MailingsPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [mailings, filters])
 
-    const fetchMailingsHandler = () => {
+    const fetchMailingsHandler = (): void => {
         setFetching(true)
 
         MailingService.fetchMailings({active: [0, 1]})
             .then((response: any) => setMailings(response.data.data))
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
             .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchMailingsHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!mailings || !mailings.length) {
@@ -64,14 +60,13 @@ const MailingsPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupMailingCreate(document.body, {
             onSave: () => onSaveHandler()
         })
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IMailing[]) => {
+    const filterItemsHandler = (list: IMailing[]): IMailing[] => {
         if (!list || !list.length) {
             return []
         }
@@ -81,36 +76,35 @@ const MailingsPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    const filtersContent: IFilterContent[] = []
-    // const filtersContent: IFilterContent[] = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'Тип',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: mailingTypes,
-    //             selected: filters.types,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, types: values})
-    //             }
-    //         },
-    //         {
-    //             title: 'Статус',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: [
-    //                 {key: '-1', text: 'Ошибка'},
-    //                 {key: '0', text: 'Остановлен'},
-    //                 {key: '1', text: 'Запущен'},
-    //                 {key: '2', text: 'Завершен'},
-    //             ],
-    //             selected: filters.types,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, types: values})
-    //             }
-    //         }
-    //     ]
-    // }, [filters])
+    const filtersContent: IFilterContent[] = useMemo((): IFilterContent[] => {
+        return [
+            {
+                title: 'Тип',
+                type: 'checker',
+                multi: true,
+                items: mailingTypes,
+                selected: filters.types,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, types: values})
+                }
+            },
+            {
+                title: 'Статус',
+                type: 'checker',
+                multi: true,
+                items: [
+                    {key: '-1', text: 'Ошибка'},
+                    {key: '0', text: 'Остановлен'},
+                    {key: '1', text: 'Запущен'},
+                    {key: '2', text: 'Завершен'},
+                ],
+                selected: filters.types,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, types: values})
+                }
+            }
+        ]
+    }, [filters])
 
     return (
         <PanelView pageTitle='Рассылки'>

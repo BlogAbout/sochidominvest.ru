@@ -24,28 +24,20 @@ const ExternalUsersPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [externalUsers])
 
-    const fetchExternalUsersHandler = () => {
+    const fetchExternalUsersHandler = (): void => {
         setFetching(true)
 
         UserService.fetchUsersExternal({active: [0, 1]})
-            .then((response: any) => {
-                setExternalUsers(response.data.data)
-            })
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
-            .finally(() => {
-                setFetching(false)
-            })
+            .then((response: any) => setExternalUsers(response.data.data))
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
+            .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchExternalUsersHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!externalUsers || !externalUsers.length) {
@@ -61,7 +53,7 @@ const ExternalUsersPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupUserExternalCreate(document.body, {
             onSave: () => onSaveHandler()
         })

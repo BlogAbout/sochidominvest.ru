@@ -2,9 +2,11 @@ import React, {useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
-import {allowForRole} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {RouteNames} from '../../../helpers/routerHelper'
 import {IBuilding} from '../../../@types/IBuilding'
+import {IUser} from '../../../@types/IUser'
+import UserService from '../../../api/UserService'
 import BuildingService from '../../../api/BuildingService'
 import CompilationService from '../../../api/CompilationService'
 import Title from '../../ui/Title/Title'
@@ -19,60 +21,32 @@ import classes from './FavoritePage.module.scss'
 const FavoritePage: React.FC = (): React.ReactElement => {
     const navigate = useNavigate()
 
-    const [favorites, setFavorites] = useState<number[]>([])
-    const [fetchingFavorite, setFetchingFavorite] = useState(false)
-    const [filterBuilding, setFilterBuilding] = useState<IBuilding[]>([])
+    const [favorites, setFavorites] = useState<IBuilding[]>([])
     const [fetching, setFetching] = useState(false)
 
-    const {buildings, fetching: fetchingBuilding} = useTypedSelector(state => state.buildingReducer)
-    const {fetchBuildingList} = useActions()
+    const {user} = useTypedSelector(state => state.userReducer)
+    const {setUserAuth} = useActions()
 
     useEffect(() => {
-        fetchBuildingsHandler()
-    }, [])
+        onSaveHandler()
+    }, [user.favorites])
 
-    useEffect(() => {
-        // setFetchingFavorite(true)
-
-        // FavoriteService.fetchFavorites()
-        //     .then((response: any) => setFavorites(response.data.data))
-        //     .catch((error: any) => {
-        //         console.error('Ошибка загрузки избранного', error)
-        //     })
-        //     .finally(() => setFetchingFavorite(false))
-    }, [buildings])
-
-    useEffect(() => {
-        if (favorites && favorites.length && buildings && buildings.length) {
-            setFilterBuilding(buildings.filter((building: IBuilding) => building.id && favorites.includes(building.id)))
-        } else {
-            setFilterBuilding([])
-        }
-    }, [favorites])
-
-    const fetchBuildingsHandler = () => {
-        fetchBuildingList({active: [0, 1]})
+    const onSaveHandler = (): void => {
+        setFavorites(user.favorites || [])
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
-        fetchBuildingsHandler()
-    }
-
-    const onClickHandler = (building: IBuilding) => {
+    const onClickHandler = (building: IBuilding): void => {
         navigate(`${RouteNames.BUILDING}/${building.id}`)
     }
 
-    // Редактирование объекта
-    const onEditHandler = (building: IBuilding) => {
+    const onEditHandler = (building: IBuilding): void => {
         openPopupBuildingCreate(document.body, {
             building: building,
             onSave: () => onSaveHandler()
         })
     }
 
-    // Удаление объекта
-    const onRemoveHandler = (building: IBuilding) => {
+    const onRemoveHandler = (building: IBuilding): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${building.name}?`,
             buttons: [
@@ -100,61 +74,68 @@ const FavoritePage: React.FC = (): React.ReactElement => {
     }
 
     // Удаление объекта из избранного
-    const onRemoveBuildingFromFavoriteHandler = (building: IBuilding) => {
+    const onRemoveBuildingFromFavoriteHandler = (building: IBuilding): void => {
         if (building.id) {
-            // FavoriteService.removeFavorite(building.id)
-            //     .then(() => onSaveHandler())
-            //     .catch((error: any) => {
-            //         console.error('Ошибка удаления из избранного', error)
-            //
-            //         openPopupAlert(document.body, {
-            //             title: 'Ошибка!',
-            //             text: error.data.data
-            //         })
-            //     })
+            const favoriteIds: number[] = user.favorite_ids ? user.favorite_ids.filter((id: number) => id !== building.id) : []
+            const userUpdate: IUser = JSON.parse(JSON.stringify(user))
+            userUpdate.favorite_ids = favoriteIds
+
+            setFetching(true)
+
+            UserService.saveUser(userUpdate)
+                .then((response: any) => setUserAuth(response))
+                .catch((error: any) => {
+                    console.error('Ошибка удаления из избранного', error)
+
+                    openPopupAlert(document.body, {
+                        title: 'Ошибка!',
+                        text: error.data.data
+                    })
+                })
+                .finally(() => setFetching(false))
         }
     }
 
     // Удаление объекта из подборки
-    const onRemoveBuildingFromCompilationHandler = (building: IBuilding, compilationId?: number) => {
+    const onRemoveBuildingFromCompilationHandler = (building: IBuilding, compilationId?: number): void => {
         if (compilationId && building.id) {
-            // CompilationService.removeBuildingFromCompilation(compilationId, building.id)
-            //     .then(() => onSaveHandler())
-            //     .catch((error: any) => {
-            //         console.error('Ошибка удаления из подборки', error)
-            //
-            //         openPopupAlert(document.body, {
-            //             title: 'Ошибка!',
-            //             text: error.data.data
-            //         })
-            //     })
+            setFetching(true)
+
+            CompilationService.removeBuildingFromCompilation(compilationId, building.id)
+                .then(() => onSaveHandler())
+                .catch((error: any) => {
+                    console.error('Ошибка удаления из подборки', error)
+
+                    openPopupAlert(document.body, {
+                        title: 'Ошибка!',
+                        text: error.data.data
+                    })
+                })
+                .finally(() => setFetching(false))
         }
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenuItemHandler = (building: IBuilding, e: React.MouseEvent) => {
+    const onContextMenuItemHandler = (building: IBuilding, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        const menuItems = []
+        const menuItems: any[] = []
 
-        if (favorites && favorites.length && building.id && favorites.includes(building.id)) {
+        if (user.favorite_ids && user.favorite_ids.length && building.id && user.favorite_ids.includes(building.id)) {
             menuItems.push({
                 text: 'Удалить из избранного',
                 onClick: () => onRemoveBuildingFromFavoriteHandler(building)
             })
         }
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
+        if (checkRules([Rules.EDIT_BUILDING])) {
             menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(building)})
-
-            if (allowForRole(['director', 'administrator'])) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(building)})
-            }
         }
 
-        if (menuItems.length) {
-            openContextMenu(e, menuItems)
+        if (checkRules([Rules.REMOVE_BUILDING])) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(building)})
         }
+
+        openContextMenu(e, menuItems)
     }
 
     return (
@@ -164,8 +145,8 @@ const FavoritePage: React.FC = (): React.ReactElement => {
                        className={classes.title}
                 >Избранное</Title>
 
-                <BuildingTill list={filterBuilding}
-                              fetching={fetching || fetchingBuilding || fetchingFavorite}
+                <BuildingTill list={favorites}
+                              fetching={fetching}
                               onClick={(building: IBuilding) => onClickHandler(building)}
                               onContextMenu={(building: IBuilding, e: React.MouseEvent) => onContextMenuItemHandler(building, e)}
                 />

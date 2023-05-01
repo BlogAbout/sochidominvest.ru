@@ -3,7 +3,8 @@ import {IDocument} from '../../../../../@types/IDocument'
 import {IBuilding} from '../../../../../@types/IBuilding'
 import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
 import {getDocumentTypeText} from '../../../../../helpers/documentHelper'
-import {allowForRole} from '../../../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
+import {configuration} from '../../../../../helpers/utilHelper'
 import DocumentService from '../../../../../api/DocumentService'
 import ListHead from '../../../../ui/List/components/ListHead/ListHead'
 import ListCell from '../../../../ui/List/components/ListCell/ListCell'
@@ -15,7 +16,6 @@ import openPopupAlert from '../../../../popup/PopupAlert/PopupAlert'
 import openContextMenu from '../../../../ui/ContextMenu/ContextMenu'
 import openPopupDocumentCreate from '../../../../../components/popup/PopupDocumentCreate/PopupDocumentCreate'
 import classes from './DocumentList.module.scss'
-import {configuration} from "../../../../../helpers/utilHelper";
 
 interface Props {
     list: IDocument[]
@@ -57,16 +57,14 @@ const DocumentList: React.FC<Props> = (props): React.ReactElement => {
         return objectInfo
     }
 
-    // Редактирование
-    const onEditHandler = (documentInfo: IDocument) => {
+    const onEditHandler = (documentInfo: IDocument): void => {
         openPopupDocumentCreate(document.body, {
             document: documentInfo,
             onSave: () => props.onSave()
         })
     }
 
-    // Удаление
-    const onRemoveHandler = (documentInfo: IDocument) => {
+    const onRemoveHandler = (documentInfo: IDocument): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить "${documentInfo.name}"?`,
             buttons: [
@@ -93,11 +91,10 @@ const DocumentList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenuHandler = (documentInfo: IDocument, e: React.MouseEvent) => {
+    const onContextMenuHandler = (documentInfo: IDocument, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        const menuItems = [
+        const menuItems: any[] = [
             {
                 text: 'Открыть',
                 onClick: () => {
@@ -119,12 +116,12 @@ const DocumentList: React.FC<Props> = (props): React.ReactElement => {
             }
         ]
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
+        if (checkRules([Rules.EDIT_DOCUMENT])) {
             menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(documentInfo)})
+        }
 
-            if (allowForRole(['director', 'administrator'])) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(documentInfo)})
-            }
+        if (checkRules([Rules.REMOVE_DOCUMENT])) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(documentInfo)})
         }
 
         openContextMenu(e, menuItems)
@@ -135,7 +132,7 @@ const DocumentList: React.FC<Props> = (props): React.ReactElement => {
             <ListHead>
                 <ListCell className={classes.name}>Название</ListCell>
                 <ListCell className={classes.object}>Объект</ListCell>
-                {/*<ListCell className={classes.cost}>Тип</ListCell>*/}
+                <ListCell className={classes.type}>Тип</ListCell>
             </ListHead>
 
             <ListBody fetching={props.fetching || fetching}>

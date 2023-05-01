@@ -2,15 +2,18 @@ import React, {useEffect, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {RouteNames} from '../../../helpers/routerHelper'
 import {ICompilation} from '../../../@types/ICompilation'
 import {IBuilding} from '../../../@types/IBuilding'
 import {IMailing} from '../../../@types/IMailing'
-import Title from '../../ui/Title/Title'
-import Wrapper from '../../ui/Wrapper/Wrapper'
-import PanelView from '../../views/PanelView/PanelView'
+import {IUser} from '../../../@types/IUser'
 import BuildingService from '../../../api/BuildingService'
 import CompilationService from '../../../api/CompilationService'
+import UserService from '../../../api/UserService'
+import Title from '../../ui/Title/Title'
+import PanelView from '../../views/PanelView/PanelView'
+import Wrapper from '../../ui/Wrapper/Wrapper'
 import BuildingTill from '../BuildingsPanelPage/components/BuildingTill/BuildingTill'
 import openContextMenu from '../../ui/ContextMenu/ContextMenu'
 import openPopupBuildingCreate from '../../../components/popup/PopupBuildingCreate/PopupBuildingCreate'
@@ -27,60 +30,64 @@ const CompilationPage: React.FC = (): React.ReactElement => {
 
     const params = useParams<CompilationItemPagePanelParams>()
 
-    const [isUpdate, setIsUpdate] = useState(false)
     const [compilation, setCompilation] = useState<ICompilation>({} as ICompilation)
     const [filterBuilding, setFilterBuilding] = useState<IBuilding[]>([])
     const [fetching, setFetching] = useState(false)
 
     const {user} = useTypedSelector(state => state.userReducer)
-    const {buildings, fetching: fetchingBuilding} = useTypedSelector(state => state.buildingReducer)
-    const {compilations, fetching: fetchingCompilation} = useTypedSelector(state => state.compilationReducer)
-    const {fetchBuildingList, fetchCompilationList} = useActions()
+
+    const {setUserAuth} = useActions()
 
     useEffect(() => {
-        if (isUpdate || !compilations.length) {
-            fetchCompilationList()
-
-            setIsUpdate(false)
-        }
-    }, [isUpdate])
+        fetchCompilationInfo()
+    }, [])
 
     useEffect(() => {
-        if (compilations && compilations.length && params.id) {
-            const compilationId = parseInt(params.id)
-            const compilationInfo = compilations.find((compilation: ICompilation) => compilation.id === compilationId)
+        if (compilation.buildings && compilation.buildings.length) {
+            const ids: number[] = []
 
-            if (compilationInfo) {
-                setCompilation(compilationInfo)
-            }
-        }
-    }, [compilations])
+            compilation.buildings.forEach((building: IBuilding) => {
+                if (building.id) {
+                    ids.push(building.id)
+                }
+            })
 
-    useEffect(() => {
-        fetchBuildingList({active: [0, 1]})
-    }, [compilation])
-
-    useEffect(() => {
-        if (buildings && buildings.length && compilation.building_ids && compilation.building_ids.length) {
-            setFilterBuilding(buildings.filter((building: IBuilding) => {
-                return building.id && compilation.building_ids && compilation.building_ids.includes(building.id)
-            }))
+            setFilterBuilding(compilation.buildings)
+            setCompilation({
+                ...compilation,
+                building_ids: ids
+            })
         } else {
             setFilterBuilding([])
+            setCompilation({
+                ...compilation,
+                building_ids: []
+            })
         }
-    }, [buildings])
+    }, [compilation])
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
-        setIsUpdate(true)
+    const fetchCompilationInfo = (): void => {
+        if (params.id) {
+            const compilationId = parseInt(params.id)
+
+            setFetching(false)
+
+            CompilationService.fetchCompilationById(compilationId)
+                .then((response: any) => setCompilation(response.data.data))
+                .catch((error: any) => console.error(error.data.message))
+                .finally(() => setFetching(false))
+        }
     }
 
-    const onClickHandler = (building: IBuilding) => {
+    const onSaveHandler = (): void => {
+        fetchCompilationInfo()
+    }
+
+    const onClickHandler = (building: IBuilding): void => {
         navigate(`${RouteNames.BUILDING}/${building.id}`)
     }
 
-    // Редактирование объекта
-    const onEditHandler = (building: IBuilding) => {
+    const onEditHandler = (building: IBuilding): void => {
         openPopupBuildingCreate(document.body, {
             building: building,
             onSave: () => {
@@ -89,8 +96,7 @@ const CompilationPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Удаление объекта
-    const onRemoveHandler = (building: IBuilding) => {
+    const onRemoveHandler = (building: IBuilding): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${building.name}?`,
             buttons: [
@@ -101,18 +107,14 @@ const CompilationPage: React.FC = (): React.ReactElement => {
                             setFetching(true)
 
                             BuildingService.removeBuilding(building.id)
-                                .then(() => {
-                                    onSaveHandler()
-                                })
+                                .then(() => onSaveHandler())
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
                                         text: error.data.data
                                     })
                                 })
-                                .finally(() => {
-                                    setFetching(false)
-                                })
+                                .finally(() => setFetching(false))
                         }
                     }
                 },
@@ -122,26 +124,33 @@ const CompilationPage: React.FC = (): React.ReactElement => {
     }
 
     // Удаление объекта из избранного
-    const onRemoveBuildingFromFavoriteHandler = (building: IBuilding) => {
+    const onRemoveBuildingFromFavoriteHandler = (building: IBuilding): void => {
         if (building.id) {
-            // FavoriteService.removeFavorite(building.id)
-            //     .then(() => {
-            //         onSaveHandler()
-            //     })
-            //     .catch((error: any) => {
-            //         console.error('Ошибка удаления из избранного', error)
-            //
-            //         openPopupAlert(document.body, {
-            //             title: 'Ошибка!',
-            //             text: error.data.data
-            //         })
-            //     })
+            const favoriteIds: number[] = user.favorite_ids ? user.favorite_ids.filter((id: number) => id !== building.id) : []
+            const userUpdate: IUser = JSON.parse(JSON.stringify(user))
+            userUpdate.favorite_ids = favoriteIds
+
+            setFetching(true)
+
+            UserService.saveUser(userUpdate)
+                .then((response: any) => setUserAuth(response))
+                .catch((error: any) => {
+                    console.error('Ошибка удаления из избранного', error)
+
+                    openPopupAlert(document.body, {
+                        title: 'Ошибка!',
+                        text: error.data.data
+                    })
+                })
+                .finally(() => setFetching(false))
         }
     }
 
     // Удаление объекта из подборки
-    const onRemoveBuildingFromCompilationHandler = (building: IBuilding, compilationId?: number) => {
+    const onRemoveBuildingFromCompilationHandler = (building: IBuilding, compilationId?: number): void => {
         if (compilationId && building.id) {
+            setFetching(true)
+
             CompilationService.removeBuildingFromCompilation(compilationId, building.id)
                 .then(() => onSaveHandler())
                 .catch((error: any) => {
@@ -152,11 +161,11 @@ const CompilationPage: React.FC = (): React.ReactElement => {
                         text: error.data.data
                     })
                 })
+                .finally(() => setFetching(false))
         }
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenuItem = (building: IBuilding, e: React.MouseEvent) => {
+    const onContextMenuItem = (building: IBuilding, e: React.MouseEvent): void => {
         e.preventDefault()
 
         const menuItems = []
@@ -170,20 +179,18 @@ const CompilationPage: React.FC = (): React.ReactElement => {
             })
         }
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(building)})
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(building)})
-        //     }
-        // }
-
-        if (menuItems.length) {
-            openContextMenu(e, menuItems)
+        if (checkRules([Rules.EDIT_COMPILATION])) {
+            menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(building)})
         }
+
+        if (checkRules([Rules.REMOVE_COMPILATION])) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(building)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         if (!compilation.id) {
             return
         }
@@ -211,13 +218,13 @@ const CompilationPage: React.FC = (): React.ReactElement => {
         <PanelView pageTitle={compilation.name}>
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onAddHandler.bind(this)}
+                       onAdd={checkRules([Rules.ADD_MAILING]) ? onAddHandler.bind(this) : undefined}
                        addText='Создать рассылку'
                        className={classes.title}
                 >{compilation.name}</Title>
 
                 <BuildingTill list={filterBuilding}
-                              fetching={fetching || fetchingBuilding || fetchingCompilation}
+                              fetching={fetching}
                               onClick={(building: IBuilding) => onClickHandler(building)}
                               onContextMenu={(building: IBuilding, e: React.MouseEvent) => onContextMenuItem(building, e)}
                 />

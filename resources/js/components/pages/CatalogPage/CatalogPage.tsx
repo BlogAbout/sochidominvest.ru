@@ -27,7 +27,7 @@ const cx = classNames.bind(classes)
 const CatalogPage: React.FC<Props> = (props): React.ReactElement => {
     const navigate = useNavigate()
 
-    const menu = useMemo(() => {
+    const menu: ISubMenu[] = useMemo((): ISubMenu[] => {
         return subMenuCatalog.filter((itemMenu: ISubMenu) => itemMenu.type === props.type)
     }, [props.type])
 

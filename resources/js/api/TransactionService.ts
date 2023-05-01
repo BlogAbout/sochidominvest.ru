@@ -19,7 +19,7 @@ export default class TransactionService {
         }
     }
 
-    // static async fetchLinkPayment(paymentId: number): Promise<AxiosResponse> {
-    //     return axios.get(`/transaction/${paymentId}/link`)
-    // }
+    static async fetchLinkPayment(paymentId: number): Promise<AxiosResponse> {
+        return axios.get(`/transaction/${paymentId}/link`)
+    }
 }

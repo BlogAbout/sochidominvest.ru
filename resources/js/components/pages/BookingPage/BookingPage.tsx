@@ -2,6 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react'
 import {IFilterContent} from '../../../@types/IFilter'
 import {IBooking} from '../../../@types/IBooking'
 import {bookingStatuses} from '../../../helpers/bookingHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import BookingService from '../../../api/BookingService'
 import Title from '../../ui/Title/Title'
 import Wrapper from '../../ui/Wrapper/Wrapper'
@@ -28,24 +29,20 @@ const BookingPage: React.FC = (): React.ReactElement => {
         search()
     }, [bookings, filters])
 
-    const fetchBookingsHandler = () => {
+    const fetchBookingsHandler = (): void => {
         setFetching(true)
 
-        // BookingService.fetchBookings({active: [0, 1]})
-        //     .then((response: any) => setBookings(response.data.data))
-        //     .catch((error: any) => {
-        //         console.error('Произошла ошибка загрузки данных', error)
-        //     })
-        //     .finally(() => setFetching(false))
+        BookingService.fetchBookings({active: [0, 1]})
+            .then((response: any) => setBookings(response.data.data))
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
+            .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchBookingsHandler()
     }
 
-    // Поиск
-    const search = () => {
+    const search = (): void => {
         if (!bookings || !bookings.length) {
             setFilterBooking([])
         }
@@ -53,14 +50,13 @@ const BookingPage: React.FC = (): React.ReactElement => {
         setFilterBooking(filterItemsHandler(bookings))
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupBookingCreate(document.body, {
             onSave: () => onSaveHandler()
         })
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IBooking[]) => {
+    const filterItemsHandler = (list: IBooking[]): IBooking[] => {
         if (!list || !list.length) {
             return []
         }
@@ -70,21 +66,20 @@ const BookingPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    const filtersContent: IFilterContent[] = []
-    // const filtersContent: IFilterContent[] = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'Статус',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: bookingStatuses,
-    //             selected: filters.status,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, status: values})
-    //             }
-    //         }
-    //     ]
-    // }, [filters])
+    const filtersContent: IFilterContent[] = useMemo((): IFilterContent[] => {
+        return [
+            {
+                title: 'Статус',
+                type: 'checker',
+                multi: true,
+                items: bookingStatuses,
+                selected: filters.status,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, status: values})
+                }
+            }
+        ]
+    }, [filters])
 
     return (
         <PanelView pageTitle='Список бронирования'>
@@ -95,7 +90,7 @@ const BookingPage: React.FC = (): React.ReactElement => {
 
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onAddHandler.bind(this)}
+                       onAdd={checkRules([Rules.ADD_BOOKING]) ? onAddHandler.bind(this) : undefined}
                        onFilter={() => setIsShowFilter(!isShowFilter)}
                        className={classes.title}
                 >Список бронирования</Title>

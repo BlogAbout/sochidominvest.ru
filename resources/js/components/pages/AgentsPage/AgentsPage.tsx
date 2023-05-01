@@ -1,10 +1,10 @@
 import React, {useEffect, useMemo, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
-import {agentTypes} from '../../../helpers/agentHelper'
 import {compareText} from '../../../helpers/filterHelper'
 import {changeLayout, getLayout} from '../../../helpers/utilHelper'
-import {allowForRole, allowForTariff} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
+import {agentTypes} from '../../../helpers/agentHelper'
 import {RouteNames} from '../../../helpers/routerHelper'
 import {IAgent} from '../../../@types/IAgent'
 import {IFilter, IFilterContent} from '../../../@types/IFilter'
@@ -43,30 +43,26 @@ const AgentsPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [agents, filters])
 
-    const fetchAgentsHandler = () => {
+    const fetchAgentsHandler = (): void => {
         setFetching(true)
 
         const filter: IFilter = {active: [0, 1]}
 
-        // if (user && user.id && user.role === 'subscriber' && allowForTariff(['base', 'business', 'effectivePlus'], user.tariff)) {
-        //     filter.author = [user.id]
-        // }
+        if (!checkRules([Rules.IS_MANAGER])) {
+            filter.author = [user.id]
+        }
 
         AgentService.fetchAgents(filter)
             .then((response: any) => setAgents(response.data.data))
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
             .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchAgentsHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!agents || !agents.length) {
@@ -82,26 +78,24 @@ const AgentsPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onClickHandler = (agent: IAgent) => {
+    const onClickHandler = (agent: IAgent): void => {
         navigate(`${RouteNames.P_AGENT}/${agent.id}`)
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupAgentCreate(document.body, {
             onSave: () => onSaveHandler()
         })
     }
 
-    // Редактирование
-    const onEditHandler = (agent: IAgent) => {
+    const onEditHandler = (agent: IAgent): void => {
         openPopupAgentCreate(document.body, {
             agent: agent,
             onSave: () => onSaveHandler()
         })
     }
 
-    // Удаление
-    const onRemoveHandler = (agent: IAgent) => {
+    const onRemoveHandler = (agent: IAgent): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${agent.name}?`,
             buttons: [
@@ -128,30 +122,28 @@ const AgentsPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenuHandler = (agent: IAgent, e: React.MouseEvent) => {
+    const onContextMenuHandler = (agent: IAgent, e: React.MouseEvent): void => {
         e.preventDefault()
 
         const menuItems = [{text: 'Открыть', onClick: () => navigate(`${RouteNames.P_AGENT}/${agent.id}`)}]
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
+        if (checkRules([Rules.EDIT_AGENT], agent.author_id)) {
             menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(agent)})
-
-            if (allowForRole(['director', 'administrator'])) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(agent)})
-            }
-
-            openContextMenu(e, menuItems)
         }
+
+        if (checkRules([Rules.REMOVE_AGENT], agent.author_id)) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(agent)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
-    const onChangeLayoutHandler = (value: 'list' | 'till') => {
+    const onChangeLayoutHandler = (value: 'list' | 'till'): void => {
         setLayout(value)
         changeLayout('agents', value)
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IAgent[]) => {
+    const filterItemsHandler = (list: IAgent[]): IAgent[] => {
         if (!list || !list.length) {
             return []
         }
@@ -161,21 +153,20 @@ const AgentsPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    const filtersContent: IFilterContent[] = []
-    // const filtersContent: IFilterContent[] = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'Тип',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: agentTypes,
-    //             selected: filters.types,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, types: values})
-    //             }
-    //         }
-    //     ]
-    // }, [filters])
+    const filtersContent: IFilterContent[] = useMemo((): IFilterContent[] => {
+        return [
+            {
+                title: 'Тип',
+                type: 'checker',
+                multi: true,
+                items: agentTypes,
+                selected: filters.types,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, types: values})
+                }
+            }
+        ]
+    }, [filters])
 
     return (
         <PanelView pageTitle='Агентства'>
@@ -186,7 +177,7 @@ const AgentsPage: React.FC = (): React.ReactElement => {
 
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onAddHandler.bind(this)}
+                       onAdd={checkRules([Rules.ADD_AGENT]) ? onAddHandler.bind(this) : undefined}
                        onFilter={() => setIsShowFilter(!isShowFilter)}
                        searchText={searchText}
                        onSearch={search.bind(this)}

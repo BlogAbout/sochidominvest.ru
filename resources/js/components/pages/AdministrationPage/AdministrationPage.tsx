@@ -28,23 +28,16 @@ const AdministrationPagePanel: React.FC = (): React.ReactElement => {
         fetchSettingsHandler()
     }, [])
 
-    const fetchSettingsHandler = () => {
+    const fetchSettingsHandler = (): void => {
         setFetching(true)
 
         SettingService.fetchSettings()
-            .then((response: any) => {
-                setSettings(response.data.data)
-            })
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
-            .finally(() => {
-                setFetching(false)
-            })
+            .then((response: any) => setSettings(response.data.data))
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
+            .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         setFetching(true)
 
         SettingService.saveSetting(settingsUpdate)
@@ -52,16 +45,11 @@ const AdministrationPagePanel: React.FC = (): React.ReactElement => {
                 setSettings(response.data.data)
                 setSettingsUpdate({})
             })
-            .catch((error: any) => {
-                console.error('Произошла ошибка сохранения данных', error)
-            })
-            .finally(() => {
-                setFetching(false)
-            })
+            .catch((error: any) => console.error('Произошла ошибка сохранения данных', error))
+            .finally(() => setFetching(false))
     }
 
-    // Обработчик отмены
-    const onCancelHandler = () => {
+    const onCancelHandler = (): void => {
         setSettingsUpdate({})
     }
 
@@ -79,7 +67,7 @@ const AdministrationPagePanel: React.FC = (): React.ReactElement => {
     }
 
     // Установка значения в объекте
-    const setSettingValue = (key: string, value: string) => {
+    const setSettingValue = (key: string, value: string): void => {
         setSettingsUpdate({...settingsUpdate, [`${key}`]: value})
     }
 
@@ -441,7 +429,7 @@ const AdministrationPagePanel: React.FC = (): React.ReactElement => {
         )
     }
 
-    const tabs: ITab = useMemo(() => {
+    const tabs: ITab = useMemo((): ITab => {
         return {
             common: {title: 'Общие настройки', render: renderCommonTab()},
             notification: {title: 'Уведомления', render: renderNotificationTab()},

@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {IUserExternal} from '../../../../../@types/IUser'
-import {allowForRole} from '../../../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import UserService from '../../../../../api/UserService'
 import ListHead from '../../../../ui/List/components/ListHead/ListHead'
 import ListCell from '../../../../ui/List/components/ListCell/ListCell'
@@ -32,16 +32,14 @@ const defaultProps: Props = {
 const ExternalUserList: React.FC<Props> = (props): React.ReactElement => {
     const [fetching, setFetching] = useState(props.fetching)
 
-    // Редактирование
-    const onEditHandler = (user: IUserExternal) => {
+    const onEditHandler = (user: IUserExternal): void => {
         openPopupUserExternalCreate(document.body, {
             user: user,
             onSave: () => props.onSave()
         })
     }
 
-    // Удаление
-    const onRemoveHandler = (user: IUserExternal) => {
+    const onRemoveHandler = (user: IUserExternal): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить "${user.name}"?`,
             buttons: [
@@ -68,11 +66,10 @@ const ExternalUserList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Контекстное меню
-    const onContextMenuHandler = (user: IUserExternal, e: React.MouseEvent) => {
+    const onContextMenuHandler = (user: IUserExternal, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
+        if (checkRules([Rules.IS_MANAGER])) {
             const menuItems = [
                 {
                     text: 'Редактировать',

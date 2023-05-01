@@ -4,7 +4,7 @@ import {RouteNames} from '../../../../../helpers/routerHelper'
 import {IBooking} from '../../../../../@types/IBooking'
 import {IBusinessProcess} from '../../../../../@types/IBusinessProcess'
 import {getBookingStatusText} from '../../../../../helpers/bookingHelper'
-import {allowForRole} from '../../../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import {getFormatDate} from '../../../../../helpers/dateHelper'
 import BookingService from '../../../../../api/BookingService'
 import ListHead from '../../../../ui/List/components/ListHead/ListHead'
@@ -42,7 +42,7 @@ const BookingList: React.FC<Props> = (props): React.ReactElement => {
     const [fetching, setFetching] = useState(props.fetching)
 
     // Отправка заявки в обработку
-    const onProcessHandler = (booking: IBooking) => {
+    const onProcessHandler = (booking: IBooking): void => {
         if (!booking.id) {
             return
         }
@@ -66,16 +66,14 @@ const BookingList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Редактирование
-    const onEditHandler = (booking: IBooking) => {
+    const onEditHandler = (booking: IBooking): void => {
         openPopupBookingCreate(document.body, {
             booking: booking,
             onSave: () => props.onSave()
         })
     }
 
-    // Удаление
-    const onRemoveHandler = (booking: IBooking) => {
+    const onRemoveHandler = (booking: IBooking): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить бронь для ${booking.buildingName} на ${getFormatDate(booking.dateStart)} - ${getFormatDate(booking.dateFinish)}?`,
             buttons: [
@@ -102,22 +100,24 @@ const BookingList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenuHandler = (booking: IBooking, e: React.MouseEvent) => {
+    const onContextMenuHandler = (booking: IBooking, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
-            const menuItems = [
-                {text: 'Взять в обработку', onClick: () => onProcessHandler(booking)},
-                {text: 'Редактировать', onClick: () => onEditHandler(booking)}
-            ]
+        const menuItems: any[] = []
 
-            if (allowForRole(['director', 'administrator'])) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(booking)})
-            }
-
-            openContextMenu(e, menuItems)
+        if (checkRules([Rules.RUN_BUSINESS_PROCESS])) {
+            menuItems.push({text: 'Взять в обработку', onClick: () => onProcessHandler(booking)})
         }
+
+        if (checkRules([Rules.EDIT_BOOKING])) {
+            menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(booking)})
+        }
+
+        if (checkRules([Rules.REMOVE_BOOKING])) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(booking)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     return (

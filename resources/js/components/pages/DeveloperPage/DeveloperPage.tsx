@@ -5,21 +5,23 @@ import {useActions} from '../../../hooks/useActions'
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll'
 import {compareText} from '../../../helpers/filterHelper'
 import {changeLayout, getLayout, getSetting} from '../../../helpers/utilHelper'
-import {allowForRole, allowForTariff} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {RouteNames} from '../../../helpers/routerHelper'
+import {IUser} from '../../../@types/IUser'
 import {IBuilding} from '../../../@types/IBuilding'
 import {IDeveloper} from '../../../@types/IDeveloper'
 import Title from '../../ui/Title/Title'
 import Wrapper from '../../ui/Wrapper/Wrapper'
 import PanelView from '../../views/PanelView/PanelView'
+import UserService from '../../../api/UserService'
 import BuildingService from '../../../api/BuildingService'
 import DeveloperService from '../../../api/DeveloperService'
+import CompilationService from '../../../api/CompilationService'
 import BuildingList from '../BuildingsPanelPage/components/BuildingList/BuildingList'
 import BuildingTill from '../BuildingsPanelPage/components/BuildingTill/BuildingTill'
 import openPopupBuildingCreate from '../../../components/popup/PopupBuildingCreate/PopupBuildingCreate'
 import openPopupAlert from '../../popup/PopupAlert/PopupAlert'
 import openContextMenu from '../../ui/ContextMenu/ContextMenu'
-import CompilationService from '../../../api/CompilationService'
 import BuildingMap from '../BuildingsPanelPage/components/BuildingMap/BuildingMap'
 import classes from './DeveloperPage.module.scss'
 
@@ -36,6 +38,7 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
 
     const [fetching, setFetching] = useState(false)
     const [searchText, setSearchText] = useState('')
+    const [buildings, setBuilding] = useState<IBuilding[]>([])
     const [filterBuilding, setFilterBuilding] = useState<IBuilding[]>([])
     const [layout, setLayout] = useState<'list' | 'till' | 'map'>(getLayout('buildings'))
     const [currentPage, setCurrentPage] = useState(1)
@@ -45,9 +48,8 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
     const [developer, setDeveloper] = useState<IDeveloper | null>(null)
 
     const {user} = useTypedSelector(state => state.userReducer)
-    const {buildings, fetching: fetchingBuilding} = useTypedSelector(state => state.buildingReducer)
     const {settings} = useTypedSelector(state => state.settingReducer)
-    const {fetchBuildingList} = useActions()
+    const {setUserAuth} = useActions()
 
     const [readMoreElementRef]: any = useInfiniteScroll(
         currentPage * countPerPage < buildings.length
@@ -59,8 +61,15 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
 
     useEffect(() => {
         fetchDeveloperHandler()
-        fetchBuildingsHandler()
     }, [params.id])
+
+    useEffect(() => {
+        if (developer && developer.buildings) {
+            setBuilding(developer.buildings)
+        } else {
+            setBuilding([])
+        }
+    }, [developer])
 
     useEffect(() => {
         search(searchText)
@@ -78,7 +87,7 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
         onScrollContainerTopHandler(refScrollerContainer)
     }, [countPerPage, filterBuilding])
 
-    const onScrollContainerTopHandler = (refElement: React.MutableRefObject<any>) => {
+    const onScrollContainerTopHandler = (refElement: React.MutableRefObject<any>): void => {
         if (refElement && currentPage > 1) {
             if (refElement.current && refElement.current.scrollTop) {
                 refElement.current.scrollTop = 0
@@ -88,74 +97,56 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const fetchBuildingsHandler = () => {
-        fetchBuildingList({active: [0, 1]})
-    }
-
-    const fetchDeveloperHandler = () => {
+    const fetchDeveloperHandler = (): void => {
         if (params.id) {
             setFetching(true)
 
             DeveloperService.fetchDeveloperById(parseInt(params.id))
-                .then((response: any) => {
-                    setDeveloper(response.data.data)
-                })
-                .catch((error: any) => {
-                    console.error('Ошибка загрузки данных застройщика', error)
-                })
+                .then((response: any) => setDeveloper(response.data.data))
+                .catch((error: any) => console.error('Ошибка загрузки данных застройщика', error))
                 .finally(() => setFetching(false))
         }
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
-        fetchBuildingsHandler()
+    const onSaveHandler = (): void => {
+        fetchDeveloperHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!buildings || !buildings.length) {
             setFilterBuilding([])
         }
 
-        if (params.id) {
-            const developerId: number = parseInt(params.id)
-
-            if (value !== '') {
-                setFilterBuilding(buildings.filter((building: IBuilding) => {
-                    return building.developer_ids && building.developer_ids.includes(developerId) && (compareText(building.name, value) || (building.address && compareText(building.address, value)))
-                }))
-            } else {
-                setFilterBuilding(buildings.filter((building: IBuilding) => building.developer_ids && building.developer_ids.includes(developerId)))
-            }
+        if (value !== '') {
+            setFilterBuilding(buildings.filter((building: IBuilding) => {
+                return compareText(building.name, value) || (building.address && compareText(building.address, value))
+            }))
         } else {
-            setFilterBuilding([])
+            setFilterBuilding(buildings)
         }
     }
 
-    const onClickHandler = (building: IBuilding) => {
+    const onClickHandler = (building: IBuilding): void => {
         navigate(`${RouteNames.BUILDING}/${building.id}`)
     }
 
-    const onAddHandler = (type: 'building' | 'apartment' | 'house' | 'land' | 'commerce' | 'garage') => {
+    const onAddHandler = (type: 'building' | 'apartment' | 'house' | 'land' | 'commerce' | 'garage'): void => {
         openPopupBuildingCreate(document.body, {
             type: type,
             onSave: () => onSaveHandler()
         })
     }
 
-    // Редактирование
-    const onEditHandler = (building: IBuilding) => {
+    const onEditHandler = (building: IBuilding): void => {
         openPopupBuildingCreate(document.body, {
             building: building,
             onSave: () => onSaveHandler()
         })
     }
 
-    // Удаление
-    const onRemoveHandler = (building: IBuilding) => {
+    const onRemoveHandler = (building: IBuilding): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить "${building.name}"?`,
             buttons: [
@@ -183,67 +174,76 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
     }
 
     // Удаление объекта из избранного
-    const onRemoveBuildingFromFavoriteHandler = (building: IBuilding) => {
+    const onRemoveBuildingFromFavoriteHandler = (building: IBuilding): void => {
         if (building.id) {
-            // FavoriteService.removeFavorite(building.id)
-            //     .then(() => onSaveHandler())
-            //     .catch((error: any) => {
-            //         console.error('Ошибка удаления из избранного', error)
-            //
-            //         openPopupAlert(document.body, {
-            //             title: 'Ошибка!',
-            //             text: error.data.data
-            //         })
-            //     })
+            const favoriteIds: number[] = user.favorite_ids ? user.favorite_ids.filter((id: number) => id !== building.id) : []
+            const userUpdate: IUser = JSON.parse(JSON.stringify(user))
+            userUpdate.favorite_ids = favoriteIds
+
+            setFetching(true)
+
+            UserService.saveUser(userUpdate)
+                .then((response: any) => setUserAuth(response))
+                .catch((error: any) => {
+                    console.error('Ошибка удаления из избранного', error)
+
+                    openPopupAlert(document.body, {
+                        title: 'Ошибка!',
+                        text: error.data.data
+                    })
+                })
+                .finally(() => setFetching(false))
         }
     }
 
     // Удаление объекта из подборки
-    const onRemoveBuildingFromCompilationHandler = (building: IBuilding, compilationId?: number) => {
+    const onRemoveBuildingFromCompilationHandler = (building: IBuilding, compilationId?: number): void => {
         if (compilationId && building.id) {
-            // CompilationService.removeBuildingFromCompilation(compilationId, building.id)
-            //     .then(() => onSaveHandler())
-            //     .catch((error: any) => {
-            //         console.error('Ошибка удаления из подборки', error)
-            //
-            //         openPopupAlert(document.body, {
-            //             title: 'Ошибка!',
-            //             text: error.data.data
-            //         })
-            //     })
+            setFetching(true)
+
+            CompilationService.removeBuildingFromCompilation(compilationId, building.id)
+                .then(() => onSaveHandler())
+                .catch((error: any) => {
+                    console.error('Ошибка удаления из подборки', error)
+
+                    openPopupAlert(document.body, {
+                        title: 'Ошибка!',
+                        text: error.data.data
+                    })
+                })
+                .finally(() => setFetching(false))
         }
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenuItemHandler = (building: IBuilding, e: React.MouseEvent) => {
+    const onContextMenuItemHandler = (building: IBuilding, e: React.MouseEvent): void => {
         e.preventDefault()
 
         const menuItems: any = []
 
-        // Todo
-        // if (props.isFavorite) {
-        //     menuItems.push({text: 'Удалить из избранного', onClick: () => removeBuildingFromFavorite()})
-        // }
-        //
+        if (user.favorite_ids && user.favorite_ids.includes(building.id)) {
+            menuItems.push({
+                text: 'Удалить из избранного',
+                onClick: () => onRemoveBuildingFromFavoriteHandler(building)
+            })
+        }
+
         // if (props.compilationId && props.building.id) {
         //     menuItems.push({text: 'Удалить из подборки', onClick: () => removeBuildingFromCompilation()})
         // }
 
-        // if (allowForRole(['director', 'administrator', 'manager'], user.role) || (user.role === 'subscriber' && building.author === user.id)) {
-        //     menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(building)})
-        //
-        //     if (allowForRole(['director', 'administrator'], user.role) || (user.role === 'subscriber' && building.author === user.id)) {
-        //         menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(building)})
-        //     }
-        // }
-
-        if (menuItems.length) {
-            openContextMenu(e, menuItems)
+        if (checkRules([Rules.EDIT_BUILDING], building.author_id)) {
+            menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(building)})
         }
+
+        if (checkRules([Rules.REMOVE_BUILDING], building.author_id)) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(building)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     // Меню выбора создания объекта
-    const onContextMenuHandler = (e: React.MouseEvent) => {
+    const onContextMenuHandler = (e: React.MouseEvent): void => {
         e.preventDefault()
 
         const menuItems = [
@@ -254,14 +254,14 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
             {text: 'Гараж, машиноместо', onClick: () => onAddHandler('garage')}
         ]
 
-        // if (allowForRole(['director', 'administrator', 'manager']) || (user.role === 'subscriber' && user.tariff !== undefined && allowForTariff(['business', 'effectivePlus'], user.tariff))) {
+        if (checkRules([Rules.MORE_TARIFF_BASE])) {
             menuItems.unshift({text: 'Жилой комплекс', onClick: () => onAddHandler('building')})
-        // }
+        }
 
         openContextMenu(e.currentTarget, menuItems)
     }
 
-    const onChangeLayoutHandler = (value: 'list' | 'till' | 'map') => {
+    const onChangeLayoutHandler = (value: 'list' | 'till' | 'map'): void => {
         setLayout(value)
         changeLayout('buildings', value)
     }
@@ -272,7 +272,7 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
         >
             <Wrapper isFull>
                 <Title type='h1'
-                       // onAdd={allowForRole(['director', 'administrator', 'manager'], user.role) || (allowForRole(['subscriber']) && allowForTariff(['base', 'business', 'effectivePlus'], user.tariff)) ? (e: React.MouseEvent) => onContextMenuHandler(e) : undefined}
+                       onAdd={checkRules([Rules.ADD_BUILDING]) ? onContextMenuHandler.bind(this) : undefined}
                        searchText={searchText}
                        onSearch={search.bind(this)}
                        className={classes.title}
@@ -283,7 +283,7 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
 
                 {layout === 'till'
                     ? <BuildingTill list={filterBuilding}
-                                    fetching={fetching || fetchingBuilding}
+                                    fetching={fetching}
                                     onClick={(building: IBuilding) => onClickHandler(building)}
                                     onContextMenu={(building: IBuilding, e: React.MouseEvent) => onContextMenuItemHandler(building, e)}
                                     refScrollerContainer={refScrollerContainer}
@@ -293,14 +293,14 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
                     />
                     : layout === 'map'
                         ? <BuildingMap list={filterBuilding}
-                                       fetching={fetching || fetchingBuilding}
+                                       fetching={fetching}
                                        onClick={(building: IBuilding) => onClickHandler(building)}
                                        onContextMenu={(building: IBuilding, e: React.MouseEvent) => onContextMenuItemHandler(building, e)}
                                        mapApiKey={apiKey}
                                        mapPresetIcon={presetIcon}
                         />
                         : <BuildingList list={filterBuilding}
-                                        fetching={fetching || fetchingBuilding}
+                                        fetching={fetching}
                                         onClick={(building: IBuilding) => onClickHandler(building)}
                                         onContextMenu={(building: IBuilding, e: React.MouseEvent) => onContextMenuItemHandler(building, e)}
                                         refScrollerContainer={refScrollerContainer}

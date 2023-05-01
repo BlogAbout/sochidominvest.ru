@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {IBusinessProcess} from '../../../@types/IBusinessProcess'
 import BusinessProcessService from '../../../api/BusinessProcessService'
 import Title from '../../ui/Title/Title'
@@ -14,30 +15,30 @@ const BusinessProcessPage: React.FC = (): React.ReactElement => {
     const [businessProcesses, setBusinessProcesses] = useState<IBusinessProcess[]>([])
     const [ordering, setOrdering] = useState<number[]>([])
 
+    const {user} = useTypedSelector(state => state.userReducer)
+
     useEffect(() => {
         fetchBusinessProcessesHandler()
     }, [])
 
-    const fetchBusinessProcessesHandler = () => {
+    useEffect(() => {
+        setOrdering(user.bp_ordering || [])
+    }, [user])
+
+    const fetchBusinessProcessesHandler = (): void => {
         setFetching(true)
 
         BusinessProcessService.fetchBusinessProcesses({active: [0, 1]})
-            .then((response: any) => {
-                setBusinessProcesses(response.data.data.list)
-                setOrdering(response.data.data.ordering)
-            })
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
+            .then((response: any) => setBusinessProcesses(response.data.data))
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
             .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchBusinessProcessesHandler()
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupBusinessProcessCreate(document.body, {
             onSave: () => onSaveHandler()
         })

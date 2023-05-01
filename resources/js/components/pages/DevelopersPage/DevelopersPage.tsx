@@ -4,7 +4,7 @@ import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {developerTypes} from '../../../helpers/developerHelper'
 import {compareText} from '../../../helpers/filterHelper'
 import {changeLayout, getLayout} from '../../../helpers/utilHelper'
-import {allowForRole, allowForTariff} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {RouteNames} from '../../../helpers/routerHelper'
 import {IDeveloper} from '../../../@types/IDeveloper'
 import {IFilter, IFilterContent} from '../../../@types/IFilter'
@@ -43,14 +43,14 @@ const DevelopersPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [developers, filters])
 
-    const fetchDevelopersHandler = () => {
+    const fetchDevelopersHandler = (): void => {
         setFetching(true)
 
         const filter: IFilter = {active: [0, 1]}
 
-        // if (user && user.id && user.role === 'subscriber' && allowForTariff(['base', 'business', 'effectivePlus'], user.tariff)) {
-        //     filter.author = [user.id]
-        // }
+        if (!checkRules([Rules.IS_MANAGER])) {
+            filter.author = [user.id]
+        }
 
         DeveloperService.fetchDevelopers(filter)
             .then((response: any) => setDevelopers(response.data.data))
@@ -60,13 +60,11 @@ const DevelopersPage: React.FC = (): React.ReactElement => {
             .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchDevelopersHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!developers || !developers.length) {
@@ -84,26 +82,24 @@ const DevelopersPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onClickHandler = (developer: IDeveloper) => {
+    const onClickHandler = (developer: IDeveloper): void => {
         navigate(`${RouteNames.P_DEVELOPER}/${developer.id}`)
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupDeveloperCreate(document.body, {
             onSave: () => onSaveHandler()
         })
     }
 
-    // Редактирование
-    const onEditHandler = (developer: IDeveloper) => {
+    const onEditHandler = (developer: IDeveloper): void => {
         openPopupDeveloperCreate(document.body, {
             developer: developer,
             onSave: () => onSaveHandler()
         })
     }
 
-    // Удаление
-    const onRemoveHandler = (developer: IDeveloper) => {
+    const onRemoveHandler = (developer: IDeveloper): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${developer.name}?`,
             buttons: [
@@ -130,30 +126,31 @@ const DevelopersPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenuHandler = (developer: IDeveloper, e: React.MouseEvent) => {
+    const onContextMenuHandler = (developer: IDeveloper, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        const menuItems = [{text: 'Открыть', onClick: () => navigate(`${RouteNames.P_DEVELOPER}/${developer.id}`)}]
+        const menuItems: any[] = [{
+            text: 'Открыть',
+            onClick: () => navigate(`${RouteNames.P_DEVELOPER}/${developer.id}`)
+        }]
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
+        if (checkRules([Rules.EDIT_DEVELOPER])) {
             menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(developer)})
-
-            if (allowForRole(['director', 'administrator'])) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(developer)})
-            }
-
-            openContextMenu(e, menuItems)
         }
+
+        if (checkRules([Rules.REMOVE_DEVELOPER])) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(developer)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
-    const onChangeLayoutHandler = (value: 'list' | 'till') => {
+    const onChangeLayoutHandler = (value: 'list' | 'till'): void => {
         setLayout(value)
         changeLayout('developers', value)
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IDeveloper[]) => {
+    const filterItemsHandler = (list: IDeveloper[]): IDeveloper[] => {
         if (!list || !list.length) {
             return []
         }
@@ -187,7 +184,7 @@ const DevelopersPage: React.FC = (): React.ReactElement => {
 
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onAddHandler.bind(this)}
+                       onAdd={checkRules([Rules.ADD_DEVELOPER]) ? onAddHandler.bind(this) : undefined}
                        onFilter={() => setIsShowFilter(!isShowFilter)}
                        searchText={searchText}
                        onSearch={search.bind(this)}

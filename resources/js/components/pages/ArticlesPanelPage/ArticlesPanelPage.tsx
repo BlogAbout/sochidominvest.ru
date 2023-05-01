@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom'
 import {articleTypes} from '../../../helpers/articleHelper'
 import {compareText} from '../../../helpers/filterHelper'
 import {changeLayout, getLayout} from '../../../helpers/utilHelper'
-import {allowForRole} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {RouteNames} from '../../../helpers/routerHelper'
 import {IArticle} from '../../../@types/IArticle'
 import {IFilterContent} from '../../../@types/IFilter'
@@ -40,24 +40,20 @@ const ArticlesPanelPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [articles, filters])
 
-    const fetchArticlesHandler = () => {
+    const fetchArticlesHandler = (): void => {
         setFetching(true)
 
         ArticleService.fetchArticles({active: [0, 1]})
             .then((response: any) => setArticles(response.data.data))
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
             .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchArticlesHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!articles || !articles.length) {
@@ -73,26 +69,24 @@ const ArticlesPanelPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    const onClickHandler = (article: IArticle) => {
+    const onClickHandler = (article: IArticle): void => {
         navigate(`${RouteNames.ARTICLE}/${article.id}`)
     }
 
-    const onAddHandler = () => {
+    const onAddHandler = (): void => {
         openPopupArticleCreate(document.body, {
             onSave: () => onSaveHandler()
         })
     }
 
-    // Редактирование
-    const onEditHandler = (article: IArticle) => {
+    const onEditHandler = (article: IArticle): void => {
         openPopupArticleCreate(document.body, {
             article: article,
             onSave: () => onSaveHandler()
         })
     }
 
-    // Удаление
-    const onRemoveHandler = (article: IArticle) => {
+    const onRemoveHandler = (article: IArticle): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить "${article.name}"?`,
             buttons: [
@@ -119,28 +113,28 @@ const ArticlesPanelPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Открытие контекстного меню на элементе
-    const onContextMenuHandler = (article: IArticle, e: React.MouseEvent) => {
+    const onContextMenuHandler = (article: IArticle, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
-            const menuItems = [{text: 'Редактировать', onClick: () => onEditHandler(article)}]
+        const menuItems: any[] = []
 
-            if (allowForRole(['director', 'administrator'])) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(article)})
-            }
-
-            openContextMenu(e, menuItems)
+        if (checkRules([Rules.EDIT_ARTICLE])) {
+            menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(article)})
         }
+
+        if (checkRules([Rules.REMOVE_ARTICLE])) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(article)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
-    const onChangeLayoutHandler = (value: 'list' | 'till') => {
+    const onChangeLayoutHandler = (value: 'list' | 'till'): void => {
         setLayout(value)
         changeLayout('articles', value)
     }
 
-    // Фильтрация элементов на основе установленных фильтров
-    const filterItemsHandler = (list: IArticle[]) => {
+    const filterItemsHandler = (list: IArticle[]): IArticle[] => {
         if (!list || !list.length) {
             return []
         }
@@ -150,21 +144,20 @@ const ArticlesPanelPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    const filtersContent: IFilterContent[] = []
-    // const filtersContent: IFilterContent[] = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'Тип',
-    //             type: 'checker',
-    //             multi: true,
-    //             items: articleTypes,
-    //             selected: filters.types,
-    //             onSelect: (values: string[]) => {
-    //                 setFilters({...filters, types: values})
-    //             }
-    //         }
-    //     ]
-    // }, [filters])
+    const filtersContent: IFilterContent[] = useMemo((): IFilterContent[] => {
+        return [
+            {
+                title: 'Тип',
+                type: 'checker',
+                multi: true,
+                items: articleTypes,
+                selected: filters.types,
+                onSelect: (values: string[]) => {
+                    setFilters({...filters, types: values})
+                }
+            }
+        ]
+    }, [filters])
 
     return (
         <PanelView pageTitle='Статьи'>
@@ -175,7 +168,7 @@ const ArticlesPanelPage: React.FC = (): React.ReactElement => {
 
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onAddHandler.bind(this)}
+                       onAdd={checkRules([Rules.ADD_ARTICLE]) ? onAddHandler.bind(this) : undefined}
                        onFilter={() => setIsShowFilter(!isShowFilter)}
                        searchText={searchText}
                        onSearch={search.bind(this)}

@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {IMailing} from '../../../../../@types/IMailing'
 import {getMailingStatusText, getMailingTypeText} from '../../../../../helpers/mailingHelper'
-import {allowForRole} from '../../../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import MailingService from '../../../../../api/MailingService'
 import ListHead from '../../../../ui/List/components/ListHead/ListHead'
 import ListCell from '../../../../ui/List/components/ListCell/ListCell'
@@ -33,14 +33,14 @@ const defaultProps: Props = {
 const MailingList: React.FC<Props> = (props): React.ReactElement => {
     const [fetching, setFetching] = useState(props.fetching)
 
-    const onEditHandler = (mailing: IMailing) => {
+    const onEditHandler = (mailing: IMailing): void => {
         openPopupMailingCreate(document.body, {
             mailing: mailing,
             onSave: () => props.onSave()
         })
     }
 
-    const onRemoveHandler = (mailing: IMailing) => {
+    const onRemoveHandler = (mailing: IMailing): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить "${mailing.name}"?`,
             buttons: [
@@ -51,18 +51,14 @@ const MailingList: React.FC<Props> = (props): React.ReactElement => {
                             setFetching(true)
 
                             MailingService.removeMailing(mailing.id)
-                                .then(() => {
-                                    props.onSave()
-                                })
+                                .then(() => props.onSave())
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
                                         text: error.data.data
                                     })
                                 })
-                                .finally(() => {
-                                    setFetching(false)
-                                })
+                                .finally(() => setFetching(false))
                         }
                     }
                 },
@@ -71,7 +67,8 @@ const MailingList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    const onRunHandler = (mailing: IMailing, isRun = false) => {
+    // Запуск рассылки
+    const onRunHandler = (mailing: IMailing, isRun = false): void => {
         const updateMailing: IMailing = {...mailing}
         updateMailing.status = isRun ? 1 : 0
 
@@ -96,15 +93,13 @@ const MailingList: React.FC<Props> = (props): React.ReactElement => {
                 })
 
             })
-            .finally(() => {
-                setFetching(false)
-            })
+            .finally(() => setFetching(false))
     }
 
-    const onContextMenuHandler = (mailing: IMailing, e: React.MouseEvent) => {
+    const onContextMenuHandler = (mailing: IMailing, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
+        if (checkRules([Rules.IS_MANAGER])) {
             const menuItems = [
                 {
                     text: 'Редактировать',

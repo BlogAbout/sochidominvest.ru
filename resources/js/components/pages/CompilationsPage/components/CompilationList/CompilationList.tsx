@@ -34,14 +34,14 @@ const CompilationList: React.FC<Props> = (props): React.ReactElement => {
 
     const [fetching, setFetching] = useState(props.fetching)
 
-    const updateHandler = (compilation: ICompilation) => {
+    const updateHandler = (compilation: ICompilation): void => {
         openPopupCompilationCreate(document.body, {
             compilation: compilation,
             onSave: () => props.onSave()
         })
     }
 
-    const removeHandler = (compilation: ICompilation) => {
+    const removeHandler = (compilation: ICompilation): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить подборку "${compilation.name}"? Все объекты из нее также будут удалены!`,
             buttons: [
@@ -52,18 +52,14 @@ const CompilationList: React.FC<Props> = (props): React.ReactElement => {
 
                         if (compilation.id) {
                             CompilationService.removeCompilation(compilation.id)
-                                .then(() => {
-                                    props.onSave()
-                                })
+                                .then(() => props.onSave())
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
                                         text: error.data.data,
                                     })
                                 })
-                                .finally(() => {
-                                    setFetching(false)
-                                })
+                                .finally(() => setFetching(false))
                         }
                     }
                 },
@@ -72,7 +68,7 @@ const CompilationList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    const onContextMenu = (compilation: ICompilation, e: React.MouseEvent) => {
+    const onContextMenu = (compilation: ICompilation, e: React.MouseEvent): void => {
         e.preventDefault()
 
         const menuItems = [

@@ -3,7 +3,7 @@ import {ITransaction} from '../../../../../@types/ITransaction'
 import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
 import {useActions} from '../../../../../hooks/useActions'
 import {getPaymentStatusText} from '../../../../../helpers/paymentHelper'
-import {allowForRole} from '../../../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import {numberWithSpaces, round} from '../../../../../helpers/numberHelper'
 import TransactionService from '../../../../../api/TransactionService'
 import ListHead from '../../../../ui/List/components/ListHead/ListHead'
@@ -44,16 +44,14 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
         }
     }, [])
 
-    // Редактирование платежа
-    const onEditHandler = (payment: ITransaction) => {
+    const onEditHandler = (payment: ITransaction): void => {
         openPopupPaymentCreate(document.body, {
             payment: payment,
             onSave: () => props.onSave()
         })
     }
 
-    // Копирование платежа
-    const onCopyHandler = (payment: ITransaction) => {
+    const onCopyHandler = (payment: ITransaction): void => {
         const newPayment: ITransaction = {
             id: null,
             name: payment.name,
@@ -74,35 +72,33 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
     }
 
     // Переход по ссылке на платежную форму
-    const onOpenLinkHandler = (payment: ITransaction) => {
+    const onOpenLinkHandler = (payment: ITransaction): void => {
         if (payment.id) {
-            // setFetching(true)
-            //
-            // TransactionService.fetchLinkPayment(payment.id)
-            //     .then((response: any) => {
-            //         if (response.data.data.status) {
-            //             window.location.href = response.data.data
-            //         } else {
-            //             openPopupAlert(document.body, {
-            //                 title: 'Ошибка!',
-            //                 text: response.data.data
-            //             })
-            //         }
-            //     })
-            //     .catch((error: any) => {
-            //         openPopupAlert(document.body, {
-            //             title: 'Ошибка!',
-            //             text: error.data.data
-            //         })
-            //     })
-            //     .finally(() => {
-            //         setFetching(false)
-            //     })
+            setFetching(true)
+
+            TransactionService.fetchLinkPayment(payment.id)
+                .then((response: any) => {
+                    if (response.data.data.status) {
+                        window.location.href = response.data.data
+                    } else {
+                        openPopupAlert(document.body, {
+                            title: 'Ошибка!',
+                            text: response.data.data
+                        })
+                    }
+                })
+                .catch((error: any) => {
+                    openPopupAlert(document.body, {
+                        title: 'Ошибка!',
+                        text: error.data.data
+                    })
+                })
+                .finally(() => setFetching(false))
         }
     }
 
     // Отправка ссылки на платежную форму плательщику на почту
-    const onSendLinkHandler = (payment: ITransaction) => {
+    const onSendLinkHandler = (payment: ITransaction): void => {
         setFetching(true)
 
         TransactionService.savePayment(payment, true)
@@ -121,23 +117,27 @@ const PaymentList: React.FC<Props> = (props): React.ReactElement => {
             .finally(() => setFetching(false))
     }
 
-    // Контекстное меню на платеже
-    const onContextMenuHandler = (payment: ITransaction, e: React.MouseEvent) => {
+    const onContextMenuHandler = (payment: ITransaction, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
-            const menuItems = []
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.IS_MANAGER])) {
+            if (checkRules([Rules.COPY_PAYMENT])) {
+                menuItems.push({text: 'Копировать', onClick: () => onCopyHandler(payment)})
+            }
+
+            if (checkRules([Rules.EDIT_PAYMENT])) {
+                menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(payment)})
+            }
 
             if (!payment.paid_at) {
                 menuItems.push({text: 'Перейти к оплате', onClick: () => onOpenLinkHandler(payment)})
                 menuItems.push({text: 'Отправить ссылку', onClick: () => onSendLinkHandler(payment)})
             }
-
-            menuItems.push({text: 'Копировать', onClick: () => onCopyHandler(payment)})
-            menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(payment)})
-
-            openContextMenu(e, menuItems)
         }
+
+        openContextMenu(e, menuItems)
     }
 
     return (

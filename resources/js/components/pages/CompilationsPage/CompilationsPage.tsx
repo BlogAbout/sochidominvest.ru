@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {ICompilation} from '../../../@types/ICompilation'
 import {compareText} from '../../../helpers/filterHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import CompilationService from '../../../api/CompilationService'
 import Title from '../../ui/Title/Title'
 import Wrapper from '../../ui/Wrapper/Wrapper'
@@ -23,28 +24,20 @@ const CompilationsPage: React.FC = (): React.ReactElement => {
         search(searchText)
     }, [compilations])
 
-    const fetchCompilationsHandler = () => {
+    const fetchCompilationsHandler = (): void => {
         setFetching(true)
 
         CompilationService.fetchCompilations()
-            .then((response: any) => {
-                setCompilations(response.data.data)
-            })
-            .catch((error: any) => {
-                console.error('Произошла ошибка загрузки данных', error)
-            })
-            .finally(() => {
-                setFetching(false)
-            })
+            .then((response: any) => setCompilations(response.data.data))
+            .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
+            .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
-    const onSaveHandler = () => {
+    const onSaveHandler = (): void => {
         fetchCompilationsHandler()
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (!compilations || !compilations.length) {
@@ -70,7 +63,7 @@ const CompilationsPage: React.FC = (): React.ReactElement => {
         <PanelView pageTitle='Подборки'>
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onAddHandler.bind(this)}
+                       onAdd={checkRules([Rules.ADD_COMPILATION]) ? onAddHandler.bind(this) : undefined}
                        searchText={searchText}
                        onSearch={search.bind(this)}
                        className={classes.title}

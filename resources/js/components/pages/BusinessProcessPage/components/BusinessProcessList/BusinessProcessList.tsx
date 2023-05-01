@@ -3,10 +3,13 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd'
 import classNames from 'classnames/bind'
 import {IBusinessProcess, IBusinessProcessesBySteps} from '../../../../../@types/IBusinessProcess'
+import {IUser} from '../../../../../@types/IUser'
+import {useActions} from '../../../../../hooks/useActions'
 import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
 import {bpSteps, getBpTypesText} from '../../../../../helpers/businessProcessHelper'
 import {allowForRole} from '../../../../../helpers/accessHelper'
 import BusinessProcessService from '../../../../../api/BusinessProcessService'
+import UserService from '../../../../../api/UserService'
 import Title from '../../../../../components/ui/Title/Title'
 import Preloader from '../../../../../components/ui/Preloader/Preloader'
 import openPopupAlert from '../../../../popup/PopupAlert/PopupAlert'
@@ -38,7 +41,9 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
     const [fetching, setFetching] = useState(props.fetching)
     const [businessProcesses, setBusinessProcesses] = useState<IBusinessProcessesBySteps>({} as IBusinessProcessesBySteps)
 
-    const {users, user} = useTypedSelector(state => state.userReducer)
+    const {user} = useTypedSelector(state => state.userReducer)
+
+    const {setUserAuth} = useActions()
 
     useEffect(() => {
         const prepareBusinessProcesses: IBusinessProcessesBySteps = {} as IBusinessProcessesBySteps
@@ -60,14 +65,14 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
         setBusinessProcesses(prepareBusinessProcesses)
     }, [props.list])
 
-    const onEditHandler = (businessProcess: IBusinessProcess) => {
+    const onEditHandler = (businessProcess: IBusinessProcess): void => {
         openPopupBusinessProcessCreate(document.body, {
             businessProcess: businessProcess,
             onSave: () => props.onSave()
         })
     }
 
-    const onRemoveHandler = (businessProcess: IBusinessProcess) => {
+    const onRemoveHandler = (businessProcess: IBusinessProcess): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${businessProcess.name}?`,
             buttons: [
@@ -94,25 +99,26 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    const onSaveOrder = (businessProcess: IBusinessProcess, ids: number[]) => {
+    const onSaveOrder = (businessProcess: IBusinessProcess, ids: number[]): void => {
         setFetching(true)
 
-        // BusinessProcessService.saveBusinessProcessOrdering(businessProcess, ids)
-        //     .then(() => {
-        //
-        //     })
-        //     .catch((error: any) => {
-        //         openPopupAlert(document.body, {
-        //             title: 'Ошибка!',
-        //             text: error.data.data
-        //         })
-        //     })
-        //     .finally(() => {
-        //         setFetching(false)
-        //     })
+        const userUpdate: IUser = JSON.parse(JSON.stringify(user))
+        userUpdate.bp_ordering = ids
+
+        UserService.saveUser(userUpdate)
+            .then((response: any) => setUserAuth(response))
+            .catch((error: any) => {
+                console.error(error.data.message)
+
+                openPopupAlert(document.body, {
+                    title: 'Ошибка!',
+                    text: error.data.message
+                })
+            })
+            .finally(() => setFetching(false))
     }
 
-    const onContextMenuHandler = (businessProcess: IBusinessProcess, e: React.MouseEvent) => {
+    const onContextMenuHandler = (businessProcess: IBusinessProcess, e: React.MouseEvent): void => {
         e.preventDefault()
 
         if (allowForRole(['director', 'administrator', 'manager'])) {
@@ -134,16 +140,14 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
     })
 
     // Стили для списка перемещаемых элементов
-    const getDragListStyle = (isDraggingOver: boolean) => {
-        const styles: CSSProperties = {
+    const getDragListStyle = (isDraggingOver: boolean): CSSProperties => {
+        return {
             background: isDraggingOver ? 'lightblue' : undefined
         }
-
-        return styles
     }
 
     // Обработчик на завершение перемещения элемента (поля), когда отпустили
-    const onDragEnd = (result: any) => {
+    const onDragEnd = (result: any): void => {
         const {source, destination, draggableId} = result
 
         if (!destination) { // Бросили по пути
