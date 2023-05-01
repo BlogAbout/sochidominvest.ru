@@ -220,7 +220,7 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
 
         const menuItems: any = []
 
-        if (user.favorite_ids && user.favorite_ids.includes(building.id)) {
+        if (building.id && user.favorite_ids && user.favorite_ids.includes(building.id)) {
             menuItems.push({
                 text: 'Удалить из избранного',
                 onClick: () => onRemoveBuildingFromFavoriteHandler(building)

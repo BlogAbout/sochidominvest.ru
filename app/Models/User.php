@@ -17,7 +17,7 @@ class User extends Authenticatable
     protected $table = 'sdi_users';
     protected $guarded = false;
 
-    protected $with = ['favorites'];
+    protected $with = ['avatar', 'post', 'role', 'tariff', 'favorites', 'bpSorting'];
     protected $hidden = [
         'password',
         'remember_token',

@@ -42,7 +42,7 @@ const FilesPage: React.FC = (): React.ReactElement => {
 
         const filter: IFilter = {active: [0, 1]}
 
-        if (!checkRules([Rules.IS_MANAGER])) {
+        if (!checkRules([Rules.IS_MANAGER]) && user.id) {
             filter.author = [user.id]
         }
 

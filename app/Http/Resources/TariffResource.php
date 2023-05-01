@@ -18,7 +18,7 @@ class TariffResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'cost' => $this->cost,
-            'privileges' => $this->privileges,
+            'privileges' => $this->privileges ? explode(',', $this->privileges) : [],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

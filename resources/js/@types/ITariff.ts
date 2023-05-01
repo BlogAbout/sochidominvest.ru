@@ -1,5 +1,5 @@
 export interface ITariff {
-    id: number | null
+    id: number
     name: string
     cost: number
     privileges: string[]

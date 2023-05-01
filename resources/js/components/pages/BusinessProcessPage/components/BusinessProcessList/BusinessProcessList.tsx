@@ -103,7 +103,7 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
         setFetching(true)
 
         const userUpdate: IUser = JSON.parse(JSON.stringify(user))
-        userUpdate.bp_ordering = ids
+        userUpdate.business_process_sorting = ids
 
         UserService.saveUser(userUpdate)
             .then((response: any) => setUserAuth(response))

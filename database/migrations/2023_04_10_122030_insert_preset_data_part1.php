@@ -15,23 +15,25 @@ class InsertPresetDataPart1 extends Migration
         DB::table('sdi_users')->insertOrIgnore([
             [
                 'id' => 1,
-                'name' => 'admin',
+                'name' => 'СочиДомИнвест',
                 'email' => 'info@sochidominvest.ru',
                 'password' => '$2y$10$vMlIYnzasMrELNvvVI0ShOegZt9oIQX8CK5ypUONP35ZeKk6442D2',
                 'phone' => '+7 (985) 767-04-21',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 4,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
             [
                 'id' => 2,
-                'name' => ' Геннадий',
+                'name' => 'Геннадий',
                 'email' => 'gennadiy@tsikoliya.ru',
                 'phone' => '+79857670421',
                 'password' => '$2y$10$RzoTy22e6xFOl/xsjG5.7OIjwCpFULGaENeJrU.Z3jt7wj.G7I4Z6',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 4,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -43,6 +45,7 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$gsUlOhDgieFEYetZEIeFlemG3V0n4YO42lLTxpCB9AfUjlDEndIyS',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -54,6 +57,7 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$G3E/SHjN9wepdyJ2eklKDei9ERqRuedFFXbxt6tPVSLT.dRaQ7Nwq',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 2,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -65,6 +69,7 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$PsSd4ec.8htBfTyrV.WZaen/Jg8s5fAJFQ0n4gLYlRqKTlU8EBHtW',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -76,6 +81,7 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$l8bnGBEbW.ZNWNde2rhrhOj58mM9k/Hnlj9fXhE0pFtwPuDVIHN1q',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 3,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -87,6 +93,7 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$Urzen7.1oB54341bxQN6luN1i3dFvYCb.KOR6vrr0H8Ko4Eh.5O8W',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -98,28 +105,31 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$gpo1pdog1bFzJ8v0DAX7N.fmdxncaR1hhK1ozHIEEpIsSeFU0zdam',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
             [
                 'id' => 11,
-                'name' => '  Антон',
+                'name' => 'Антон',
                 'email' => 'Anton@sochidoninvest.ru',
                 'phone' => '89284543390',
                 'password' => '$2y$10$yUWFOv8z6PQepQ5Tbn3RT.yp6kMDapoDSf9jNNkKbifvv4slJndte',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
             [
                 'id' => 12,
-                'name' => 'Игорь ',
+                'name' => 'Игорь',
                 'email' => 'igor.sankov.97@bk.ru',
                 'phone' => '+79180417510',
                 'password' => '$2y$10$kRErxwOEw8JJKys1wDBaJO04acgC9XBC4CF5lHgk400Rgm21Cposa',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -131,6 +141,7 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$20dFtcM34NZXbwA/EyJgU.16M7s9sffqGibm5QmtxyPL9LEtHV2Ia',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -142,6 +153,7 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$iQeyNDcZ.ieDfbMcZRx9B.rALXM/iLWItbGpinRYWhbKoaxmlZDNC',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 3,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -153,17 +165,19 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$8iTQwjyq00OApor1yVSJr.0lT6f9G3chmcJRnVaOKfetJLWnuAoki',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
             [
                 'id' => 16,
-                'name' => 'Евгения ',
+                'name' => 'Евгения',
                 'email' => 'mednikova.evgeniy@mail.ru',
                 'phone' => '89189140629',
                 'password' => '$2y$10$6KE.9gN1q.a0mz4PpLRq5.1xThlHRWFHkhBG0Zq69GC9hDnw0LDBa',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -175,6 +189,7 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$EHZ6OtguF59FvvICdQK6neVRbwch08aUivcuSICZUjOycWVyGIelC',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -186,6 +201,7 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$MDQ9YmnTQDedFm8n3Q7XTe4QFB7/AcCfq4VUjPTgYUDRjg5KHwhmO',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -197,6 +213,7 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$ZrsGy6cbZZ0AN3ubJDXsGu0FV3RTFzjBrwzQfst1KsY87i.wV.vCK',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ],
@@ -208,6 +225,7 @@ class InsertPresetDataPart1 extends Migration
                 'password' => '$2y$10$hcpZfTr5QzczSp6MQ5Oaa.fTS9wkoFF2pa31wr/cPvvEBprzVk.W.',
                 'is_active' => true,
                 'is_block' => false,
+                'role_id' => 1,
                 'created_at' => '2023-04-12 17:00:00',
                 'updated_at' => '2023-04-12 17:00:00'
             ]

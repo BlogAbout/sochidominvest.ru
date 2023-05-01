@@ -40,7 +40,7 @@ const PaymentPage: React.FC = (): React.ReactElement => {
 
         const filter: IFilter = {} as IFilter
 
-        if (!checkRules([Rules.IS_MANAGER])) {
+        if (!checkRules([Rules.IS_MANAGER]) && user.id) {
             filter.userId = [user.id]
         }
 

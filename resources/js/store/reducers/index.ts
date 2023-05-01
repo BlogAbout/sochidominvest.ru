@@ -16,6 +16,7 @@ import PostReducer from './postReducer'
 import BusinessProcessReducer from './businessProcessReducer'
 import AgentReducer from './agentReducer'
 import StoreReducer from './storeReducer'
+import TariffReducer from './tariffReducer'
 
 const rootReducer = combineReducers({
     userReducer: UserReducer,
@@ -33,7 +34,8 @@ const rootReducer = combineReducers({
     postReducer: PostReducer,
     businessProcessReducer: BusinessProcessReducer,
     agentReducer: AgentReducer,
-    storeReducer: StoreReducer
+    storeReducer: StoreReducer,
+    tariffReducer: TariffReducer
 })
 
 export const store = createStore(rootReducer, applyMiddleware(thunk))

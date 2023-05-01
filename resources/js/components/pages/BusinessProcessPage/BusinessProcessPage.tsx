@@ -22,7 +22,7 @@ const BusinessProcessPage: React.FC = (): React.ReactElement => {
     }, [])
 
     useEffect(() => {
-        setOrdering(user.bp_ordering || [])
+        setOrdering(user.business_process_sorting || [])
     }, [user])
 
     const fetchBusinessProcessesHandler = (): void => {
