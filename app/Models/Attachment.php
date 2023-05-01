@@ -2,35 +2,24 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use App\Traits\HasAuthorAttribute;
+use App\Traits\HasCarbonDatesAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Attachment extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasAuthorAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_attachments';
     protected $guarded = false;
 
+    protected $with = ['poster', 'author'];
+
     public function poster()
     {
-        return $this->belongsTo(Attachment::class, 'poster_id', 'id');
-    }
-
-    public function author()
-    {
-        return $this->belongsTo(User::class, 'author_id', 'id')->without(['favorites']);
-    }
-
-    public function getDateCreatedFormatAttribute(): string
-    {
-        return Carbon::parse($this->created_at)->diffForHumans();
-    }
-
-    public function getDateUpdatedFormatAttribute(): string
-    {
-        return Carbon::parse($this->updated_at)->diffForHumans();
+        return $this->belongsTo(Attachment::class, 'poster_id', 'id')
+            ->without(['poster', 'author']);
     }
 }

@@ -2,22 +2,18 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use App\Traits\HasAuthorAttribute;
+use App\Traits\HasCarbonDatesAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BusinessProcess extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasAuthorAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_business_processes';
     protected $guarded = false;
-
-    public function author()
-    {
-        return $this->belongsTo(User::class, 'author_id', 'id')->without(['favorites']);
-    }
 
     public function responsible()
     {
@@ -37,15 +33,5 @@ class BusinessProcess extends Model
     public function relationBuildings()
     {
         return $this->belongsToMany(Building::class, 'sdi_business_process_relations', 'business_process_id', 'object_id')->wherePivot('object_type', 'building');
-    }
-
-    public function getDateCreatedFormatAttribute(): string
-    {
-        return Carbon::parse($this->created_at)->diffForHumans();
-    }
-
-    public function getDateUpdatedFormatAttribute(): string
-    {
-        return Carbon::parse($this->updated_at)->diffForHumans();
     }
 }

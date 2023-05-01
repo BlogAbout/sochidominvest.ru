@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use App\Traits\HasAuthorAttribute;
+use App\Traits\HasCarbonDatesAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Building extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasAuthorAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_buildings';
     protected $guarded = false;
@@ -37,11 +38,6 @@ class Building extends Model
     public function rentInfo()
     {
         return $this->hasOne(BuildingRent::class, 'id');
-    }
-
-    public function author()
-    {
-        return $this->belongsTo(User::class, 'author_id', 'id')->without(['favorites'])->without(['favorites']);
     }
 
     public function images()
@@ -92,15 +88,5 @@ class Building extends Model
     public function relationTags()
     {
         return $this->morphedByMany(Tag::class, 'object', 'sdi_building_relations');
-    }
-
-    public function getDateCreatedFormatAttribute(): string
-    {
-        return Carbon::parse($this->created_at)->diffForHumans();
-    }
-
-    public function getDateUpdatedFormatAttribute(): string
-    {
-        return Carbon::parse($this->updated_at)->diffForHumans();
     }
 }

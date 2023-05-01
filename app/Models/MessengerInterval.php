@@ -20,7 +20,8 @@ class MessengerInterval extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id')->without(['favorites']);
+        return $this->belongsTo(User::class, 'user_id', 'id')
+            ->without(['avatar', 'post', 'role', 'tariff', 'favorites', 'bpSorting']);
     }
 
     public function messageStart()

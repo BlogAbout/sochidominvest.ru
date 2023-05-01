@@ -25,20 +25,14 @@ const SectionArticles: React.FC = (): React.ReactElement => {
     const onFetchArticlesHandler = (): void => {
         setFetching(true)
 
-        ArticleService.fetchArticles({active: [1], publish: 1})
+        ArticleService.fetchArticles({active: [1], publish: 1, limit: 3})
             .then((response: any) => setArticles(response.data.data))
             .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
             .finally(() => setFetching(false))
     }
 
     const renderItems = (): React.ReactElement[] => {
-        const showArticles: IArticle[] = []
-
-        for (let i = 0; i < 3; i++) {
-            showArticles.push(articles[i])
-        }
-
-        return showArticles.map((article: IArticle) => {
+        return articles.map((article: IArticle) => {
             return (
                 <BlockItem key={article.id}
                            title={article.name}

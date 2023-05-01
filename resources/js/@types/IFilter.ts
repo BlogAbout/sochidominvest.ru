@@ -19,6 +19,7 @@ export interface IFilter {
     rent?: number[]
     agentId?: number[]
     developerId?: number[]
+    limit?: number
 }
 
 export interface IFilterContent {

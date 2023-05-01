@@ -29,6 +29,7 @@ class QuestionController extends Controller
             ->when(isset($filter['type']), function ($query) use ($filter) {
                 $query->where('type', '=', $filter['type']);
             })
+            ->limit($filter['limit'] ?? -1)
             ->get();
 
         return QuestionResource::collection($questions)->response()->setStatusCode(200);

@@ -16,33 +16,16 @@ const SectionBuildings: React.FC = (): React.ReactElement => {
     const navigate = useNavigate()
 
     const [buildings, setBuildings] = useState<IBuilding[]>([])
-    const [filteredBuildings, setFilteredBuildings] = useState<IBuilding[]>([])
     const [fetching, setFetching] = useState(false)
 
     useEffect(() => {
         onFetchBuildingsHandler()
     }, [])
 
-    useEffect(() => {
-        const listBuildings: IBuilding[] = []
-        let i = 1
-
-        for (let building of buildings) {
-            if (i > 9) {
-                break
-            }
-
-            listBuildings.push(building)
-            i++
-        }
-
-        setFilteredBuildings(listBuildings)
-    }, [buildings])
-
     const onFetchBuildingsHandler = (): void => {
         setFetching(true)
 
-        BuildingService.fetchBuildings({active: [1], publish: 1})
+        BuildingService.fetchBuildings({active: [1], publish: 1, limit: 3})
             .then((response: any) => setBuildings(response.data.data))
             .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
             .finally(() => setFetching(false))
@@ -55,8 +38,8 @@ const SectionBuildings: React.FC = (): React.ReactElement => {
                     <Title type='h2' style='center' className={classes.title}>Недвижимость</Title>
 
                     <BlockingElement fetching={fetching} className={classes.list}>
-                        {filteredBuildings.length ?
-                            filteredBuildings.map((building: IBuilding) => {
+                        {buildings.length ?
+                            buildings.map((building: IBuilding) => {
                                 return (
                                     <BlockItem key={building.id}
                                                title={building.name}
@@ -97,4 +80,4 @@ const SectionBuildings: React.FC = (): React.ReactElement => {
 
 SectionBuildings.displayName = 'SectionBuildings'
 
-export default SectionBuildings
+export default React.memo(SectionBuildings)

@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use App\Traits\HasAuthorAttribute;
+use App\Traits\HasCarbonDatesAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contact extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasAuthorAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_contacts';
     protected $guarded = false;
@@ -18,26 +19,12 @@ class Contact extends Model
 
     public function agent()
     {
-        return $this->belongsTo(Agent::class, 'agent_id', 'id')->without(['contacts']);
-    }
-
-    public function author()
-    {
-        return $this->belongsTo(User::class, 'author_id', 'id')->without(['favorites']);
+        return $this->belongsTo(Agent::class, 'agent_id', 'id')
+            ->without(['avatar', 'author', 'relationBuildings', 'contacts']);
     }
 
     public function relationBuildings()
     {
         return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')->without(['relationContacts']);
-    }
-
-    public function getDateCreatedFormatAttribute(): string
-    {
-        return Carbon::parse($this->created_at)->diffForHumans();
-    }
-
-    public function getDateUpdatedFormatAttribute(): string
-    {
-        return Carbon::parse($this->updated_at)->diffForHumans();
     }
 }

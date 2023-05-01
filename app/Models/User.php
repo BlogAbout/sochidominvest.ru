@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\HasAvatarAttribute;
+use App\Traits\HasCarbonDatesAttributes;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +14,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasAvatarAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_users';
     protected $guarded = false;
@@ -31,11 +33,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function avatar()
-    {
-        return $this->belongsTo(Attachment::class, 'avatar_id', 'id');
-    }
 
     public function post()
     {
@@ -65,15 +62,5 @@ class User extends Authenticatable
     public function getDateLastActiveFormatAttribute(): string
     {
         return Carbon::parse($this->last_active)->diffForHumans();
-    }
-
-    public function getDateCreatedFormatAttribute(): string
-    {
-        return Carbon::parse($this->created_at)->diffForHumans();
-    }
-
-    public function getDateUpdatedFormatAttribute(): string
-    {
-        return Carbon::parse($this->updated_at)->diffForHumans();
     }
 }

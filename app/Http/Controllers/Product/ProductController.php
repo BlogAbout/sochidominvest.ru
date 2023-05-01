@@ -33,6 +33,7 @@ class ProductController extends Controller
             ->when(isset($filter['author']), function ($query) use ($filter) {
                 $query->whereIn('author_id', $filter['author']);
             })
+            ->limit($filter['limit'] ?? -1)
             ->get();
 
         return ProductResource::collection($products)->response()->setStatusCode(200);
