@@ -4,6 +4,7 @@
 *.iml
 *.ipr
 
+/public
 /vendor
 /node_modules
 npm-debug.log
