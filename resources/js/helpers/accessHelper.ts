@@ -169,7 +169,7 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
                 result = true
                 break
             default:
-                result = false
+                result = true
         }
     })
 

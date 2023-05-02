@@ -20,6 +20,8 @@ class Developer extends Model
 
     public function relationBuildings()
     {
-        return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')->without(['relationDevelopers']);
+        return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')
+            ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers',
+                'relationAgents', 'relationContacts', 'relationDocuments', 'relationArticles', 'relationTags']);
     }
 }

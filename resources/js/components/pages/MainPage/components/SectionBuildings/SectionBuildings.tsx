@@ -25,7 +25,7 @@ const SectionBuildings: React.FC = (): React.ReactElement => {
     const onFetchBuildingsHandler = (): void => {
         setFetching(true)
 
-        BuildingService.fetchBuildings({active: [1], publish: 1, limit: 3})
+        BuildingService.fetchBuildings({active: [1], publish: 1, limit: 9})
             .then((response: any) => setBuildings(response.data.data))
             .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
             .finally(() => setFetching(false))
