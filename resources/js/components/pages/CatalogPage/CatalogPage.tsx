@@ -40,8 +40,8 @@ const CatalogPage: React.FC<Props> = (props): React.ReactElement => {
 
                 <BlockingElement fetching={false} className={classes.list}>
                     {menu && menu.length ?
-                        menu.map((item) => {
-                            if (!allowForRole(item.hasRole) || !allowForTariff(item.hasTariff)) {
+                        menu.map((item: ISubMenu) => {
+                            if (item.unavailable) {
                                 return null
                             }
 

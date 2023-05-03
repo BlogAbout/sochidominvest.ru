@@ -29,7 +29,7 @@ class ArticleService
             $article = Article::firstOrCreate($data);
 
             if (isset($buildingIds)) {
-                $article->buildings()->attach($buildingIds);
+                $article->relationBuildings()->attach($buildingIds);
             }
 
             if (isset($imageIds)) {

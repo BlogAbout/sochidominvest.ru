@@ -18,7 +18,7 @@ class UpdateRequest extends FormRequest
             'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
             'avatar_id' => 'nullable|integer|exists:sdi_attachments,id',
-            'fields' => 'nullable|string',
+            'fields' => 'nullable|array',
             'fields.*' => 'nullable',
             'meta_title' => 'nullable|string',
             'meta_description' => 'nullable|string'

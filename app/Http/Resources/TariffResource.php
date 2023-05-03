@@ -16,7 +16,7 @@ class TariffResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => html_entity_decode($this->name),
             'cost' => $this->cost,
             'privileges' => $this->privileges ? explode(',', $this->privileges) : [],
             'created_at' => $this->created_at,

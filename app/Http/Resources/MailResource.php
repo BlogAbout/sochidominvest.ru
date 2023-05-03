@@ -16,7 +16,7 @@ class MailResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => html_entity_decode($this->name),
             'content' => $this->content,
             'content_html' => $this->content_html,
             'type' => $this->type,

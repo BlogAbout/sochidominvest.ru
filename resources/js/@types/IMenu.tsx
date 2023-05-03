@@ -21,4 +21,5 @@ export interface ISubMenu {
     type: 'crm' | 'catalog'
     hasRole?: ('director' | 'administrator' | 'manager' | 'subscriber')[]
     hasTariff?: ('free' | 'base' | 'business' | 'effectivePlus')[]
+    unavailable?: boolean
 }

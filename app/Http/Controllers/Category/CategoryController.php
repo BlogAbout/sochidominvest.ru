@@ -28,6 +28,7 @@ class CategoryController extends Controller
         try {
             $data = $request->validated();
             $data['author_id'] = auth()->user()->id;
+            $data['fields'] = isset($data['fields']) ? json_encode($data['fields']) : '';
 
             $category = Category::create($data);
 
@@ -41,6 +42,7 @@ class CategoryController extends Controller
     {
         try {
             $data = $request->validated();
+            $data['fields'] = isset($data['fields']) ? json_encode($data['fields']) : '';
 
             $category->update($data);
 

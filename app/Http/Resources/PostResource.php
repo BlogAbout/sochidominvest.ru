@@ -16,8 +16,8 @@ class PostResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
+            'name' => html_entity_decode($this->name),
+            'description' => html_entity_decode($this->description),
             'type' => $this->type,
             'post_id' => $this->post_id,
             'post' => new PostResource($this->whenLoaded('postParent')),

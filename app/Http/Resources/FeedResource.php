@@ -16,7 +16,7 @@ class FeedResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'title' => html_entity_decode($this->title),
             'type' => $this->type,
             'status' => $this->status,
             'user_id' => $this->user_id,

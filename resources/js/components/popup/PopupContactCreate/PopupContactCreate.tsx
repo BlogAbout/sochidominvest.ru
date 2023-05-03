@@ -33,7 +33,8 @@ const PopupContactCreate: React.FC<Props> = (props) => {
         id: null,
         name: '',
         phone: '',
-        agent_id: props.agentId || 0
+        agent_id: props.agentId || 0,
+        is_active: 1
     })
 
     const [fetching, setFetching] = useState(false)

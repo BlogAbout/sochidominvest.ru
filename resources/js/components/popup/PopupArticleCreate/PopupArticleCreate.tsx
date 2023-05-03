@@ -41,7 +41,7 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const PopupArticleCreate: React.FC<Props> = (props) => {
-    const [article, setArticle] = useState<IArticle>(props.article || {
+    const [article, setArticle] = useState<IArticle>({
         id: null,
         name: '',
         description: '',
@@ -62,49 +62,53 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
     }, [props.blockId])
 
     useEffect(() => {
-        if (article.id) {
-            const image_ids: number[] = []
-            const video_ids: number[] = []
-            const building_ids: number[] = []
-
-            if (article.images && article.images.length) {
-                article.images.map((image: IAttachment) => {
-                    if (image.id) {
-                        image_ids.push(image.id)
-                    }
-                })
-            }
-
-            if (article.videos && article.videos.length) {
-                article.videos.map((video: IAttachment) => {
-                    if (video.id) {
-                        video_ids.push(video.id)
-                    }
-                })
-            }
-
-            if (article.buildings && article.buildings.length) {
-                article.buildings.map((building: IBuilding) => {
-                    if (building.id) {
-                        building_ids.push(building.id)
-                    }
-                })
-            }
-
-            setArticle({
-                ...article,
-                image_ids: image_ids,
-                video_ids: video_ids,
-                building_ids: building_ids
-            })
+        if (props.article) {
+            onUpdateArticleData(props.article)
         }
-    }, [article.id])
+    }, [props.article])
 
     useEffect(() => {
         if (article.images && article.images.length) {
             checkAvatar()
         }
-    }, [article.images])
+    }, [article.image_ids])
+
+    const onUpdateArticleData = (articleData: IArticle) => {
+        const image_ids: number[] = []
+        const video_ids: number[] = []
+        const building_ids: number[] = []
+
+        if (articleData.images && articleData.images.length) {
+            articleData.images.map((image: IAttachment) => {
+                if (image.id) {
+                    image_ids.push(image.id)
+                }
+            })
+        }
+
+        if (articleData.videos && articleData.videos.length) {
+            articleData.videos.map((video: IAttachment) => {
+                if (video.id) {
+                    video_ids.push(video.id)
+                }
+            })
+        }
+
+        if (articleData.buildings && articleData.buildings.length) {
+            articleData.buildings.map((building: IBuilding) => {
+                if (building.id) {
+                    building_ids.push(building.id)
+                }
+            })
+        }
+
+        setArticle({
+            ...articleData,
+            image_ids: image_ids,
+            video_ids: video_ids,
+            building_ids: building_ids
+        })
+    }
 
     const close = () => {
         removePopup(props.id ? props.id : '')
@@ -115,7 +119,7 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
 
         ArticleService.saveArticle(article)
             .then((response: any) => {
-                setArticle(response.data.data)
+                onUpdateArticleData(response.data.data)
 
                 props.onSave()
 

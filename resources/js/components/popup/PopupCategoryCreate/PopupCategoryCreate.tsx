@@ -55,12 +55,10 @@ const PopupCategoryCreate: React.FC<Props> = (props) => {
         }
     }, [props.blockId])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Сохранение изменений
     const saveHandler = (isClose?: boolean) => {
         setFetching(true)
 
@@ -144,7 +142,7 @@ const PopupCategoryCreate: React.FC<Props> = (props) => {
             <div key='fields' className={classes.tabContent}>
                 {fieldTypes.map((field: ISelector) => {
                     return (
-                        <div className={classes.field}>
+                        <div key={field.key} className={classes.field}>
                             <CheckBox label={field.text}
                                       type='classic'
                                       width={110}

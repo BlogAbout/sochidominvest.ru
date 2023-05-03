@@ -16,8 +16,8 @@ class PartnerResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
+            'name' => html_entity_decode($this->name),
+            'description' => html_entity_decode($this->description),
             'info' => $this->info,
             'subtitle' => $this->subtitle,
             'type' => $this->type,

@@ -9,7 +9,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/attachment', 'Attachment\AttachmentController');
     Route::apiResource('/building', 'Building\BuildingController')->only(['store', 'update', 'destroy']);
     Route::apiResource('/business-process', 'BusinessProcess\BusinessProcessController');
-    Route::apiResource('/category', 'Category\CategoryController');
+    Route::apiResource('/store/category', 'Category\CategoryController');
     Route::apiResource('/checker', 'Checker\CheckerController');
     Route::apiResource('/compilation', 'Compilation\CompilationController');
     Route::apiResource('/contact', 'Contact\ContactController');
@@ -21,7 +21,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/notification', 'Notification\NotificationController');
     Route::apiResource('/partner', 'Partner\PartnerController');
     Route::apiResource('/post', 'Post\PostController');
-    Route::apiResource('/product', 'Product\ProductController')->only(['store', 'update', 'destroy']);
+    Route::apiResource('/store/product', 'Product\ProductController')->only(['store', 'update', 'destroy']);
     Route::apiResource('/question', 'Question\QuestionController')->only(['store', 'update', 'destroy']);
     Route::apiResource('/setting', 'Setting\SettingController')->only(['index', 'store']);
     Route::apiResource('/tag', 'Tag\TagController');

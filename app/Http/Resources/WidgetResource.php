@@ -16,7 +16,7 @@ class WidgetResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => html_entity_decode($this->name),
             'type' => $this->type,
             'style' => $this->style,
             'page' => $this->page,

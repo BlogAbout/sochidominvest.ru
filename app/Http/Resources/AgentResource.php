@@ -16,8 +16,8 @@ class AgentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
+            'name' => html_entity_decode($this->name),
+            'description' => html_entity_decode($this->description),
             'address' => $this->address,
             'phone' => $this->phone,
             'type' => $this->type,
