@@ -39,4 +39,4 @@ Route::apiResource('/article', 'Article\ArticleController')->only(['index', 'sho
 Route::apiResource('/building', 'Building\BuildingController')->only(['index', 'show']);
 Route::apiResource('/feed', 'Feed\FeedController')->only(['store']);
 Route::apiResource('/question', 'Question\QuestionController')->only(['index', 'show']);
-Route::apiResource('/product', 'Product\ProductController')->only(['index', 'show']);
+Route::apiResource('/store/product', 'Product\ProductController')->only(['index', 'show']);

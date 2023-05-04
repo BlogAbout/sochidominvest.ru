@@ -26,6 +26,11 @@ class ArticleService
                 unset($data['image_ids']);
             }
 
+            if (isset($data['video_ids'])) {
+                $videoIds = $data['video_ids'];
+                unset($data['video_ids']);
+            }
+
             $article = Article::firstOrCreate($data);
 
             if (isset($buildingIds)) {
@@ -34,6 +39,10 @@ class ArticleService
 
             if (isset($imageIds)) {
                 $article->images()->attach($imageIds);
+            }
+
+            if (isset($videoIds)) {
+                $article->videos()->attach($videoIds);
             }
 
             DB::commit();
@@ -61,6 +70,11 @@ class ArticleService
                 unset($data['image_ids']);
             }
 
+            if (isset($data['video_ids'])) {
+                $videoIds = $data['video_ids'];
+                unset($data['video_ids']);
+            }
+
             $article->update($data);
 
             if (isset($buildingIds)) {
@@ -69,6 +83,10 @@ class ArticleService
 
             if (isset($imageIds)) {
                 $article->images()->sync($imageIds);
+            }
+
+            if (isset($videoIds)) {
+                $article->videos()->attach($videoIds);
             }
 
             DB::commit();

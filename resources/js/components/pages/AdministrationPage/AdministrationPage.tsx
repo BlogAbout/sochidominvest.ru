@@ -32,7 +32,14 @@ const AdministrationPagePanel: React.FC = (): React.ReactElement => {
         setFetching(true)
 
         SettingService.fetchSettings()
-            .then((response: any) => setSettings(response.data.data))
+            .then((response: any) => {
+                let settings: ISetting = {}
+                response.data.data.forEach((setting: any) => {
+                    settings[setting.key] = setting.value
+                })
+
+                setSettings(settings)
+            })
             .catch((error: any) => console.error('Произошла ошибка загрузки данных', error))
             .finally(() => setFetching(false))
     }
@@ -42,7 +49,11 @@ const AdministrationPagePanel: React.FC = (): React.ReactElement => {
 
         SettingService.saveSetting(settingsUpdate)
             .then((response: any) => {
-                setSettings(response.data.data)
+                let settings: ISetting = {}
+                response.data.data.forEach((setting: any) => {
+                    settings[setting.key] = setting.value
+                })
+
                 setSettingsUpdate({})
             })
             .catch((error: any) => console.error('Произошла ошибка сохранения данных', error))

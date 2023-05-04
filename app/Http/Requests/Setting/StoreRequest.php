@@ -14,8 +14,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'value' => 'nullable|string'
+            'settings' => 'required|array'
         ];
     }
 
@@ -23,8 +22,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'name.required' => 'Это поле обязательно для заполнения',
-            'name.string' => 'Значение данного поля должно быть строкой',
-            'value.string' => 'Значение данного поля должно быть строкой'
+            'name.array' => 'Значение данного поля должно быть массивом'
         ];
     }
 }

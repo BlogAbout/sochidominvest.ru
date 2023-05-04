@@ -3,22 +3,23 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
 import withStore from '../../hoc/withStore'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import TagService from '../../../api/TagService'
 import {ITag} from '../../../@types/ITag'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
-import openPopupTagCreate from '../PopupTagCreate/PopupTagCreate'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
 import {Footer, Popup} from '../Popup/Popup'
 import BlockingElement from '../../ui/BlockingElement/BlockingElement'
 import Empty from '../../ui/Empty/Empty'
-import openContextMenu from '../../ui/ContextMenu/ContextMenu'
 import ButtonAdd from '../../form/ButtonAdd/ButtonAdd'
 import SearchBox from '../../form/SearchBox/SearchBox'
 import CheckBox from '../../form/CheckBox/CheckBox'
 import Button from '../../form/Button/Button'
 import Title from '../../ui/Title/Title'
+import openPopupTagCreate from '../PopupTagCreate/PopupTagCreate'
 import openPopupAlert from '../PopupAlert/PopupAlert'
+import openContextMenu from '../../ui/ContextMenu/ContextMenu'
 import classes from './PopupTagSelector.module.scss'
 
 interface Props extends PopupProps {
@@ -50,7 +51,6 @@ const PopupTagSelector: React.FC<Props> = (props) => {
     const [selectedTags, setSelectedTags] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {user} = useTypedSelector(state => state.userReducer)
     const {fetching: fetchingTagList, tags} = useTypedSelector(state => state.tagReducer)
     const {fetchTagList} = useActions()
 
@@ -74,13 +74,11 @@ const PopupTagSelector: React.FC<Props> = (props) => {
         setFetching(fetchingTagList)
     }, [fetchingTagList])
 
-    // Закрытие Popup
-    const close = () => {
+    const close = (): void => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Клик на строку
-    const selectRow = (tag: ITag) => {
+    const selectRow = (tag: ITag): void => {
         if (props.multi) {
             selectRowMulti(tag)
         } else if (props.onSelect !== null) {
@@ -89,8 +87,7 @@ const PopupTagSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Клик на строку в мульти режиме
-    const selectRowMulti = (tag: ITag) => {
+    const selectRowMulti = (tag: ITag): void => {
         if (tag.id) {
             if (checkSelected(tag.id)) {
                 setSelectedTags(selectedTags.filter((key: number) => key !== tag.id))
@@ -101,12 +98,11 @@ const PopupTagSelector: React.FC<Props> = (props) => {
     }
 
     // Проверка наличия элемента среди выбранных
-    const checkSelected = (id: number | null) => {
+    const checkSelected = (id: number | null): boolean => {
         return id !== null && selectedTags.includes(id)
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (value.trim() !== '') {
@@ -118,8 +114,7 @@ const PopupTagSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Добавление нового элемента
-    const onClickAdd = (e: React.MouseEvent) => {
+    const onClickAdd = (e: React.MouseEvent): void => {
         openPopupTagCreate(e.currentTarget, {
             onSave: () => {
                 setIsUpdate(true)
@@ -127,8 +122,7 @@ const PopupTagSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Редактирование элемента
-    const onClickEdit = (e: React.MouseEvent, tag: ITag) => {
+    const onClickEdit = (e: React.MouseEvent, tag: ITag): void => {
         openPopupTagCreate(e.currentTarget, {
             tag: tag,
             onSave: () => {
@@ -137,14 +131,12 @@ const PopupTagSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Сохранение выбора
-    const onClickSave = () => {
+    const onClickSave = (): void => {
         props.onSelect(selectedTags)
         close()
     }
 
-    // Удаление элемента справочника
-    const onClickDelete = (e: React.MouseEvent, tag: ITag) => {
+    const onClickDelete = (e: React.MouseEvent, tag: ITag): void => {
         openPopupAlert(e, {
             text: `Вы действительно хотите удалить ${tag.name}?`,
             buttons: [
@@ -172,22 +164,23 @@ const PopupTagSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе справочника
-    const onContextMenu = (e: React.MouseEvent, tag: ITag) => {
+    const onContextMenu = (e: React.MouseEvent, tag: ITag): void => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, tag)}]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, tag)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.EDIT_TAG])) {
+            menuItems.push({text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, tag)})
+        }
+
+        if (checkRules([Rules.REMOVE_TAG])) {
+            menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, tag)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
-    const renderSearch = () => {
+    const renderSearch = (): React.ReactElement => {
         return (
             <div className={classes.search}>
                 <SearchBox value={searchText}
@@ -198,14 +191,15 @@ const PopupTagSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
-                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
-                {/*    : null}*/}
+                {props.buttonAdd && checkRules([Rules.ADD_TAG]) ?
+                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
+                    : null
+                }
             </div>
         )
     }
 
-    const renderListBox = () => {
+    const renderListBox = (): React.ReactElement => {
         return (
             <BlockingElement fetching={fetching} className={classes.list}>
                 <div className={classes.listContent}>
@@ -218,7 +212,7 @@ const PopupTagSelector: React.FC<Props> = (props) => {
         )
     }
 
-    const renderSelectedListBox = () => {
+    const renderSelectedListBox = (): React.ReactElement => {
         const rows = tagFilter.filter((tag: ITag) => checkSelected(tag.id))
 
         return (
@@ -233,7 +227,7 @@ const PopupTagSelector: React.FC<Props> = (props) => {
         )
     }
 
-    const renderRow = (tag: ITag, side: string, checked: boolean) => {
+    const renderRow = (tag: ITag, side: string, checked: boolean): React.ReactElement => {
         return (
             <div className={classes.row}
                  key={tag.id}

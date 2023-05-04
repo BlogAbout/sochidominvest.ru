@@ -25,7 +25,9 @@ class UpdateRequest extends FormRequest
             'building_ids' => 'nullable|array',
             'building_ids.*' => 'nullable|integer|exists:sdi_buildings,id',
             'image_ids' => 'nullable|array',
-            'image_ids.*' => 'nullable|integer|exists:sdi_attachments,id'
+            'image_ids.*' => 'nullable|integer|exists:sdi_attachments,id',
+            'video_ids' => 'nullable|array',
+            'video_ids.*' => 'nullable|integer|exists:sdi_attachments,id'
         ];
     }
 
@@ -43,7 +45,8 @@ class UpdateRequest extends FormRequest
             'meta_title.string' => 'Значение данного поля должно быть строкой',
             'meta_description.string' => 'Значение данного поля должно быть строкой',
             'building_ids.array' => 'Значение данного поля должно быть массивом',
-            'image_ids.array' => 'Значение данного поля должно быть массивом'
+            'image_ids.array' => 'Значение данного поля должно быть массивом',
+            'video_ids.array' => 'Значение данного поля должно быть массивом'
         ];
     }
 }

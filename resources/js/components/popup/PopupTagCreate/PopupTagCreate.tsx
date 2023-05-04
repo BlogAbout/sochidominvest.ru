@@ -43,13 +43,11 @@ const PopupTagCreate: React.FC<Props> = (props) => {
         }
     }, [props.blockId])
 
-    // Закрытие popup
-    const close = () => {
+    const close = (): void => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Сохранение изменений
-    const saveHandler = (isClose?: boolean) => {
+    const saveHandler = (isClose?: boolean): void => {
         if (!tag.name || tag.name.trim() === '') {
             return
         }
@@ -117,18 +115,20 @@ const PopupTagCreate: React.FC<Props> = (props) => {
                         onClick={() => saveHandler(true)}
                         disabled={fetching || tag.name.trim() === ''}
                         title='Сохранить и закрыть'
-                >Сохранить и закрыть</Button>
+                />
 
                 <Button type='apply'
                         icon='check'
                         onClick={() => saveHandler()}
                         disabled={fetching || tag.name.trim() === ''}
+                        className='marginLeft'
                         title='Сохранить'
                 >Сохранить</Button>
 
                 <Button type='regular'
                         icon='arrow-rotate-left'
                         onClick={close.bind(this)}
+                        className='marginLeft'
                         title='Отменить'
                 >Отменить</Button>
             </Footer>

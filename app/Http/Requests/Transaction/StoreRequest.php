@@ -18,7 +18,7 @@ class StoreRequest extends FormRequest
             'status' => 'nullable|string',
             'user_id' => 'nullable|integer|exists:sdi_users,id',
             'email' => 'nullable|string',
-            'cost' => 'nullable|decimal:11,2',
+            'cost' => 'nullable|numeric',
             'object_id' => 'nullable|integer',
             'object_type' => 'nullable|string',
             'duration' => 'nullable|string'
@@ -34,7 +34,7 @@ class StoreRequest extends FormRequest
             'user_id.integer' => 'Значение данного поля должно быть числом',
             'user_id.exists' => 'Пользователь отсутствует в базе данных',
             'email.string' => 'Значение данного поля должно быть строкой',
-            'cost.decimal' => 'Значение данного поля должно быть числом',
+            'cost.numeric' => 'Значение данного поля должно быть числом',
             'object_id.integer' => 'Значение данного поля должно быть числом',
             'object_type.string' => 'Значение данного поля должно быть строкой',
             'duration.string' => 'Значение данного поля должно быть строкой'

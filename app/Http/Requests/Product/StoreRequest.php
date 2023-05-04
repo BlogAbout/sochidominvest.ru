@@ -16,14 +16,18 @@ class StoreRequest extends FormRequest
         return [
             'name' => 'required|string',
             'description' => 'nullable|string',
-            'cost' => 'nullable|decimal:11,2',
-            'cost_old' => 'nullable|decimal:11,2',
+            'cost' => 'nullable|numeric',
+            'cost_old' => 'nullable|numeric',
             'is_active' => 'nullable|boolean',
             'category_id' => 'nullable|integer|exists:sdi_categories,id',
             'avatar_id' => 'nullable|integer|exists:sdi_attachments,id',
             'fields' => 'nullable|array',
             'meta_title' => 'nullable|string',
-            'meta_description' => 'nullable|string'
+            'meta_description' => 'nullable|string',
+            'image_ids' => 'nullable|array',
+            'image_ids.*' => 'nullable|integer|exists:sdi_attachments,id',
+            'video_ids' => 'nullable|array',
+            'video_ids.*' => 'nullable|integer|exists:sdi_attachments,id'
         ];
     }
 
@@ -33,8 +37,8 @@ class StoreRequest extends FormRequest
             'name.required' => 'Это поле обязательно для заполнения',
             'name.string' => 'Значение данного поля должно быть строкой',
             'description.string' => 'Значение данного поля должно быть строкой',
-            'cost.decimal' => 'Значение данного поля должно быть числом',
-            'cost_old.decimal' => 'Значение данного поля должно быть числом',
+            'cost.numeric' => 'Значение данного поля должно быть числом',
+            'cost_old.numeric' => 'Значение данного поля должно быть числом',
             'is_active.boolean' => 'Значение данного поля должно быть переключателем',
             'category_id.integer' => 'Значение данного поля должно быть числом',
             'category_id.exists' => 'Категория отсутствует в базе данных',
@@ -42,7 +46,9 @@ class StoreRequest extends FormRequest
             'avatar_id.exists' => 'Изображение отсутствует в базе данных',
             'fields.array' => 'Значение данного поля должно быть массивом',
             'meta_title.string' => 'Значение данного поля должно быть строкой',
-            'meta_description.string' => 'Значение данного поля должно быть строкой'
+            'meta_description.string' => 'Значение данного поля должно быть строкой',
+            'image_ids.array' => 'Значение данного поля должно быть массивом',
+            'video_ids.array' => 'Значение данного поля должно быть массивом'
         ];
     }
 }

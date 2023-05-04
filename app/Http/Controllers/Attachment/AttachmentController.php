@@ -8,6 +8,7 @@ use App\Http\Requests\Attachment\UpdateRequest;
 use App\Http\Resources\AttachmentResource;
 use App\Models\Attachment;
 use App\Services\AttachmentService;
+use Illuminate\Http\Request;
 
 class AttachmentController extends Controller
 {
@@ -18,9 +19,22 @@ class AttachmentController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $attachments = Attachment::all();
+        $filter = $request->all();
+
+        $attachments = Attachment::query()
+            ->when(isset($filter['id']), function ($query) use ($filter) {
+                $query->whereIn('id', $filter['id']);
+            })
+            ->when(isset($filter['author']), function ($query) use ($filter) {
+                $query->whereIn('author_id', $filter['author']);
+            })
+            ->when(isset($filter['type']), function ($query) use ($filter) {
+                $query->where('type', '=', $filter['type']);
+            })
+            ->limit($filter['limit'] ?? -1)
+            ->get();
 
         return AttachmentResource::collection($attachments)->response()->setStatusCode(200);
     }

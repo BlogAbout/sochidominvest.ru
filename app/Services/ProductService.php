@@ -26,6 +26,8 @@ class ProductService
                 unset($data['video_ids']);
             }
 
+            $data['fields'] = isset($data['fields']) ? json_encode($data['fields']) : '';
+
             $product = Product::firstOrCreate($data);
 
             if (isset($imageIds)) {
@@ -59,6 +61,10 @@ class ProductService
             if (isset($data['video_ids'])) {
                 $videoIds = $data['video_ids'];
                 unset($data['video_ids']);
+            }
+
+            if (isset($data['fields'])) {
+                $data['fields'] = json_encode($data['fields']);
             }
 
             $product->update($data);

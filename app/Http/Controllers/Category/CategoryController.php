@@ -42,7 +42,10 @@ class CategoryController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['fields'] = isset($data['fields']) ? json_encode($data['fields']) : '';
+
+            if (isset($data['fields'])) {
+                $data['fields'] = json_encode($data['fields']);
+            }
 
             $category->update($data);
 

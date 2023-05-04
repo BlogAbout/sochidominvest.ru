@@ -23,7 +23,7 @@ const TariffPage: React.FC = (): React.ReactElement => {
         if (!tariffs.length) {
             fetchTariffList()
         }
-    })
+    }, [])
 
     const onBuyTariffHandler = (tariff: ITariff): void => {
         if (!tariff.id || user.tariff_id === tariff.id) {

@@ -17,19 +17,24 @@ class SettingController extends Controller
         return SettingResource::collection($settings)->response()->setStatusCode(200);
     }
 
-    public function show(Setting $setting)
-    {
-        return (new SettingResource($setting))->response()->setStatusCode(200);
-    }
-
     public function store(StoreRequest $request)
     {
         try {
             $data = $request->validated();
 
-            $setting = Setting::create($data);
+            $arrayForStore = [];
+            foreach($data['settings'] as $key => $value) {
+                array_push($arrayForStore, [
+                    'name' => $key,
+                    'value' => $value
+                ]);
+            }
 
-            return (new SettingResource($setting))->response()->setStatusCode(201);
+            Setting::upsert($arrayForStore, ['name'], ['value']);
+
+            $settings = Setting::all();
+
+            return SettingResource::collection($settings)->response()->setStatusCode(200);
         } catch (Exception $e) {
             return response($e->getMessage())->setStatusCode(400);
         }

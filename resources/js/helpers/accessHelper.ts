@@ -81,6 +81,11 @@ export enum Rules {
     EDIT_BOOKING,
     REMOVE_BOOKING,
 
+    SHOW_TAGS,
+    ADD_TAG,
+    EDIT_TAG,
+    REMOVE_TAG,
+
     RUN_BUSINESS_PROCESS,
 }
 
@@ -166,6 +171,15 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
                 break
             case Rules.REMOVE_DOCUMENT:
                 // проверить, что id равен пользователю
+                result = true
+                break
+            case Rules.SHOW_TAGS:
+                result = true
+                break
+            case Rules.EDIT_TAG:
+                result = true
+                break
+            case Rules.REMOVE_TAG:
                 result = true
                 break
             default:
