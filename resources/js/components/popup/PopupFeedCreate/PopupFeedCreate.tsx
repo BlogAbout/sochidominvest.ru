@@ -120,10 +120,10 @@ const PopupFeedCreate: React.FC<Props> = (props) => {
                     })
                 })
                 .catch((error: any) => {
-                    console.error(error.data.data)
+                    console.error(error.data.message)
                     setResultResponse({
                         success: '',
-                        error: error.data.data
+                        error: error.data.message
                     })
                 })
                 .finally(() => setFetching(false))

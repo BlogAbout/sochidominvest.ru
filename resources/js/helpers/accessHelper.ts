@@ -86,6 +86,11 @@ export enum Rules {
     EDIT_TAG,
     REMOVE_TAG,
 
+    SHOW_CHECKERS,
+    ADD_CHECKER,
+    EDIT_CHECKER,
+    REMOVE_CHECKER,
+
     RUN_BUSINESS_PROCESS,
 }
 

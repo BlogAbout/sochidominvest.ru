@@ -2,12 +2,8 @@ import axios, {AxiosResponse} from 'axios'
 import {IBuildingChecker} from '../@types/IBuilding'
 
 export default class CheckerService {
-    static async fetchCheckerById(checkerId: number): Promise<AxiosResponse> {
-        return axios.get(`/checker/${checkerId}`)
-    }
-
     static async fetchCheckers(buildingId: number): Promise<AxiosResponse> {
-        return axios.get(`/${buildingId}/checker`)
+        return axios.get(`/checker`, {params: {buildingId: [buildingId], active: [0, 1]}})
     }
 
     static async saveChecker(checker: IBuildingChecker): Promise<AxiosResponse> {

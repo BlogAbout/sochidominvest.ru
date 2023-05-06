@@ -56,7 +56,9 @@ class User extends Authenticatable
 
     public function bpSorting()
     {
-        return DB::table('sdi_business_process_sorting')->where('user_id', '=', $this->id)->get();
+        $sorting = DB::table('sdi_business_process_sorting')->where('user_id', '=', $this->id)->limit(1)->value('sorting');
+
+        return $sorting ? json_decode($sorting) : [];
     }
 
     public function getDateLastActiveFormatAttribute(): string

@@ -31,7 +31,7 @@ class UserResource extends JsonResource
             'tariff' => new TariffResource($this->whenLoaded('tariff')),
             'tariff_expired' => $this->tariff_expired,
             'favorites' => BuildingResource::collection($this->whenLoaded('favorites')),
-            'business_process_sorting' => $this->whenLoaded('bpSorting'),
+            'business_process_sorting' => $this->bpSorting(),
             'last_active' => $this->last_active,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

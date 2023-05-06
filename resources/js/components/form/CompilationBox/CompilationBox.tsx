@@ -23,15 +23,15 @@ interface Props {
     disableTitle?: boolean
     styleType?: 'standard' | 'minimal' | 'borderDisabled'
 
-    onSelect(value: number[], e: React.MouseEvent): void
+    onSelect(compilations: ICompilation[], e: React.MouseEvent): void
 }
 
 const defaultProps: Props = {
     compilations: [],
     excludeCompilations: [],
     multi: false,
-    onSelect: (value: number[], e: React.MouseEvent) => {
-        console.info('CompilationBox onSelect', value, e)
+    onSelect: (compilations: ICompilation[], e: React.MouseEvent) => {
+        console.info('CompilationBox onSelect', compilations, e)
     }
 }
 
@@ -67,8 +67,8 @@ const CompilationBox: React.FC<Props> = (props) => {
             exclude: props.excludeCompilations,
             multi: props.multi,
             selected: props.compilations,
-            onSelect: (value: number[]) => {
-                props.onSelect(value, e)
+            onSelect: (compilations: ICompilation[]) => {
+                props.onSelect(compilations, e)
             }
         })
     }

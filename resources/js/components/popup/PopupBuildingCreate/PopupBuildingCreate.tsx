@@ -7,6 +7,11 @@ import {IBuilding, IBuildingPassed, IBuildingRent} from '../../../@types/IBuildi
 import {ITab} from '../../../@types/ITab'
 import {ISelector} from '../../../@types/ISelector'
 import {IAttachment} from '../../../@types/IAttachment'
+import {IDeveloper} from '../../../@types/IDeveloper'
+import {ITag} from '../../../@types/ITag'
+import {IArticle} from '../../../@types/IArticle'
+import {IDocument} from '../../../@types/IDocument'
+import {IAgent, IContact} from '../../../@types/IAgent'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
 import {Footer, Popup} from '../Popup/Popup'
@@ -75,7 +80,7 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const PopupBuildingCreate: React.FC<Props> = (props) => {
-    const [building, setBuilding] = useState<IBuilding>(props.building ? JSON.parse(JSON.stringify(props.building)) : {
+    const [building, setBuilding] = useState<IBuilding>({
         id: null,
         name: '',
         description: '',
@@ -87,6 +92,7 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
         area: 0,
         cost: 0,
         info: {
+            id: null,
             advantages: [],
             surcharge_doc: 0,
             surcharge_gas: 0
@@ -110,10 +116,103 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
     }, [props.blockId])
 
     useEffect(() => {
+        if (props.building) {
+            onUpdateBuildingData(props.building)
+        }
+    }, [props.building])
+
+    useEffect(() => {
         if (building.images && building.images.length) {
             checkAvatar()
         }
-    }, [building.images])
+    }, [building.image_ids])
+
+    const onUpdateBuildingData = (buildingData: IBuilding) => {
+        const image_ids: number[] = []
+        const video_ids: number[] = []
+        const developer_ids: number[] = []
+        const agent_ids: number[] = []
+        const contact_ids: number[] = []
+        const document_ids: number[] = []
+        const article_ids: number[] = []
+        const tag_ids: number[] = []
+
+        if (buildingData.images && buildingData.images.length) {
+            buildingData.images.map((image: IAttachment) => {
+                if (image.id) {
+                    image_ids.push(image.id)
+                }
+            })
+        }
+
+        if (buildingData.videos && buildingData.videos.length) {
+            buildingData.videos.map((video: IAttachment) => {
+                if (video.id) {
+                    video_ids.push(video.id)
+                }
+            })
+        }
+
+        if (buildingData.developers && buildingData.developers.length) {
+            buildingData.developers.map((developer: IDeveloper) => {
+                if (developer.id) {
+                    developer_ids.push(developer.id)
+                }
+            })
+        }
+
+        if (buildingData.agents && buildingData.agents.length) {
+            buildingData.agents.map((agent: IAgent) => {
+                if (agent.id) {
+                    agent_ids.push(agent.id)
+                }
+            })
+        }
+
+        if (buildingData.contacts && buildingData.contacts.length) {
+            buildingData.contacts.map((contact: IContact) => {
+                if (contact.id) {
+                    contact_ids.push(contact.id)
+                }
+            })
+        }
+
+        if (buildingData.documents && buildingData.documents.length) {
+            buildingData.documents.map((document: IDocument) => {
+                if (document.id) {
+                    document_ids.push(document.id)
+                }
+            })
+        }
+
+        if (buildingData.articles && buildingData.articles.length) {
+            buildingData.articles.map((article: IArticle) => {
+                if (article.id) {
+                    article_ids.push(article.id)
+                }
+            })
+        }
+
+        if (buildingData.tags && buildingData.tags.length) {
+            buildingData.tags.map((tag: ITag) => {
+                if (tag.id) {
+                    tag_ids.push(tag.id)
+                }
+            })
+        }
+
+        setBuilding({
+            ...buildingData,
+            image_ids: image_ids,
+            video_ids: video_ids,
+            developer_ids: developer_ids,
+            agent_ids: agent_ids,
+            contact_ids: contact_ids,
+            document_ids: document_ids,
+            article_ids: article_ids,
+            tag_ids: tag_ids
+        })
+    }
 
     const close = () => {
         removePopup(props.id ? props.id : '')
@@ -128,7 +227,7 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
 
         BuildingService.saveBuilding(building)
             .then((response: any) => {
-                setBuilding(response.data.data)
+                onUpdateBuildingData(response.data.data)
 
                 props.onSave()
 
@@ -140,7 +239,7 @@ const PopupBuildingCreate: React.FC<Props> = (props) => {
                 console.error('error', error)
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data.data
+                    text: error.data.message
                 })
             })
             .finally(() => setFetchingBuilding(false))

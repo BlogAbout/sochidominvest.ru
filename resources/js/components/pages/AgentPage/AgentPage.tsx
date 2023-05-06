@@ -161,7 +161,7 @@ const AgentPage: React.FC = (): React.ReactElement => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data.data
+                                        text: error.data.message
                                     })
                                 })
                                 .finally(() => setFetching(false))
@@ -189,26 +189,7 @@ const AgentPage: React.FC = (): React.ReactElement => {
 
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data.data
-                    })
-                })
-                .finally(() => setFetching(false))
-        }
-    }
-
-    // Удаление объекта из подборки
-    const onRemoveBuildingFromCompilationHandler = (building: IBuilding, compilationId?: number): void => {
-        if (compilationId && building.id) {
-            setFetching(true)
-
-            CompilationService.removeBuildingFromCompilation(compilationId, building.id)
-                .then(() => onSaveHandler())
-                .catch((error: any) => {
-                    console.error('Ошибка удаления из подборки', error)
-
-                    openPopupAlert(document.body, {
-                        title: 'Ошибка!',
-                        text: error.data.data
+                        text: error.data.message
                     })
                 })
                 .finally(() => setFetching(false))
@@ -226,10 +207,6 @@ const AgentPage: React.FC = (): React.ReactElement => {
                 onClick: () => onRemoveBuildingFromFavoriteHandler(building)
             })
         }
-
-        // if (props.compilationId && props.building.id) {
-        //     menuItems.push({text: 'Удалить из подборки', onClick: () => removeBuildingFromCompilation()})
-        // }
 
         if (checkRules([Rules.EDIT_BUILDING], building.author_id)) {
             menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(building)})

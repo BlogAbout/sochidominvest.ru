@@ -15,6 +15,8 @@ class Compilation extends Model
     protected $table = 'sdi_compilations';
     protected $guarded = false;
 
+    protected $with = ['buildings'];
+
     public function buildings()
     {
         return $this->belongsToMany(Building::class, 'sdi_compilation_buildings', 'compilation_id', 'building_id');

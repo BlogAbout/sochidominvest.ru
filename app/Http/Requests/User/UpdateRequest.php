@@ -26,7 +26,7 @@ class UpdateRequest extends FormRequest
             'role_id' => 'nullable|integer|exists:sdi_roles,id',
             'post_id' => 'nullable|integer|exists:sdi_posts,id',
             'favorite_ids' => 'nullable|array',
-            'favorite_ids.*' => 'nullable'
+            'favorite_ids.*' => 'nullable|integer'
         ];
     }
 

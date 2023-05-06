@@ -9,6 +9,7 @@ import UserService from '../../../../../api/UserService'
 import Field from '../../../../form/Field/Field'
 import Title from '../../../../ui/Title/Title'
 import classes from '../../PopupAuth.module.scss'
+import {RouteNames} from "../../../../../helpers/routerHelper";
 
 interface Props {
     onChangeType(type: string): void
@@ -81,6 +82,7 @@ const LoginForm: React.FC<Props> = (props): React.ReactElement => {
                     })
 
                     props.onClose()
+                    window.location.replace(RouteNames.P_DESKTOP)
                 })
                 .catch((error: any) => {
                     setInfo({

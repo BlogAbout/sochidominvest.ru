@@ -21,16 +21,4 @@ export default class CompilationService {
     static async removeCompilation(compilationId: number): Promise<AxiosResponse> {
         return axios.delete(`/compilation/${compilationId}`)
     }
-
-    static async addBuildingInCompilation(compilationId: number, buildingId: number, compilationOldId?: number | null): Promise<AxiosResponse> {
-        if (compilationOldId) {
-            return axios.get(`/compilation/${compilationId}/${buildingId}/${compilationOldId}`)
-        } else {
-            return axios.get(`/compilation/${compilationId}/${buildingId}`)
-        }
-    }
-
-    static async removeBuildingFromCompilation(compilationId: number, buildingId: number): Promise<AxiosResponse> {
-        return axios.delete(`/compilation/${compilationId}/${buildingId}`)
-    }
 }

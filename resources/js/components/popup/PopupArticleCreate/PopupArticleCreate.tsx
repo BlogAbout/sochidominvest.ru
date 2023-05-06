@@ -130,7 +130,7 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data.data
+                    text: error.data.message
                 })
             })
             .finally(() => setFetching(false))

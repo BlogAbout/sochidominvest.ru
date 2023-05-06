@@ -95,7 +95,7 @@ const StoreProductsPanelPage: React.FC = (): React.ReactElement => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data.data
+                                        text: error.data.message
                                     })
                                 })
                                 .finally(() => setFetching(false))

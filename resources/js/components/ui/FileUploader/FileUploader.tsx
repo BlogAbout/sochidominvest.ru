@@ -105,7 +105,7 @@ const FileUploader: React.FC<Props> = (props) => {
 
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data.data
+                        text: error.data.message
                     })
                 })
                 .finally(() => {

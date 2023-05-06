@@ -42,7 +42,18 @@ class CompilationController extends Controller
         try {
             $data = $request->validated();
 
+            if (isset($data['building_ids'])) {
+                $buildingIds = $data['building_ids'];
+                unset($data['building_ids']);
+            }
+
             $compilation->update($data);
+
+            if (isset($buildingIds)) {
+                $compilation->buildings()->sync($buildingIds);
+            }
+
+            $compilation->refresh();
 
             return (new CompilationResource($compilation))->response()->setStatusCode(200);
         } catch (Exception $e) {

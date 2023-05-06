@@ -65,7 +65,7 @@ const PopupBookingInfo: React.FC<Props> = (props) => {
             //         console.error('Ошибка загрузки данных!', error)
             //         openPopupAlert(document.body, {
             //             title: 'Ошибка!',
-            //             text: error.data.data
+            //             text: error.data.message
             //         })
             //     })
             //     .finally(() => {

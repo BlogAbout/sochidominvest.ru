@@ -27,6 +27,9 @@ import openPopupCompilationSelector
     from '../../../../../components/popup/PopupCompilationSelector/PopupCompilationSelector'
 import openPopupMap from '../../../../popup/PopupMap/PopupMap'
 import classes from './BuildingInfoBlock.module.scss'
+import {useActions} from "../../../../../hooks/useActions";
+import {ICompilation} from "../../../../../@types/ICompilation";
+import CompilationService from "../../../../../api/CompilationService";
 
 interface Props {
     building: IBuilding
@@ -52,6 +55,8 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
     const [showCopyText, setShowCopyText] = useState(false)
 
     const {user} = useTypedSelector(state => state.userReducer)
+
+    const {setUserAuth} = useActions()
 
     useEffect(() => {
         setUserData(user)
@@ -92,25 +97,68 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
     // Добавление/удаление объекта в избранное
     const onChangeBuildingToFavorite = () => {
         if (props.building.id) {
+            let updateFavorites: number[]
+
             if (favorites.includes(props.building.id)) {
-                setFavorites(favorites.filter((id: number) => id !== props.building.id))
+                updateFavorites = favorites.filter((id: number) => id !== props.building.id)
             } else {
-                setFavorites([...favorites, props.building.id])
+                updateFavorites = [...favorites, props.building.id]
             }
 
+            setFavorites(updateFavorites)
+
             const updateUser: IUser = JSON.parse(JSON.stringify(user))
-            updateUser.favorite_ids = favorites
+            updateUser.favorite_ids = updateFavorites
 
             UserService.saveUser(updateUser)
-                .then((response: any) => setUserData(response.data.data))
+                .then((response: any) => setUserAuth(response))
                 .catch((error: any) => {
                     console.error('Ошибка обновления избранного', error)
 
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data.data
+                        text: error.data.message
                     })
                 })
+        }
+    }
+
+    const onAddBuildingToCompilation = (): void => {
+        if (props.building.id) {
+            openPopupCompilationSelector(document.body, {
+                onSelect: (compilations: ICompilation[]) => {
+                    if (compilations.length) {
+                        const compilation: ICompilation = compilations[0]
+                        const building_ids: number[] = []
+
+                        if (compilation.buildings) {
+                            compilation.buildings.forEach((building: IBuilding) => {
+                                if (building.id) {
+                                    building_ids.push(building.id)
+                                }
+                            })
+                        }
+
+                        if (props.building.id) {
+                            if (building_ids.includes(props.building.id)) {
+                                compilation.building_ids = building_ids
+
+                                openPopupAlert(document.body, {
+                                    title: 'Внимание!',
+                                    text: 'Объект недвижимости уже находится в данной подборке.'
+                                })
+                            } else {
+                                building_ids.push(props.building.id)
+                                compilation.building_ids = building_ids
+
+                                CompilationService.saveCompilation(compilation)
+                                    .then(() => console.log('da'))
+                                    .catch((error: any) => console.error(error.data.message))
+                            }
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -364,15 +412,7 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
                 {props.building.id && checkRules([Rules.EDIT_COMPILATION]) ?
                     <Button type='regular'
                             icon='plus'
-                            onClick={() => {
-                                if (props.building.id) {
-                                    // Todo
-                                    openPopupCompilationSelector(document.body, {
-                                        onSelect: (value: number[]) => {
-                                        }
-                                    })
-                                }
-                            }}
+                            onClick={() => onAddBuildingToCompilation()}
                             className='marginRight'
                             title='Добавить в подборку'
                     />

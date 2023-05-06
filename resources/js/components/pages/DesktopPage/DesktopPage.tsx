@@ -170,7 +170,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
                                             .catch((error: any) => {
                                                 openPopupAlert(document.body, {
                                                     title: 'Ошибка!',
-                                                    text: error.data.data
+                                                    text: error.data.message
                                                 })
                                             })
                                             .finally(() => setFetchingAgents(false))
@@ -217,7 +217,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
                                             .catch((error: any) => {
                                                 openPopupAlert(document.body, {
                                                     title: 'Ошибка!',
-                                                    text: error.data.data
+                                                    text: error.data.message
                                                 })
                                             })
                                             .finally(() => setFetchingDevelopers(false))

@@ -9,6 +9,7 @@ import TextBox from '../../../../form/TextBox/TextBox'
 import Button from '../../../../form/Button/Button'
 import Field from '../../../../form/Field/Field'
 import classes from '../../PopupAuth.module.scss'
+import {RouteNames} from "../../../../../helpers/routerHelper";
 
 interface Props {
     onChangeType(type: string): void
@@ -93,7 +94,7 @@ const RegistrationForm: React.FC<Props> = (props): React.ReactElement => {
 
             UserService.registrationUser(signUp)
                 .then((response: any) => {
-                    setUserAuth(response.data.data)
+                    setUserAuth(response)
 
                     setInfo({
                         fetching: false,
@@ -101,11 +102,12 @@ const RegistrationForm: React.FC<Props> = (props): React.ReactElement => {
                     })
 
                     props.onClose()
+                    window.location.replace(RouteNames.P_DESKTOP)
                 })
                 .catch((error: any) => {
                     setInfo({
                         fetching: false,
-                        error: error.data.data
+                        error: error.data.message
                     })
                 })
         }

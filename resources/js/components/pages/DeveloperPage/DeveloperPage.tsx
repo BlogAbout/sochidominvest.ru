@@ -16,7 +16,6 @@ import PanelView from '../../views/PanelView/PanelView'
 import UserService from '../../../api/UserService'
 import BuildingService from '../../../api/BuildingService'
 import DeveloperService from '../../../api/DeveloperService'
-import CompilationService from '../../../api/CompilationService'
 import BuildingList from '../BuildingsPanelPage/components/BuildingList/BuildingList'
 import BuildingTill from '../BuildingsPanelPage/components/BuildingTill/BuildingTill'
 import openPopupBuildingCreate from '../../../components/popup/PopupBuildingCreate/PopupBuildingCreate'
@@ -161,7 +160,7 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data.data
+                                        text: error.data.message
                                     })
                                 })
                                 .finally(() => setFetching(false))
@@ -189,26 +188,7 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
 
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data.data
-                    })
-                })
-                .finally(() => setFetching(false))
-        }
-    }
-
-    // Удаление объекта из подборки
-    const onRemoveBuildingFromCompilationHandler = (building: IBuilding, compilationId?: number): void => {
-        if (compilationId && building.id) {
-            setFetching(true)
-
-            CompilationService.removeBuildingFromCompilation(compilationId, building.id)
-                .then(() => onSaveHandler())
-                .catch((error: any) => {
-                    console.error('Ошибка удаления из подборки', error)
-
-                    openPopupAlert(document.body, {
-                        title: 'Ошибка!',
-                        text: error.data.data
+                        text: error.data.message
                     })
                 })
                 .finally(() => setFetching(false))
@@ -226,10 +206,6 @@ const DeveloperPage: React.FC = (): React.ReactElement => {
                 onClick: () => onRemoveBuildingFromFavoriteHandler(building)
             })
         }
-
-        // if (props.compilationId && props.building.id) {
-        //     menuItems.push({text: 'Удалить из подборки', onClick: () => removeBuildingFromCompilation()})
-        // }
 
         if (checkRules([Rules.EDIT_BUILDING], building.author_id)) {
             menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(building)})

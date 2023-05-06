@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import classNames from 'classnames/bind'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
 import {ICompilation} from '../../../@types/ICompilation'
+import {IBuilding} from '../../../@types/IBuilding'
 import CompilationService from '../../../api/CompilationService'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
@@ -31,13 +32,12 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const PopupCompilationCreate: React.FC<Props> = (props) => {
-    const [compilation, setCompilation] = useState<ICompilation>(props.compilation || {
+    const [compilation, setCompilation] = useState<ICompilation>({
         id: null,
         name: '',
         description: '',
         is_active: 1
     })
-
     const [fetching, setFetching] = useState(false)
 
     useEffect(() => {
@@ -46,18 +46,39 @@ const PopupCompilationCreate: React.FC<Props> = (props) => {
         }
     }, [props.blockId])
 
-    // Закрытие popup
+    useEffect(() => {
+        if (props.compilation) {
+            onUpdateCompilationData(props.compilation)
+        }
+    }, [props.compilation])
+
+    const onUpdateCompilationData = (compilationData: ICompilation) => {
+        const building_ids: number[] = []
+
+        if (compilationData.buildings && compilationData.buildings.length) {
+            compilationData.buildings.map((building: IBuilding) => {
+                if (building.id) {
+                    building_ids.push(building.id)
+                }
+            })
+        }
+
+        setCompilation({
+            ...compilationData,
+            building_ids: building_ids
+        })
+    }
+
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Сохранение изменений
     const saveHandler = (isClose?: boolean) => {
         setFetching(true)
 
         CompilationService.saveCompilation(compilation)
             .then((response: any) => {
-                setCompilation(response.data.data)
+                onUpdateCompilationData(response.data.data)
 
                 props.onSave()
                 if (isClose) {
@@ -67,7 +88,7 @@ const PopupCompilationCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data.data
+                    text: error.data.message
                 })
             })
             .finally(() => setFetching(false))

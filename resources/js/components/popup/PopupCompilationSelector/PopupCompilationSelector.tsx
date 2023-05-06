@@ -20,6 +20,7 @@ import Title from '../../ui/Title/Title'
 import openPopupAlert from '../PopupAlert/PopupAlert'
 import openPopupCompilationCreate from '../PopupCompilationCreate/PopupCompilationCreate'
 import classes from './PopupCompilationSelector.module.scss'
+import {checkRules, Rules} from "../../../helpers/accessHelper";
 
 interface Props extends PopupProps {
     exclude?: number[]
@@ -27,7 +28,7 @@ interface Props extends PopupProps {
     buttonAdd?: boolean
     multi?: boolean
 
-    onSelect(value: number[]): void
+    onSelect(compilation: ICompilation[]): void
 
     onAdd?(): void
 }
@@ -40,8 +41,8 @@ const defaultProps: Props = {
     onAdd: () => {
         console.info('PopupCompilationSelector onAdd')
     },
-    onSelect: (value: number[]) => {
-        console.info('PopupCompilationSelector onSelect', value)
+    onSelect: (compilation: ICompilation[]) => {
+        console.info('PopupCompilationSelector onSelect', compilation)
     }
 }
 
@@ -52,7 +53,6 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
     const [selectedCompilations, setSelectedCompilations] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {user} = useTypedSelector(state => state.userReducer)
     const {fetching: fetchingCompilationList, compilations} = useTypedSelector(state => state.compilationReducer)
     const {fetchCompilationList} = useActions()
 
@@ -76,23 +76,20 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
         setFetching(fetchingCompilationList)
     }, [fetchingCompilationList])
 
-    // Закрытие Popup
-    const close = () => {
+    const close = (): void => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Клик на строку
-    const selectRow = (compilation: ICompilation) => {
+    const selectRow = (compilation: ICompilation): void => {
         if (props.multi) {
             selectRowMulti(compilation)
         } else if (props.onSelect !== null) {
-            props.onSelect(compilation.id ? [compilation.id] : [0])
+            props.onSelect(compilation.id ? [compilation] : [])
             close()
         }
     }
 
-    // Клик на строку в мульти режиме
-    const selectRowMulti = (compilation: ICompilation) => {
+    const selectRowMulti = (compilation: ICompilation): void => {
         if (compilation.id) {
             if (checkSelected(compilation.id)) {
                 setSelectedCompilations(selectedCompilations.filter((key: number) => key !== compilation.id))
@@ -102,13 +99,11 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка наличия элемента среди выбранных
-    const checkSelected = (id: number | null) => {
+    const checkSelected = (id: number | null): boolean => {
         return id !== null && selectedCompilations.includes(id)
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (value.trim() !== '') {
@@ -120,8 +115,7 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Добавление нового элемента
-    const onClickAdd = () => {
+    const onClickAdd = (): void => {
         openPopupCompilationCreate(document.body, {
             onSave: () => {
                 setIsUpdate(true)
@@ -129,8 +123,7 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Редактирование элемента
-    const onClickEdit = (compilation: ICompilation) => {
+    const onClickEdit = (compilation: ICompilation): void => {
         openPopupCompilationCreate(document.body, {
             compilation: compilation,
             onSave: () => {
@@ -139,14 +132,12 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Сохранение выбора
-    const onClickSave = () => {
-        props.onSelect(selectedCompilations)
+    const onClickSave = (): void => {
+        props.onSelect(compilations.filter((compilation: ICompilation) => compilation.id && selectedCompilations.includes(compilation.id)))
         close()
     }
 
-    // Удаление элемента справочника
-    const onClickDelete = (compilation: ICompilation) => {
+    const onClickDelete = (compilation: ICompilation): void => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${compilation.name}?`,
             buttons: [
@@ -161,7 +152,7 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data.data,
+                                        text: error.data.message,
                                         onOk: close.bind(this)
                                     })
                                 })
@@ -174,22 +165,23 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе справочника
-    const onContextMenu = (e: React.MouseEvent, compilation: ICompilation) => {
+    const onContextMenu = (e: React.MouseEvent, compilation: ICompilation): void => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [{text: 'Редактировать', onClick: () => onClickEdit(compilation)}]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Редактировать', onClick: () => onClickDelete(compilation)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.EDIT_COMPILATION])) {
+            menuItems.push({text: 'Редактировать', onClick: () => onClickEdit(compilation)})
+        }
+
+        if (checkRules([Rules.REMOVE_COMPILATION])) {
+            menuItems.push({text: 'Редактировать', onClick: () => onClickDelete(compilation)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
-    const renderSearch = () => {
+    const renderSearch = (): React.ReactElement => {
         return (
             <div className={classes.search}>
                 <SearchBox value={searchText}
@@ -200,14 +192,15 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
-                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
-                {/*    : null}*/}
+                {props.buttonAdd && checkRules([Rules.ADD_COMPILATION]) ?
+                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
+                    : null
+                }
             </div>
         )
     }
 
-    const renderListBox = () => {
+    const renderListBox = (): React.ReactElement => {
         return (
             <BlockingElement fetching={fetching} className={classes.list}>
                 <div className={classes.listContent}>
@@ -220,7 +213,7 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
         )
     }
 
-    const renderSelectedListBox = () => {
+    const renderSelectedListBox = (): React.ReactElement => {
         const rows = filterCompilation.filter((compilation: ICompilation) => checkSelected(compilation.id))
 
         return (
@@ -235,7 +228,7 @@ const PopupCompilationSelector: React.FC<Props> = (props) => {
         )
     }
 
-    const renderRow = (compilation: ICompilation, side: string, checked: boolean) => {
+    const renderRow = (compilation: ICompilation, side: string, checked: boolean): React.ReactElement => {
         return (
             <div className={classes.row}
                  key={compilation.id}

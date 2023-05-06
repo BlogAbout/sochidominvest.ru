@@ -65,6 +65,7 @@ class BuildingService
 
             if (isset($info)) {
                 // Todo: сохранить информацию
+                // advantages payments formalization в include
             }
 
             if (isset($imageIds)) {

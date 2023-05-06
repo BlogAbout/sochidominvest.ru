@@ -493,6 +493,15 @@ export const getBuildingAmountContractText = (key: string | null | undefined) =>
     return find ? find.text : ''
 }
 
+export const getCheckerStatusText = (key: string | null | undefined) => {
+    if (!key) {
+        return ''
+    }
+
+    const find = checkerStatuses.find((item: ISelector) => item.key === key)
+    return find ? find.text : ''
+}
+
 export const checkBuildingByRangeCost = (building: IBuilding, filters: any) => {
     if (!filters.buildingCost || (filters.buildingCost.min === 0 && filters.buildingCost.max === 0)) {
         return true

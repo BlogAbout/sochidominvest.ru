@@ -44,8 +44,8 @@ const ForgotForm: React.FC<Props> = (props): React.ReactElement => {
             //         setStep(2)
             //     })
             //     .catch((error: any) => {
-            //         console.error(error.data.data)
-            //         setError(error.data.data)
+            //         console.error(error.data.message)
+            //         setError(error.data.message)
             //     })
             //     .finally(() => {
             //         setFetching(false)
@@ -72,11 +72,11 @@ const ForgotForm: React.FC<Props> = (props): React.ReactElement => {
 
             // UserService.resetPasswordUser(email, password)
             //     .then((response: any) => {
-            //         setUserAuth(response.data.data)
+            //         setUserAuth(response)
             //     })
             //     .catch((error: any) => {
-            //         console.error(error.data.data)
-            //         setError(error.data.data)
+            //         console.error(error.data.message)
+            //         setError(error.data.message)
             //     })
             //     .finally(() => {
             //         setFetching(false)

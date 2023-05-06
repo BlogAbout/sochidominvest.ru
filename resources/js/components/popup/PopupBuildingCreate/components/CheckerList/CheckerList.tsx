@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import {IBuildingChecker} from '../../../../../@types/IBuilding'
-import {ISelector} from '../../../../../@types/ISelector'
-import {checkerStatuses} from '../../../../../helpers/buildingHelper'
+import {getCheckerStatusText} from '../../../../../helpers/buildingHelper'
 import {numberWithSpaces} from '../../../../../helpers/numberHelper'
 import BlockingElement from '../../../../ui/BlockingElement/BlockingElement'
 import Empty from '../../../../ui/Empty/Empty'
@@ -23,70 +22,60 @@ const defaultProps: Props = {
 }
 
 const CheckerList: React.FC<Props> = (props) => {
-    const [isUpdate, setIsUpdate] = useState(true)
     const [fetching, setFetching] = useState(false)
     const [checkers, setCheckers] = useState<IBuildingChecker[]>([])
 
-    const {user} = useTypedSelector(state => state.userReducer)
-
     useEffect(() => {
-        if (isUpdate && props.buildingId) {
+        onFetchCheckersHandler()
+    }, [props.buildingId])
+
+    const onFetchCheckersHandler = () => {
+        if (props.buildingId) {
+            setFetching(true)
+
             CheckerService.fetchCheckers(props.buildingId)
-                .then((response: any) => {
-                    setFetching(false)
-                    setCheckers(response.data.data)
-                })
+                .then((response: any) => setCheckers(response.data.data))
                 .catch((error: any) => {
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data.data
+                        text: error.data.message
                     })
-
-                    setFetching(false)
                 })
-
-            setIsUpdate(false)
+                .finally(() => setFetching(false))
         }
-    }, [isUpdate, props.buildingId])
-
-    // Обработчик изменений
-    const onSave = () => {
-        setIsUpdate(true)
     }
 
-    // Добавление элемента
     const createHandler = () => {
         openPopupCheckerCreate(document.body, {
             buildingId: props.buildingId,
-            onSave: () => onSave()
+            onSave: () => onFetchCheckersHandler()
         })
     }
 
-    // Обновление элемента
     const updateHandler = (checker: IBuildingChecker) => {
         openPopupCheckerCreate(document.body, {
             checker: checker,
             buildingId: props.buildingId,
-            onSave: () => onSave()
+            onSave: () => onFetchCheckersHandler()
         })
     }
 
-    // Открытие контекстного меню на элементе
     const onContextMenu = (e: React.MouseEvent, checker: IBuildingChecker) => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [{text: 'Редактировать', onClick: () => updateHandler(checker)}]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: () => removeHandler(checker)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.EDIT_CHECKER])) {
+            menuItems.push({text: 'Редактировать', onClick: () => updateHandler(checker)})
+        }
+
+        if (checkRules([Rules.REMOVE_CHECKER])) {
+            menuItems.push({text: 'Удалить', onClick: () => removeHandler(checker)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
-    // Удаление элемента
     const removeHandler = (checker: IBuildingChecker) => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${checker.name}?`,
@@ -98,18 +87,14 @@ const CheckerList: React.FC<Props> = (props) => {
                             setFetching(true)
 
                             CheckerService.removeChecker(checker.id)
-                                .then(() => {
-                                    onSave()
-                                })
+                                .then(() => onFetchCheckersHandler())
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data.data
+                                        text: error.data.message
                                     })
                                 })
-                                .finally(() => {
-                                    setFetching(false)
-                                })
+                                .finally(() => setFetching(false))
                         }
                     }
                 },
@@ -138,15 +123,13 @@ const CheckerList: React.FC<Props> = (props) => {
             <BlockingElement fetching={fetching} className={classes.list}>
                 {checkers && checkers.length ?
                     checkers.map((checker: IBuildingChecker) => {
-                        const status = checkerStatuses.find((item: ISelector) => item.key === checker.status)
-
                         return (
                             <div key={checker.id}
                                  className={classes.row}
                                  onContextMenu={(e: React.MouseEvent) => onContextMenu(e, checker)}
                             >
                                 <div className={classes.name}>{checker.name}</div>
-                                <div className={classes.status}>{status ? status.text : ''}</div>
+                                <div className={classes.status}>{getCheckerStatusText(checker.status)}</div>
                                 <div className={classes.housing}>{checker.housing}</div>
                                 <div className={classes.stage}>{checker.stage}</div>
                                 <div className={classes.area}>{checker.area ? checker.area : ''}</div>

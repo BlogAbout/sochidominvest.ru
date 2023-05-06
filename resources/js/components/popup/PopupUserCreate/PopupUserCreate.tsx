@@ -66,7 +66,7 @@ const PopupUserCreate: React.FC<Props> = (props) => {
                     console.error('error', error)
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data.data
+                        text: error.data.message
                     })
                 })
         }
@@ -105,7 +105,7 @@ const PopupUserCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data.data
+                    text: error.data.message
                 })
 
                 setFetching(false)

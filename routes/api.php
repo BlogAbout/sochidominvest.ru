@@ -10,7 +10,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/building', 'Building\BuildingController')->only(['store', 'update', 'destroy']);
     Route::apiResource('/business-process', 'BusinessProcess\BusinessProcessController');
     Route::apiResource('/store/category', 'Category\CategoryController');
-    Route::apiResource('/checker', 'Checker\CheckerController');
+    Route::apiResource('/checker', 'Checker\CheckerController')->only(['index', 'store', 'update', 'destroy']);
     Route::apiResource('/compilation', 'Compilation\CompilationController');
     Route::apiResource('/contact', 'Contact\ContactController');
     Route::apiResource('/developer', 'Developer\DeveloperController');

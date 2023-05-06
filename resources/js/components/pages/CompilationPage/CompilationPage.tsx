@@ -42,30 +42,6 @@ const CompilationPage: React.FC = (): React.ReactElement => {
         fetchCompilationInfo()
     }, [])
 
-    useEffect(() => {
-        if (compilation.buildings && compilation.buildings.length) {
-            const ids: number[] = []
-
-            compilation.buildings.forEach((building: IBuilding) => {
-                if (building.id) {
-                    ids.push(building.id)
-                }
-            })
-
-            setFilterBuilding(compilation.buildings)
-            setCompilation({
-                ...compilation,
-                building_ids: ids
-            })
-        } else {
-            setFilterBuilding([])
-            setCompilation({
-                ...compilation,
-                building_ids: []
-            })
-        }
-    }, [compilation])
-
     const fetchCompilationInfo = (): void => {
         if (params.id) {
             const compilationId = parseInt(params.id)
@@ -73,7 +49,31 @@ const CompilationPage: React.FC = (): React.ReactElement => {
             setFetching(false)
 
             CompilationService.fetchCompilationById(compilationId)
-                .then((response: any) => setCompilation(response.data.data))
+                .then((response: any) => {
+                    const compilationData: ICompilation = response.data.data
+
+                    if (compilationData.buildings && compilationData.buildings.length) {
+                        const building_ids: number[] = []
+
+                        compilationData.buildings.forEach((building: IBuilding) => {
+                            if (building.id) {
+                                building_ids.push(building.id)
+                            }
+                        })
+
+                        setFilterBuilding(compilationData.buildings)
+                        setCompilation({
+                            ...compilationData,
+                            building_ids: building_ids
+                        })
+                    } else {
+                        setFilterBuilding([])
+                        setCompilation({
+                            ...compilationData,
+                            building_ids: []
+                        })
+                    }
+                })
                 .catch((error: any) => console.error(error.data.message))
                 .finally(() => setFetching(false))
         }
@@ -111,7 +111,7 @@ const CompilationPage: React.FC = (): React.ReactElement => {
                                 .catch((error: any) => {
                                     openPopupAlert(document.body, {
                                         title: 'Ошибка!',
-                                        text: error.data.data
+                                        text: error.data.message
                                     })
                                 })
                                 .finally(() => setFetching(false))
@@ -139,7 +139,7 @@ const CompilationPage: React.FC = (): React.ReactElement => {
 
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data.data
+                        text: error.data.message
                     })
                 })
                 .finally(() => setFetching(false))
@@ -147,18 +147,24 @@ const CompilationPage: React.FC = (): React.ReactElement => {
     }
 
     // Удаление объекта из подборки
-    const onRemoveBuildingFromCompilationHandler = (building: IBuilding, compilationId?: number): void => {
-        if (compilationId && building.id) {
+    const onRemoveBuildingFromCompilationHandler = (building: IBuilding): void => {
+        if (building.id) {
             setFetching(true)
 
-            CompilationService.removeBuildingFromCompilation(compilationId, building.id)
+            const compilationUpdate: ICompilation = JSON.parse(JSON.stringify(compilation))
+
+            compilationUpdate.building_ids = compilationUpdate.building_ids
+                ? compilationUpdate.building_ids.filter((id: number) => id !== building.id)
+                : []
+
+            CompilationService.saveCompilation(compilationUpdate)
                 .then(() => onSaveHandler())
                 .catch((error: any) => {
                     console.error('Ошибка удаления из подборки', error)
 
                     openPopupAlert(document.body, {
                         title: 'Ошибка!',
-                        text: error.data.data
+                        text: error.data.message
                     })
                 })
                 .finally(() => setFetching(false))
@@ -170,16 +176,12 @@ const CompilationPage: React.FC = (): React.ReactElement => {
 
         const menuItems = []
 
-        if (params.id) {
-            const compilationId = parseInt(params.id)
-
+        if (checkRules([Rules.EDIT_COMPILATION])) {
             menuItems.push({
                 text: 'Удалить из подборки',
-                onClick: () => onRemoveBuildingFromCompilationHandler(building, compilationId)
+                onClick: () => onRemoveBuildingFromCompilationHandler(building)
             })
-        }
 
-        if (checkRules([Rules.EDIT_COMPILATION])) {
             menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(building)})
         }
 

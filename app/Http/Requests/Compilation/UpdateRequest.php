@@ -16,7 +16,9 @@ class UpdateRequest extends FormRequest
         return [
             'name' => 'required|string',
             'description' => 'nullable|string',
-            'is_active' => 'nullable|boolean'
+            'is_active' => 'nullable|boolean',
+            'building_ids' => 'nullable|array',
+            'building_ids.*' => 'nullable|integer|exists:sdi_buildings,id'
         ];
     }
 
@@ -26,7 +28,8 @@ class UpdateRequest extends FormRequest
             'name.required' => 'Это поле обязательно для заполнения',
             'name.string' => 'Значение данного поля должно быть строкой',
             'description.string' => 'Значение данного поля должно быть строкой',
-            'is_active.boolean' => 'Значение данного поля должно быть переключателем'
+            'is_active.boolean' => 'Значение данного поля должно быть переключателем',
+            'building_ids.array' => 'Значение данного поля должно быть массивом'
         ];
     }
 }

@@ -6,6 +6,7 @@ import {mailingTypes} from '../../../helpers/mailingHelper'
 import MailingService from '../../../api/MailingService'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
 import {IMailing} from '../../../@types/IMailing'
+import {ICompilation} from '../../../@types/ICompilation'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
 import openPopupAlert from '../../popup/PopupAlert/PopupAlert'
@@ -81,9 +82,8 @@ const PopupMailingCreate: React.FC<Props> = (props) => {
             .catch((error: any) => {
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data.data
+                    text: error.data.message
                 })
-
             })
             .finally(() => {
                 setFetching(false)
@@ -117,7 +117,12 @@ const PopupMailingCreate: React.FC<Props> = (props) => {
                 <Label text='Подборка'/>
 
                 <CompilationBox compilations={mailing.content.trim() !== '' ? [+mailing.content] : []}
-                                onSelect={(value: number[]) => setMailing({...mailing, content: value[0].toString()})}
+                                onSelect={(compilations: ICompilation[]) => {
+                                    setMailing({
+                                        ...mailing,
+                                        content: compilations.length && compilations[0].id ? compilations[0].id.toString() : ''
+                                    })
+                                }}
                                 placeHolder='Выберите подборку'
                                 error={!mailing.content || mailing.content.trim() === ''}
                                 showRequired

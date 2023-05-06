@@ -96,7 +96,7 @@ const PopupProductCreate: React.FC<Props> = (props) => {
                 console.error('error', error)
                 openPopupAlert(document.body, {
                     title: 'Ошибка!',
-                    text: error.data.data
+                    text: error.data.message
                 })
             })
             .finally(() => setFetchingProduct(false))

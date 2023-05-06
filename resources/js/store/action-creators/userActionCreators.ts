@@ -54,8 +54,6 @@ export const UserActionCreators = {
             dispatch(UserActionCreators.setError('Непредвиденная ошибка авторизации'))
             console.error('Непредвиденная ошибка авторизации', e)
         }
-
-        window.location.replace(RouteNames.P_DESKTOP)
     },
     logout: () => async (dispatch: AppDispatch) => {
         localStorage.clear()
