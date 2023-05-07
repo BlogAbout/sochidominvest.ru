@@ -21,11 +21,13 @@ export enum Rules {
     EDIT_ARTICLE,
     REMOVE_ARTICLE,
 
+    SHOW_COMPILATION,
     ADD_COMPILATION,
     EDIT_COMPILATION,
     REMOVE_COMPILATION,
 
     SHOW_FEEDS,
+    EDIT_FEEDl,
     PROCESS_FEED,
     CLOSE_FEED,
     REMOVE_FEED,
@@ -103,6 +105,7 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
                 // проверить, что авторизован
                 result = true
                 break
+            case Rules.IS_MANAGER:
             case Rules.MORE_TARIFF_FREE:
                 result = true
                 break
@@ -124,6 +127,7 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
             case Rules.REMOVE_USER:
                 result = true
                 break
+            case Rules.ADD_BUILDING:
             case Rules.EDIT_BUILDING:
                 // проверить, что id равен пользователю
                 result = true
@@ -132,13 +136,17 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
                 // проверить, что id равен пользователю
                 result = true
                 break
+            case Rules.ADD_ARTICLE:
             case Rules.EDIT_ARTICLE:
                 result = true
                 break
             case Rules.REMOVE_ARTICLE:
                 result = true
                 break
+            case Rules.SHOW_COMPILATION:
+            case Rules.ADD_COMPILATION:
             case Rules.EDIT_COMPILATION:
+            case Rules.REMOVE_COMPILATION:
                 result = true
                 break
             case Rules.SHOW_TARIFFS:
@@ -167,9 +175,13 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
             case Rules.EDIT_AGENT:
                 result = true
                 break
+            case Rules.REMOVE_AGENT:
+                result = true
+                break
             case Rules.SHOW_DOCUMENTS:
                 result = true
                 break
+            case Rules.ADD_DOCUMENT:
             case Rules.EDIT_DOCUMENT:
                 // проверить, что id равен пользователю
                 result = true
@@ -181,12 +193,52 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
             case Rules.SHOW_TAGS:
                 result = true
                 break
+            case Rules.ADD_TAG:
             case Rules.EDIT_TAG:
                 result = true
                 break
             case Rules.REMOVE_TAG:
                 result = true
                 break
+            case Rules.SHOW_FEEDS:
+            case Rules.EDIT_FEEDl:
+            case Rules.PROCESS_FEED:
+            case Rules.CLOSE_FEED:
+            case Rules.REMOVE_FEED:
+            case Rules.SHOW_CATEGORIES:
+            case Rules.ADD_CATEGORY:
+            case Rules.EDIT_CATEGORY:
+            case Rules.REMOVE_CATEGORY:
+            case Rules.SHOW_PRODUCTS:
+            case Rules.ADD_PRODUCT:
+            case Rules.EDIT_PRODUCT:
+            case Rules.REMOVE_PRODUCT:
+            case Rules.SHOW_QUESTIONS:
+            case Rules.ADD_QUESTION:
+            case Rules.EDIT_QUESTION:
+            case Rules.REMOVE_QUESTION:
+            case Rules.SHOW_POSTS:
+            case Rules.ADD_POST:
+            case Rules.EDIT_POST:
+            case Rules.REMOVE_POST:
+            case Rules.SHOW_PAYMENTS:
+            case Rules.ADD_PAYMENT:
+            case Rules.EDIT_PAYMENT:
+            case Rules.COPY_PAYMENT:
+            case Rules.REMOVE_PAYMENT:
+            case Rules.SHOW_MAILINGS:
+            case Rules.ADD_MAILING:
+            case Rules.EDIT_MAILING:
+            case Rules.REMOVE_MAILING:
+            case Rules.SHOW_BOOKINGS:
+            case Rules.ADD_BOOKING:
+            case Rules.EDIT_BOOKING:
+            case Rules.REMOVE_BOOKING:
+            case Rules.SHOW_CHECKERS:
+            case Rules.ADD_CHECKER:
+            case Rules.EDIT_CHECKER:
+            case Rules.REMOVE_CHECKER:
+            case Rules.RUN_BUSINESS_PROCESS:
             default:
                 result = true
         }

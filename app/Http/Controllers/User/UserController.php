@@ -10,6 +10,7 @@ use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -60,6 +61,17 @@ class UserController extends Controller
         }
 
         return response(['message' => 'Ошибка регистрации. Пользователь с таким E-mail уже существует.'])->setStatusCode(500);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return response([])->setStatusCode(200);
     }
 
     public function index()

@@ -56,11 +56,22 @@ export const UserActionCreators = {
         }
     },
     logout: () => async (dispatch: AppDispatch) => {
-        localStorage.clear()
+        try {
+            const response = await UserService.logoutUser()
 
-        dispatch(UserActionCreators.setIsAuth(false))
+            if (response.status === 200) {
+                window.location.replace(RouteNames.MAIN)
+            } else {
+                dispatch(UserActionCreators.setError('Ошибка при выходе из системы'))
+            }
+        } catch (e) {
+            dispatch(UserActionCreators.setError('Непредвиденная ошибка при выходе из системы'))
+            console.error('Непредвиденная ошибка при выходе из системы', e)
+        } finally {
+            localStorage.clear()
 
-        window.location.replace(RouteNames.MAIN)
+            dispatch(UserActionCreators.setIsAuth(false))
+        }
     },
     fetchUserList: (filter: IFilter) => async (dispatch: AppDispatch) => {
         dispatch(UserActionCreators.setFetching(true))

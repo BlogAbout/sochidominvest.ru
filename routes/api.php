@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/transaction', 'Transaction\TransactionController')->only(['index', 'show']);
     Route::apiResource('/user', 'User\UserController');
     Route::apiResource('/widget', 'Widget\WidgetController');
+    Route::post('/logout', [UserController::class, 'logout']);
 });
 
 Route::group(['namespace' => 'User'], function () {

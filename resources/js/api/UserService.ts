@@ -15,6 +15,10 @@ export default class UserService {
         return axios.post('/registration', signUp)
     }
 
+    static async logoutUser(): Promise<AxiosResponse> {
+        return axios.get('/logout')
+    }
+
     // static async forgotPasswordUser(email: string): Promise<AxiosResponse> {
     //     return axios.post('/forgot', {email: email})
     // }
