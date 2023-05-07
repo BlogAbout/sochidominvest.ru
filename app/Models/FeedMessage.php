@@ -15,6 +15,8 @@ class FeedMessage extends Model
     protected $table = 'sdi_feed_messages';
     protected $guarded = false;
 
+    protected $with = ['author', 'feed'];
+
     public function feed()
     {
         return $this->belongsTo(Feed::class, 'feed_id', 'id');

@@ -42,14 +42,7 @@ const PopupSupportCreate: React.FC<Props> = (props): React.ReactElement => {
         is_active: 1
     })
 
-    const [message, setMessage] = useState<IFeedMessage>({
-        id: null,
-        feedId: null,
-        author: null,
-        active: 1,
-        status: 'new',
-        content: ''
-    })
+    const [messageText, setMessageText] = useState<string>('')
 
     const [fetching, setFetching] = useState(false)
 
@@ -59,37 +52,33 @@ const PopupSupportCreate: React.FC<Props> = (props): React.ReactElement => {
         }
     }, [props.blockId])
 
-    // Закрытие popup
-    const closePopup = () => {
+    const closePopup = (): void => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Сохранение изменений
-    const saveHandler = () => {
-        if (feed.title.trim() === '' || message.content.trim() === '') {
+    const saveHandler = (): void => {
+        if (feed.title.trim() === '' || messageText.trim() === '') {
             return
         }
 
-        const updateFeed = {...feed, messages: [message]}
+        const updateFeed = {...feed, message_text: messageText}
 
         setFetching(true)
 
-        // FeedService.saveFeed(updateFeed)
-        //     .then((response: any) => {
-        //         setFetching(false)
-        //         setFeed(response.data.data)
-        //
-        //         props.onSave()
-        //         closePopup()
-        //     })
-        //     .catch((error: any) => {
-        //         openPopupAlert(document.body, {
-        //             title: 'Ошибка!',
-        //             text: error.data.message
-        //         })
-        //
-        //         setFetching(false)
-        //     })
+        FeedService.saveFeed(updateFeed)
+            .then((response: any) => {
+                setFeed(response.data.data)
+
+                props.onSave()
+                closePopup()
+            })
+            .catch((error: any) => {
+                openPopupAlert(document.body, {
+                    title: 'Ошибка!',
+                    text: error.data.message
+                })
+            })
+            .finally(() => setFetching(false))
     }
 
     return (
@@ -124,11 +113,8 @@ const PopupSupportCreate: React.FC<Props> = (props): React.ReactElement => {
                            style='dark'
                            labelWidth={150}
                     >
-                        <TextAreaBox value={message.content}
-                                     onChange={(value: string) => setMessage({
-                                         ...message,
-                                         content: value
-                                     })}
+                        <TextAreaBox value={messageText}
+                                     onChange={(value: string) => setMessageText(value)}
                                      placeHolder='Введите текст сообщения'
                                      width='100%'
                         />
@@ -140,7 +126,7 @@ const PopupSupportCreate: React.FC<Props> = (props): React.ReactElement => {
                 <Button type='apply'
                         icon='check'
                         onClick={() => saveHandler()}
-                        disabled={fetching || feed.title.trim() === '' || message.content.trim() === ''}
+                        disabled={fetching || feed.title.trim() === '' || messageText.trim() === ''}
                         title='Отправить'
                 >Отправить</Button>
 

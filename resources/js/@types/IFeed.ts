@@ -14,6 +14,7 @@ export interface IFeed {
     object_id?: number | null
     object_type?: string | null
     is_active?: number
+    message_text?: string | null
     messages?: IFeedMessage[]
     created_at?: string | null
     updated_at?: string | null
@@ -29,7 +30,6 @@ export interface IFeedMessage {
     status: string
     content: string
     authorName?: string | null
-
     created_at?: string | null
     updated_at?: string | null
     date_created?: string | null

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Resources\FeedResource;
 use App\Models\Feed;
+use App\Models\FeedMessage;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -19,17 +20,27 @@ class FeedService
             }
 
             if (isset($data['message_text'])) {
-                $messageNew = $data['message_text'];
+                $messageText = $data['message_text'];
                 unset($data['message_text']);
             }
 
             $feed = Feed::firstOrCreate($data);
 
-            if (isset($messageNew)) {
-                // Todo: создать сообщение
+            if (isset($messageText)) {
+                $messageData = [
+                    'feed_id' => $feed->id,
+                    'author_id' => auth()->user()->id,
+                    'status' => 'new',
+                    'content' => $messageText,
+                    'is_active' => true
+                ];
+
+                FeedMessage::firstOrCreate($messageData);
             }
 
             DB::commit();
+
+            $feed->refresh();
 
             return (new FeedResource($feed))->response()->setStatusCode(201);
         } catch (Exception $e) {
@@ -45,17 +56,27 @@ class FeedService
             DB::beginTransaction();
 
             if (isset($data['message_text'])) {
-                $messageNew = $data['message_text'];
+                $messageText = $data['message_text'];
                 unset($data['message_text']);
             }
 
             $feed->update($data);
 
-            if (isset($messageNew)) {
-                // Todo: создать сообщение
+            if (isset($messageText)) {
+                $messageData = [
+                    'feed_id' => $feed->id,
+                    'author_id' => auth()->user()->id,
+                    'status' => 'new',
+                    'content' => $messageText,
+                    'is_active' => true
+                ];
+
+                FeedMessage::firstOrCreate($messageData);
             }
 
             DB::commit();
+
+            $feed->refresh();
 
             return (new FeedResource($feed))->response()->setStatusCode(200);
         } catch (\Exception $e) {

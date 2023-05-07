@@ -15,9 +15,16 @@ class Feed extends Model
     protected $table = 'sdi_feeds';
     protected $guarded = false;
 
+    protected $with = ['author', 'user', 'messages'];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id')
             ->without(['avatar', 'post', 'role', 'tariff', 'favorites', 'bpSorting']);
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(FeedMessage::class, 'feed_id', 'id')->without(['feed']);
     }
 }

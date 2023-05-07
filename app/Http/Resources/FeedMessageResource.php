@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FeedResource extends JsonResource
+class FeedMessageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,19 +16,12 @@ class FeedResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => html_entity_decode($this->title),
-            'type' => $this->type,
-            'status' => $this->status,
-            'user_id' => $this->user_id,
-            'user' => new UserResource($this->whenLoaded('user')),
+            'feed_id' => ($this->feed_id),
             'author_id' => $this->author_id,
             'author' => new UserResource($this->whenLoaded('author')),
-            'phone' => $this->phone,
-            'name' => $this->name,
-            'object_id' => $this->object_id,
-            'object_type' => $this->object_type,
+            'status' => $this->status,
+            'content' => html_entity_decode($this->content),
             'is_active' => $this->is_active,
-            'messages' => FeedMessageResource::collection($this->whenLoaded('messages')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'date_created' => $this->dateCreatedFormat,

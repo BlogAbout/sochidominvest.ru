@@ -5,7 +5,7 @@ import {IFeed, IFeedMessage} from '../../../@types/IFeed'
 import {ISelector} from '../../../@types/ISelector'
 import {ITab} from '../../../@types/ITab'
 import {feedStatuses, getFeedObjectText, getFeedTypesText} from '../../../helpers/supportHelper'
-import {allowForRole} from '../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import FeedService from '../../../api/FeedService'
 import BuildingService from '../../../api/BuildingService'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
@@ -16,11 +16,11 @@ import BlockingElement from '../../ui/BlockingElement/BlockingElement'
 import Button from '../../form/Button/Button'
 import Empty from '../../ui/Empty/Empty'
 import TextAreaBox from '../../form/TextAreaBox/TextAreaBox'
-import StatusBox from '../../form/StatusBox/StatusBox'
 import Title from '../../ui/Title/Title'
 import TextBox from '../../form/TextBox/TextBox'
 import Field from '../../form/Field/Field'
 import Tabs from '../../ui/Tabs/Tabs'
+import StatusBox from '../../form/StatusBox/StatusBox'
 import classes from './PopupSupportInfo.module.scss'
 
 interface Props extends PopupProps {
@@ -50,14 +50,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
         messages: []
     })
 
-    const [message, setMessage] = useState<IFeedMessage>({
-        id: null,
-        feedId: null,
-        author: null,
-        active: 1,
-        status: 'new',
-        content: ''
-    })
+    const [messageText, setMessageText] = useState<string>('')
 
     const [info, setInfo] = useState({
         objectName: ''
@@ -76,9 +69,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
             setFetching(true)
 
             FeedService.fetchFeedById(props.feedId)
-                .then((response: any) => {
-                    setFeed(response.data.data)
-                })
+                .then((response: any) => setFeed(response.data.data))
                 .catch((error: any) => {
                     console.error('Ошибка загрузки данных!', error)
                     openPopupAlert(document.body, {
@@ -86,9 +77,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
                         text: error.data.message
                     })
                 })
-                .finally(() => {
-                    setFetching(false)
-                })
+                .finally(() => setFetching(false))
         }
     }, [props.feedId])
 
@@ -96,9 +85,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
         if (feed.object_id && feed.object_type) {
             if (feed.object_type === 'building') {
                 BuildingService.fetchBuildingById(feed.object_id)
-                    .then((response: any) => {
-                        setInfo({...info, objectName: response.data.data.name})
-                    })
+                    .then((response: any) => setInfo({...info, objectName: response.data.data.name}))
                     .catch((error: any) => {
                         openPopupAlert(document.body, {
                             title: 'Ошибка!',
@@ -109,13 +96,11 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
         }
     }, [feed.object_id])
 
-    // Закрытие popup
-    const closePopup = () => {
+    const closePopup = (): void => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Сохранение изменений
-    const saveHandler = (status: string) => {
+    const saveHandler = (status: string): void => {
         const updateFeed: IFeed = {...feed, status: status}
 
         setFetching(true)
@@ -132,19 +117,17 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
                     text: error.data.message
                 })
             })
-            .finally(() => {
-                setFetching(false)
-            })
+            .finally(() => setFetching(false))
     }
 
-    const saveMessage = () => {
-        if (message.content.trim() === '') {
+    const saveMessage = (): void => {
+        if (messageText.trim() === '') {
             return
         }
 
-        const updateFeed = {...feed, messages: [message]}
+        const updateFeed = {...feed, message_text: messageText}
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
+        if (checkRules([Rules.IS_MANAGER])) {
             updateFeed.status = 'close'
         } else {
             updateFeed.status = 'new'
@@ -155,14 +138,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
         FeedService.saveFeed(updateFeed)
             .then((response: any) => {
                 setFeed(response.data.data)
-                setMessage({
-                    id: null,
-                    feedId: null,
-                    author: null,
-                    active: 1,
-                    status: 'new',
-                    content: ''
-                })
+                setMessageText('')
 
                 props.onSave()
             })
@@ -175,19 +151,17 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
             .finally(() => setFetching(false))
     }
 
-    const items = useMemo(() => {
-        return feedStatuses.map((item: ISelector) => {
-            return {
-                title: item.text,
-                text: item.key,
-                onClick: () => {
-                    saveHandler(item.key)
-                }
+    const items = feedStatuses.map((item: ISelector) => {
+        return {
+            title: item.text,
+            text: item.key,
+            onClick: () => {
+                saveHandler(item.key)
             }
-        })
-    }, [])
+        }
+    })
 
-    const renderMessage = (message: IFeedMessage) => {
+    const renderMessage = (message: IFeedMessage): React.ReactElement => {
         return (
             <div key={message.id} className={classes.item}>
                 <div className={classes.head}>
@@ -199,7 +173,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
         )
     }
 
-    const renderInfoTab = () => {
+    const renderInfoTab = (): React.ReactElement => {
         return (
             <div key='info' className={classes.tabContent}>
                 <Title type='h2'>{`Тикет #${feed.id}`}</Title>
@@ -219,7 +193,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
                     />
                 </Field>
 
-                {allowForRole(['director', 'administrator', 'manager']) ?
+                {checkRules([Rules.IS_MANAGER]) ?
                     <>
                         {feed.author ?
                             <Field label='Автор'
@@ -359,7 +333,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
         )
     }
 
-    const renderMessagesTab = () => {
+    const renderMessagesTab = (): React.ReactElement => {
         if (!feed.messages || !feed.messages.length) {
             return (
                 <Empty message='Нет сообщений'/>
@@ -380,11 +354,8 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
                        style='dark'
                        labelWidth={150}
                 >
-                    <TextAreaBox value={message.content}
-                                 onChange={(value: string) => setMessage({
-                                     ...message,
-                                     content: value
-                                 })}
+                    <TextAreaBox value={messageText}
+                                 onChange={(value: string) => setMessageText(value)}
                                  placeHolder='Введите текст сообщения'
                     />
                 </Field>
@@ -392,13 +363,13 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
                 <Button type='apply'
                         icon='check'
                         onClick={() => saveMessage()}
-                        disabled={fetching || message.content.trim() === ''}
+                        disabled={fetching || messageText.trim() === ''}
                 >Отправить</Button>
             </div>
         )
     }
 
-    const tabs: ITab = useMemo(() => {
+    const tabs: ITab = useMemo((): ITab => {
         const tabsList: ITab = {
             info: {title: 'Информация', render: renderInfoTab()}
         }
@@ -408,7 +379,7 @@ const PopupSupportInfo: React.FC<Props> = (props) => {
         }
 
         return tabsList
-    }, [feed, message, info])
+    }, [feed, messageText, info])
 
     return (
         <Popup className={classes.PopupSupportInfo}>
