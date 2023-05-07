@@ -25,6 +25,7 @@ class MailResource extends JsonResource
             'author' => new UserResource($this->whenLoaded('author')),
             'is_active' => $this->is_active,
             'recipients' => UserResource::collection($this->whenLoaded('recipients')),
+            'by_roles' => $this->by_roles ? array_map('intval', explode(',', $this->by_roles)) : [],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'date_created' => $this->dateCreatedFormat,

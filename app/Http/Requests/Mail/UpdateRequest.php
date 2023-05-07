@@ -21,7 +21,9 @@ class UpdateRequest extends FormRequest
             'status' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
             'recipient_ids' => 'nullable|array',
-            'recipient_ids.*' => 'nullable|integer|exists:sdi_users,id'
+            'recipient_ids.*' => 'nullable|integer|exists:sdi_users,id',
+            'by_roles' => 'nullable|array',
+            'by_roles.*' => 'nullable|integer|exists:sdi_roles,id'
         ];
     }
 
@@ -35,7 +37,8 @@ class UpdateRequest extends FormRequest
             'type.string' => 'Значение данного поля должно быть строкой',
             'status.integer' => 'Значение данного поля должно быть числом',
             'is_active.boolean' => 'Значение данного поля должно быть переключателем',
-            'recipient_ids.array' => 'Значение данного поля должно быть массивом'
+            'recipient_ids.array' => 'Значение данного поля должно быть массивом',
+            'by_roles.array' => 'Значение данного поля должно быть массивом'
         ];
     }
 }

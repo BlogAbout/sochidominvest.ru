@@ -23,6 +23,7 @@ class CreateMailsTable extends Migration
             $table->unsignedBigInteger('author_id')->nullable();
             $table->boolean('is_active')->default(1);
             $table->smallInteger('status')->default(0);
+            $table->text('by_roles')->nullable();
 
             $table->timestamps();
 

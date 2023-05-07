@@ -7,6 +7,7 @@ export interface IMailing {
     content_html: string
     type: string
     status: number
+    by_roles: number[]
     author_id?: number | null
     author?: IUser | null
     is_active?: number

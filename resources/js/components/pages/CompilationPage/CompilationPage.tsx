@@ -205,7 +205,8 @@ const CompilationPage: React.FC = (): React.ReactElement => {
             type: 'compilation',
             status: 0,
             author_id: user.id,
-            is_active: 1
+            is_active: 1,
+            by_roles: []
         }
 
         openPopupMailingCreate(document.body, {

@@ -3,8 +3,10 @@ import withStore from '../../hoc/withStore'
 import classNames from 'classnames/bind'
 import {converter} from '../../../helpers/utilHelper'
 import {mailingTypes} from '../../../helpers/mailingHelper'
+import {rolesList} from '../../../helpers/userHelper'
 import MailingService from '../../../api/MailingService'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
+import {ISelector} from '../../../@types/ISelector'
 import {IMailing} from '../../../@types/IMailing'
 import {ICompilation} from '../../../@types/ICompilation'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
@@ -45,7 +47,8 @@ const PopupMailingCreate: React.FC<Props> = (props) => {
         content_html: '',
         type: 'mail',
         status: 0,
-        is_active: 1
+        is_active: 1,
+        by_roles: []
     })
 
     const [fetching, setFetching] = useState(false)
@@ -188,6 +191,34 @@ const PopupMailingCreate: React.FC<Props> = (props) => {
                     </div>
 
                     {renderContentFieldsByType()}
+
+                    <div className={classes.field}>
+                        <Label text='По ролям'/>
+
+                        {rolesList.map((role: ISelector) => {
+                            return (
+                                <CheckBox label={role.text}
+                                          type='classic'
+                                          width={110}
+                                          checked={mailing.by_roles && mailing.by_roles.includes(+role.key)}
+                                          onChange={() => {
+                                              let by_roles
+
+                                              if (mailing.by_roles.includes(+role.key)) {
+                                                  by_roles = mailing.by_roles.filter((roleId: number) => roleId !== +role.key)
+                                              } else {
+                                                  by_roles = [...mailing.by_roles, +role.key]
+                                              }
+
+                                              setMailing({
+                                                  ...mailing,
+                                                  by_roles: by_roles
+                                              })
+                                          }}
+                                />
+                            )
+                        })}
+                    </div>
 
                     <div className={classes.field}>
                         <CheckBox label='Активен'

@@ -17,7 +17,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/document', 'Document\DocumentController');
     Route::apiResource('/external', 'ExternalUser\ExternalUserController');
     Route::apiResource('/feed', 'Feed\FeedController')->only(['index', 'show', 'update', 'destroy']);
-    Route::apiResource('/mail', 'Mail\MailController');
+    Route::apiResource('/mailing', 'Mail\MailController');
     Route::apiResource('/notification', 'Notification\NotificationController');
     Route::apiResource('/partner', 'Partner\PartnerController');
     Route::apiResource('/post', 'Post\PostController');

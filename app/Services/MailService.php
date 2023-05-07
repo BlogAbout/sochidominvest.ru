@@ -16,9 +16,17 @@ class MailService
 
             $data['author_id'] = auth()->user()->id;
 
+            if (isset($data['by_roles'])) {
+                $userIds = DB::table('sdi_users')->whereIn('role_id', $data['by_roles'])->pluck('id');
+
+                $data['by_roles'] = implode(',', $data['by_roles']);
+            }
+
             $mail = Mail::firstOrCreate($data);
 
-            // Todo: заполнить список получателей
+            if (isset($userIds)) {
+                $mail->recipients()->attach($userIds);
+            }
 
             DB::commit();
 
@@ -35,9 +43,17 @@ class MailService
         try {
             DB::beginTransaction();
 
+            if (isset($data['by_roles'])) {
+                $userIds = DB::table('sdi_users')->whereIn('role_id', $data['by_roles'])->pluck('id');
+
+                $data['by_roles'] = implode(',', $data['by_roles']);
+            }
+
             $mail->update($data);
 
-            // Todo: заполнить список получателей
+            if (isset($userIds)) {
+                $mail->recipients()->sync($userIds);
+            }
 
             DB::commit();
 

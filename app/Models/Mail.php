@@ -15,8 +15,11 @@ class Mail extends Model
     protected $table = 'sdi_mails';
     protected $guarded = false;
 
+    protected $with = ['recipients'];
+
     public function recipients()
     {
-        return $this->belongsToMany(User::class, 'sdi_mail_recipients', 'mail_id', 'user_id');
+        return $this->belongsToMany(User::class, 'sdi_mail_recipients', 'mail_id', 'user_id')
+            ->without(['avatar', 'post', 'role', 'tariff', 'favorites']);
     }
 }
