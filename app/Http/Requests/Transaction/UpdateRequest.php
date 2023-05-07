@@ -14,30 +14,35 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'status' => 'nullable|string',
-            'user_id' => 'nullable|integer|exists:sdi_users,id',
-            'email' => 'nullable|string',
-            'cost' => 'nullable|numeric',
-            'object_id' => 'nullable|integer',
-            'object_type' => 'nullable|string',
-            'duration' => 'nullable|string'
+            'payment' => 'required|array',
+            'payment.name' => 'required|string',
+            'payment.status' => 'nullable|string',
+            'payment.user_id' => 'nullable|integer|exists:sdi_users,id',
+            'payment.email' => 'nullable|string',
+            'payment.cost' => 'nullable|numeric',
+            'payment.object_id' => 'nullable|integer',
+            'payment.object_type' => 'nullable|string',
+            'payment.duration' => 'nullable|string',
+            'sendLink' => 'nullable|boolean'
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Это поле обязательно для заполнения',
-            'name.string' => 'Значение данного поля должно быть строкой',
-            'status.string' => 'Значение данного поля должно быть строкой',
-            'user_id.integer' => 'Значение данного поля должно быть числом',
-            'user_id.exists' => 'Пользователь отсутствует в базе данных',
-            'email.string' => 'Значение данного поля должно быть строкой',
-            'cost.numeric' => 'Значение данного поля должно быть числом',
-            'object_id.integer' => 'Значение данного поля должно быть числом',
-            'object_type.string' => 'Значение данного поля должно быть строкой',
-            'duration.string' => 'Значение данного поля должно быть строкой'
+            'payment.required' => 'Это поле обязательно для заполнения',
+            'payment.array' => 'Значение данного поля должно быть массивом',
+            'payment.name.required' => 'Это поле обязательно для заполнения',
+            'payment.name.string' => 'Значение данного поля должно быть строкой',
+            'payment.status.string' => 'Значение данного поля должно быть строкой',
+            'payment.user_id.integer' => 'Значение данного поля должно быть числом',
+            'payment.user_id.exists' => 'Пользователь отсутствует в базе данных',
+            'payment.email.string' => 'Значение данного поля должно быть строкой',
+            'payment.cost.numeric' => 'Значение данного поля должно быть числом',
+            'payment.object_id.integer' => 'Значение данного поля должно быть числом',
+            'payment.object_type.string' => 'Значение данного поля должно быть строкой',
+            'payment.duration.string' => 'Значение данного поля должно быть строкой',
+            'sendLink.boolean' => 'Значение данного поля должно быть переключателем'
         ];
     }
 }

@@ -14,9 +14,12 @@ class TransactionService
         try {
             DB::beginTransaction();
 
-            $data['author_id'] = auth()->user()->id;
+            $payment = $data['payment'];
+            $sendLink = $data['sendLink'] ?? false;
 
-            $transaction = Transaction::firstOrCreate($data);
+            $payment['user_id'] = $payment['user_id'] ?? auth()->user()->id;
+
+            $transaction = Transaction::firstOrCreate($payment);
 
             DB::commit();
 
@@ -33,7 +36,25 @@ class TransactionService
         try {
             DB::beginTransaction();
 
-            $transaction->update($data);
+            $payment = [
+                'name' => $data['payment']['name'],
+                'status' => $data['payment']['status'],
+                'email' => $data['payment']['email'],
+                'cost' => $data['payment']['cost'],
+                'object_id' => $data['payment']['object_id'],
+                'object_type' => $data['payment']['object_type'],
+                'duration' => $data['payment']['duration']
+            ];
+
+            $sendLink = $data['sendLink'] ?? false;
+
+            if (isset($payment['user'])) {
+                unset($payment['user']);
+            }
+
+            $transaction->update($payment);
+
+            $transaction->refresh();
 
             DB::commit();
 

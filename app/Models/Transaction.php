@@ -15,6 +15,8 @@ class Transaction extends Model
     protected $table = 'sdi_transactions';
     protected $guarded = false;
 
+    protected $with = ['user'];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id')

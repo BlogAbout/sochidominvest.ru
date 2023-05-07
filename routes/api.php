@@ -26,7 +26,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/setting', 'Setting\SettingController')->only(['index', 'store']);
     Route::apiResource('/tag', 'Tag\TagController');
     Route::apiResource('/tariff', 'Tariff\TariffController')->only(['index', 'show']);
-    Route::apiResource('/transaction', 'Transaction\TransactionController')->only(['index', 'show']);
+    Route::apiResource('/transaction', 'Transaction\TransactionController');
     Route::apiResource('/user', 'User\UserController');
     Route::apiResource('/widget', 'Widget\WidgetController');
     Route::post('/logout', [UserController::class, 'logout']);
