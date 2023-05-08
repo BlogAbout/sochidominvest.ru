@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {INotification} from '../../../@types/INotification'
 import {Content, Footer, Header} from '../../popup/Popup/Popup'
 import Button from '../../form/Button/Button'
@@ -22,16 +23,15 @@ const defaultProps: Props = {
 }
 
 const NotificationPanel: React.FC<Props> = (props) => {
-    const refDepartmentItem = useRef<HTMLDivElement>(null)
+    const refDepartmentItem = useRef<any>(null)
 
     const [isUpdate, setIsUpdate] = useState(true)
     const [countNotification, setCountNotification] = useState(0)
     const [selectedType, setSelectedType] = useState('new')
     const [filteredNotification, setFilteredNotification] = useState<INotification[]>([])
 
-    const {user} = useTypedSelector(state => state.userReducer)
     const {notifications, fetching} = useTypedSelector(state => state.notificationReducer)
-    const {fetchNotificationList, readNotificationAll} = useActions()
+    const {fetchNotificationList, readNotifications} = useActions()
 
     useEffect(() => {
         document.addEventListener('click', handleClickOutside, true)
@@ -57,11 +57,11 @@ const NotificationPanel: React.FC<Props> = (props) => {
         updateCountNewNotification()
     }, [notifications, selectedType])
 
-    const updateNotificationHandler = () => {
+    const updateNotificationHandler = (): void => {
         setIsUpdate(true)
     }
 
-    const updateCountNewNotification = () => {
+    const updateCountNewNotification = (): void => {
         let countNew = 0
 
         if (notifications.length) {
@@ -72,7 +72,7 @@ const NotificationPanel: React.FC<Props> = (props) => {
         window.events.emit('messengerCountNewNotificationUpdate', countNew)
     }
 
-    const filter = () => {
+    const filter = (): void => {
         if (!notifications || !notifications.length) {
             setFilteredNotification([])
 
@@ -146,31 +146,31 @@ const NotificationPanel: React.FC<Props> = (props) => {
                 <NotificationList notifications={filteredNotification} fetching={fetching}/>
             </Content>
 
-            {/*{['director', 'administrator', 'manager'].includes(role) || countNotification > 0 ?*/}
-            {/*    <Footer>*/}
-            {/*        {['director', 'administrator', 'manager'].includes(role) &&*/}
-            {/*        <Button type='save'*/}
-            {/*                icon='plus'*/}
-            {/*                onClick={() => {*/}
-            {/*                    openPopupNotificationCreate(document.body, {*/}
-            {/*                        onSave: () => {*/}
-            {/*                            setIsUpdate(true)*/}
-            {/*                        }*/}
-            {/*                    })*/}
-            {/*                }}*/}
-            {/*                disabled={fetching}*/}
-            {/*        >Создать</Button>}*/}
+            {checkRules([Rules.IS_MANAGER]) || countNotification > 0 ?
+                <Footer>
+                    {checkRules([Rules.IS_MANAGER]) &&
+                    <Button type='save'
+                            icon='plus'
+                            onClick={() => {
+                                openPopupNotificationCreate(document.body, {
+                                    onSave: () => {
+                                        setIsUpdate(true)
+                                    }
+                                })
+                            }}
+                            disabled={fetching}
+                    >Создать</Button>}
 
-            {/*        {countNotification > 0 &&*/}
-            {/*        <Button type='apply'*/}
-            {/*                icon='check'*/}
-            {/*                onClick={() => readNotificationAll()}*/}
-            {/*                disabled={fetching}*/}
-            {/*                className='marginLeft'*/}
-            {/*        >Прочитать все</Button>}*/}
-            {/*    </Footer>*/}
-            {/*    : null*/}
-            {/*}*/}
+                    {countNotification > 0 &&
+                    <Button type='apply'
+                            icon='check'
+                            onClick={() => readNotifications()}
+                            disabled={fetching}
+                            className='marginLeft'
+                    >Прочитать все</Button>}
+                </Footer>
+                : null
+            }
         </div>
     )
 }
@@ -178,4 +178,4 @@ const NotificationPanel: React.FC<Props> = (props) => {
 NotificationPanel.defaultProps = defaultProps
 NotificationPanel.displayName = 'NotificationPanel'
 
-export default NotificationPanel
+export default React.memo(NotificationPanel)

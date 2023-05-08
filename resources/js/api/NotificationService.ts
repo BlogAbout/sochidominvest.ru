@@ -1,15 +1,8 @@
 import axios, {AxiosResponse} from 'axios'
 import {INotification} from '../@types/INotification'
+import {IFilter} from '../@types/IFilter'
 
 export default class NotificationService {
-    // static async fetchCountNewNotifications(): Promise<AxiosResponse> {
-    //     return axios.get(`/notification/count`)
-    // }
-
-    static async fetchNotificationById(notificationId: number): Promise<AxiosResponse> {
-        return axios.get(`/notification/${notificationId}`)
-    }
-
     static async fetchNotifications(): Promise<AxiosResponse> {
         return axios.get('/notification')
     }
@@ -18,15 +11,23 @@ export default class NotificationService {
         return axios.post('/notification', notification)
     }
 
-    static async removeNotification(notificationId: number): Promise<AxiosResponse> {
-        return axios.delete(`/notification/${notificationId}`)
+    static async readNotifications(notificationId?: number): Promise<AxiosResponse> {
+        const filter: IFilter = {}
+
+        if (notificationId) {
+            filter.id = [notificationId]
+        }
+
+        return axios.get(`/notification/read`, {params: filter})
     }
 
-    static async readNotification(notificationId: number): Promise<AxiosResponse> {
-        return axios.get(`/notification/${notificationId}/read`)
-    }
+    static async trashNotifications(notificationId?: number): Promise<AxiosResponse> {
+        const filter: IFilter = {}
 
-    static async readNotificationAll(): Promise<AxiosResponse> {
-        return axios.get('/notification/read')
+        if (notificationId) {
+            filter.id = [notificationId]
+        }
+
+        return axios.get(`/notification/trash`, {params: filter})
     }
 }

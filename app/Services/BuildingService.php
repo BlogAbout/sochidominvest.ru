@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Resources\BuildingResource;
 use App\Models\Building;
+use App\Models\BuildingInfo;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +18,7 @@ class BuildingService
             $data['author_id'] = auth()->user()->id;
 
             if (isset($data['info'])) {
-                $info = $data['info'];
+                $buildingInfoData = $data['info'];
                 unset($data['info']);
             }
 
@@ -63,9 +64,13 @@ class BuildingService
 
             $building = Building::firstOrCreate($data);
 
-            if (isset($info)) {
-                // Todo: сохранить информацию
-                // advantages payments formalization в include
+            if (isset($buildingInfoData)) {
+                $buildingInfoData['id'] = $building->id;
+                $buildingInfoData['advantages'] = isset($buildingInfoData['advantages']) ? implode(',', $buildingInfoData['advantages']) : '';
+                $buildingInfoData['payments'] = isset($buildingInfoData['payments']) ? implode(',', $buildingInfoData['payments']) : '';
+                $buildingInfoData['formalization'] = isset($buildingInfoData['formalization']) ? implode(',', $buildingInfoData['formalization']) : '';
+
+                BuildingInfo::firstOrCreate($buildingInfoData);
             }
 
             if (isset($imageIds)) {
@@ -102,6 +107,8 @@ class BuildingService
 
             DB::commit();
 
+            $building->refresh();
+
             return (new BuildingResource($building))->response()->setStatusCode(201);
         } catch (Exception $e) {
             DB::rollBack();
@@ -116,7 +123,7 @@ class BuildingService
             DB::beginTransaction();
 
             if (isset($data['info'])) {
-                $info = $data['info'];
+                $buildingInfo = $data['info'];
                 unset($data['info']);
             }
 
@@ -162,8 +169,12 @@ class BuildingService
 
             $building->update($data);
 
-            if (isset($info)) {
-                // Todo: сохранить информацию
+            if (isset($buildingInfoData)) {
+                $buildingInfoData['advantages'] = isset($buildingInfoData['advantages']) ? implode(',', $buildingInfoData['advantages']) : '';
+                $buildingInfoData['payments'] = isset($buildingInfoData['payments']) ? implode(',', $buildingInfoData['payments']) : '';
+                $buildingInfoData['formalization'] = isset($buildingInfoData['formalization']) ? implode(',', $buildingInfoData['formalization']) : '';
+
+                BuildingInfo::updateOrCreate(['id' => $building->id], $buildingInfoData);
             }
 
             if (isset($imageIds)) {
@@ -199,6 +210,8 @@ class BuildingService
             }
 
             DB::commit();
+
+            $building->refresh();
 
             return (new BuildingResource($building))->response()->setStatusCode(200);
         } catch (\Exception $e) {

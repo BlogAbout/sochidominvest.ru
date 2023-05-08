@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +19,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/external', 'ExternalUser\ExternalUserController');
     Route::apiResource('/feed', 'Feed\FeedController')->only(['index', 'show', 'update', 'destroy']);
     Route::apiResource('/mailing', 'Mail\MailController');
-    Route::apiResource('/notification', 'Notification\NotificationController');
     Route::apiResource('/partner', 'Partner\PartnerController');
     Route::apiResource('/post', 'Post\PostController');
     Route::apiResource('/store/product', 'Product\ProductController')->only(['store', 'update', 'destroy']);
@@ -29,7 +29,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/transaction', 'Transaction\TransactionController');
     Route::apiResource('/user', 'User\UserController');
     Route::apiResource('/widget', 'Widget\WidgetController');
+
     Route::post('/logout', [UserController::class, 'logout']);
+    Route::group(['namespace' => 'Notification'], function () {
+        Route::get('/notification', [NotificationController::class, 'index']);
+        Route::post('/notification', [NotificationController::class, 'store']);
+        Route::get('/notification/read', [NotificationController::class, 'readNotifications']);
+        Route::get('/registration/trash', [NotificationController::class, 'trashNotifications']);
+    });
 });
 
 Route::group(['namespace' => 'User'], function () {

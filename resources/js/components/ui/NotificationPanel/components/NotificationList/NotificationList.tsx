@@ -17,17 +17,17 @@ const defaultProps: Props = {
 }
 
 const NotificationList: React.FC<Props> = (props) => {
-    const {readNotification, removeNotification} = useActions()
+    const {readNotifications, trashNotifications} = useActions()
 
-    const onReadMessageHandler = (notification: INotification) => {
+    const onReadMessageHandler = (notification: INotification): void => {
         if (notification.id) {
-            readNotification(notification.id)
+            readNotifications(notification.id)
         }
     }
 
-    const onRemoveMessageHandler = (notification: INotification) => {
+    const onRemoveMessageHandler = (notification: INotification): void => {
         if (notification.id) {
-            removeNotification(notification.id)
+            trashNotifications(notification.id)
         }
     }
 
@@ -53,4 +53,4 @@ const NotificationList: React.FC<Props> = (props) => {
 NotificationList.defaultProps = defaultProps
 NotificationList.displayName = 'NotificationList'
 
-export default NotificationList
+export default React.memo(NotificationList)

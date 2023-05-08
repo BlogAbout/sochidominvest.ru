@@ -24,7 +24,7 @@ class NotificationResource extends JsonResource
             'is_active' => $this->is_active,
             'object_id' => $this->is_publish,
             'object_type' => $this->avatar_id,
-            'users' => UserResource::collection($this->whenLoaded('users')),
+            'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'date_created' => $this->dateCreatedFormat,

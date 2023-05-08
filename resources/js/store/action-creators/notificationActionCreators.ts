@@ -32,11 +32,11 @@ export const NotificationActionCreators = {
             console.error('Непредвиденная ошибка загрузки данных', e)
         }
     },
-    readNotification: (notificationId: number) => async (dispatch: AppDispatch) => {
+    readNotifications: (notificationId?: number) => async (dispatch: AppDispatch) => {
         dispatch(NotificationActionCreators.setFetching(true))
 
         try {
-            const response = await NotificationService.readNotification(notificationId)
+            const response = await NotificationService.readNotifications(notificationId)
 
             if (response.status === 200) {
                 dispatch(NotificationActionCreators.setNotifications(response.data.data))
@@ -48,27 +48,11 @@ export const NotificationActionCreators = {
             console.error('Непредвиденная ошибка обновления данных', e)
         }
     },
-    readNotificationAll: () => async (dispatch: AppDispatch) => {
+    trashNotifications: (notificationId?: number) => async (dispatch: AppDispatch) => {
         dispatch(NotificationActionCreators.setFetching(true))
 
         try {
-            const response = await NotificationService.readNotificationAll()
-
-            if (response.status === 200) {
-                dispatch(NotificationActionCreators.setNotifications(response.data.data))
-            } else {
-                dispatch(NotificationActionCreators.setError('Ошибка обновления данных'))
-            }
-        } catch (e) {
-            dispatch(NotificationActionCreators.setError('Непредвиденная ошибка обновления данных'))
-            console.error('Непредвиденная ошибка обновления данных', e)
-        }
-    },
-    removeNotification: (notificationId: number) => async (dispatch: AppDispatch) => {
-        dispatch(NotificationActionCreators.setFetching(true))
-
-        try {
-            const response = await NotificationService.removeNotification(notificationId)
+            const response = await NotificationService.trashNotifications(notificationId)
 
             if (response.status === 200) {
                 dispatch(NotificationActionCreators.setNotifications(response.data.data))

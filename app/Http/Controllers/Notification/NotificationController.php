@@ -8,6 +8,8 @@ use App\Http\Requests\Notification\UpdateRequest;
 use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
 use App\Services\NotificationService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
 {
@@ -20,14 +22,7 @@ class NotificationController extends Controller
 
     public function index()
     {
-        $notifications = Notification::all();
-
-        return NotificationResource::collection($notifications)->response()->setStatusCode(200);
-    }
-
-    public function show(Notification $notification)
-    {
-        return (new NotificationResource($notification))->response()->setStatusCode(200);
+        return $this->service->fetch();
     }
 
     public function store(StoreRequest $request)
@@ -44,10 +39,17 @@ class NotificationController extends Controller
         return $this->service->update($data, $notification);
     }
 
-    public function destroy(Notification $notification)
+    public function readNotifications(Request $request)
     {
-        $notification->delete();
+        $filter = $request->all();
 
-        return response([])->setStatusCode(200);
+        return $this->service->updateNotificationForUser($filter);
+    }
+
+    public function trashNotifications(Request $request)
+    {
+        $filter = $request->all();
+
+        return $this->service->updateNotificationForUser($filter, 'trash');
     }
 }

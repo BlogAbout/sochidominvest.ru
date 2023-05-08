@@ -15,8 +15,11 @@ class Notification extends Model
     protected $table = 'sdi_notifications';
     protected $guarded = false;
 
+    protected $with = ['author'];
+
     public function users()
     {
-        return $this->belongsToMany(User::class, 'sdi_notification_users', 'notification_id', 'user_id');
+        return $this->belongsToMany(User::class, 'sdi_notification_users', 'notification_id', 'user_id')
+            ->without(['avatar', 'post', 'role', 'tariff', 'favorites']);
     }
 }
