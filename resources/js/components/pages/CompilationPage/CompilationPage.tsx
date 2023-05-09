@@ -123,7 +123,6 @@ const CompilationPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Удаление объекта из избранного
     const onRemoveBuildingFromFavoriteHandler = (building: IBuilding): void => {
         if (building.id) {
             const favoriteIds: number[] = user.favorite_ids ? user.favorite_ids.filter((id: number) => id !== building.id) : []
@@ -146,7 +145,6 @@ const CompilationPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    // Удаление объекта из подборки
     const onRemoveBuildingFromCompilationHandler = (building: IBuilding): void => {
         if (building.id) {
             setFetching(true)

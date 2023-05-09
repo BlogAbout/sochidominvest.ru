@@ -48,12 +48,10 @@ const DeveloperList: React.FC<Props> = (props) => {
         }
     }, [developers, props.selected])
 
-    // Обработчик изменений
     const onSave = () => {
         setIsUpdate(true)
     }
 
-    // Добавление элемента из списка
     const selectHandler = () => {
         openPopupDeveloperSelector(document.body, {
             selected: props.selected,
@@ -64,7 +62,6 @@ const DeveloperList: React.FC<Props> = (props) => {
         })
     }
 
-    // Удаление элемента из списка
     const removeHandler = (developer: IDeveloper) => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${developer.name} из списка выбранных?`,
@@ -81,7 +78,6 @@ const DeveloperList: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе
     const onContextMenu = (e: React.MouseEvent, developer: IDeveloper) => {
         e.preventDefault()
 

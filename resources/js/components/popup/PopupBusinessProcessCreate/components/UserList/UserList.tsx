@@ -41,7 +41,6 @@ const UserList: React.FC<Props> = (props) => {
         setSelected(users.filter((user: IUser) => user.id && props.selected.includes(user.id)))
     }, [users, props.selected])
 
-    // Обработчик изменений
     const onSave = () => {
         setIsUpdate(true)
     }

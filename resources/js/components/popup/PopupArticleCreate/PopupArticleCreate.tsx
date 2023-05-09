@@ -136,7 +136,6 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
             .finally(() => setFetching(false))
     }
 
-    // Добавление файла
     const addAttachmentHandler = (attachment: IAttachment) => {
         if (attachment.id) {
             switch (attachment.type) {
@@ -162,12 +161,10 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
         }
     }
 
-    // Смена главного изображения
     const selectImageAvatarHandler = (attachment: IAttachment) => {
         setArticle({...article, avatar_id: attachment.id, avatar: attachment})
     }
 
-    // Проверка наличия главного изображения
     const checkAvatar = () => {
         if (article.image_ids && article.image_ids.length && article.images && article.images.length) {
             if (!article.avatar_id || !article.image_ids.includes(article.avatar_id)) {
@@ -269,7 +266,6 @@ const PopupArticleCreate: React.FC<Props> = (props) => {
         )
     }
 
-    // Вкладка галереи
     const renderGalleryBlock = () => {
         return (
             <div key='gallery' className={classes.blockContent}>

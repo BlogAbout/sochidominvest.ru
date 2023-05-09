@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import withStore from '../../hoc/withStore'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
 import {IFeed} from '../../../@types/IFeed'
 import FeedService from '../../../api/FeedService'
@@ -8,7 +9,6 @@ import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupH
 import {Footer, Popup} from '../Popup/Popup'
 import BlockingElement from '../../ui/BlockingElement/BlockingElement'
 import Empty from '../../ui/Empty/Empty'
-import openContextMenu from '../../ui/ContextMenu/ContextMenu'
 import openPopupSupportCreate from '../PopupSupportCreate/PopupSupportCreate'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
 import ButtonAdd from '../../form/ButtonAdd/ButtonAdd'
@@ -17,7 +17,7 @@ import CheckBox from '../../form/CheckBox/CheckBox'
 import Button from '../../form/Button/Button'
 import Title from '../../ui/Title/Title'
 import openPopupAlert from '../PopupAlert/PopupAlert'
-import {useTypedSelector} from '../../../hooks/useTypedSelector'
+import openContextMenu from '../../ui/ContextMenu/ContextMenu'
 import classes from './PopupFeedSelector.module.scss'
 
 interface Props extends PopupProps {
@@ -50,8 +50,6 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
     const [selectedFeeds, setSelectedFeeds] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {user} = useTypedSelector(state => state.userReducer)
-
     useEffect(() => {
         return () => {
             removePopup(props.blockId ? props.blockId : '')
@@ -83,12 +81,10 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
         search(searchText)
     }, [feeds])
 
-    // Закрытие Popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Клик на строку
     const selectRow = (feed: IFeed) => {
         if (props.multi) {
             selectRowMulti(feed)
@@ -98,7 +94,6 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Клик на строку в мульти режиме
     const selectRowMulti = (feed: IFeed) => {
         if (feed.id) {
             if (checkSelected(feed.id)) {
@@ -109,12 +104,10 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка наличия элемента среди выбранных
     const checkSelected = (id: number | null) => {
         return id !== null && selectedFeeds.includes(id)
     }
 
-    // Поиск
     const search = (value: string) => {
         setSearchText(value)
 
@@ -127,7 +120,6 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Добавление нового элемента
     const onClickAdd = () => {
         openPopupSupportCreate(document.body, {
             onSave: () => {
@@ -136,13 +128,11 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Сохранение выбора
     const onClickSave = () => {
         props.onSelect(selectedFeeds)
         close()
     }
 
-    // Удаление элемента справочника
     const onClickDelete = (e: React.MouseEvent, feed: IFeed) => {
         openPopupAlert(e, {
             text: `Вы действительно хотите удалить ${feed.title}?`,
@@ -175,19 +165,16 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе справочника
     const onContextMenu = (e: React.MouseEvent, feed: IFeed) => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = []
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, feed)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.REMOVE_FEED])) {
+            menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, feed)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     const renderSearch = () => {
@@ -201,10 +188,10 @@ const PopupFeedSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
-                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
-                {/*    : null*/}
-                {/*}*/}
+                {props.buttonAdd && checkRules([Rules.IS_MANAGER]) ?
+                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
+                    : null
+                }
             </div>
         )
     }

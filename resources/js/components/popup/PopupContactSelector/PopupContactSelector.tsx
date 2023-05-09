@@ -67,7 +67,6 @@ const PopupContactSelector: React.FC<Props> = (props) => {
         search(searchText)
     }, [contacts])
 
-    // Загрузка контактов всех агентств пользователя
     const fetchContactsForAgentHandler = () => {
         const filter: IFilter = {author: [user.id || 0], active: [0, 1]}
         if (props.includeAgents && props.includeAgents.length) {
@@ -92,12 +91,10 @@ const PopupContactSelector: React.FC<Props> = (props) => {
             .finally(() => setFetching(false))
     }
 
-    // Закрытие Popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Клик на строку
     const selectRow = (contact: IContact) => {
         if (props.multi) {
             selectRowMulti(contact)
@@ -107,7 +104,6 @@ const PopupContactSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Клик на строку в мульти режиме
     const selectRowMulti = (contact: IContact) => {
         if (contact.id) {
             if (checkSelected(contact.id)) {
@@ -118,12 +114,10 @@ const PopupContactSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка наличия элемента среди выбранных
     const checkSelected = (id: number | null) => {
         return id !== null && selectedContacts.includes(id)
     }
 
-    // Поиск
     const search = (value: string) => {
         setSearchText(value)
 
@@ -136,7 +130,6 @@ const PopupContactSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Редактирование элемента
     const onClickEdit = (e: React.MouseEvent, contact: IContact) => {
         openPopupContactCreate(document.body, {
             contact: contact,
@@ -146,13 +139,11 @@ const PopupContactSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Сохранение выбора
     const onClickSave = () => {
         props.onSelect(selectedContacts)
         close()
     }
 
-    // Удаление элемента справочника
     const onClickDelete = (e: React.MouseEvent, contact: IContact) => {
         openPopupAlert(e, {
             text: `Вы действительно хотите удалить ${contact.name}?`,
@@ -185,7 +176,6 @@ const PopupContactSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе справочника
     const onContextMenu = (e: React.MouseEvent, contact: IContact) => {
         e.preventDefault()
 

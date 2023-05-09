@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import withStore from '../../hoc/withStore'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import ArticleService from '../../../api/ArticleService'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
@@ -74,12 +75,10 @@ const PopupArticleSelector: React.FC<Props> = (props) => {
         setFetching(fetchingArticleList)
     }, [fetchingArticleList])
 
-    // Закрытие Popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Клик на строку
     const selectRow = (article: IArticle) => {
         if (props.multi) {
             selectRowMulti(article)
@@ -89,7 +88,6 @@ const PopupArticleSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Клик на строку в мульти режиме
     const selectRowMulti = (article: IArticle) => {
         if (article.id) {
             if (checkSelected(article.id)) {
@@ -100,12 +98,10 @@ const PopupArticleSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка наличия элемента среди выбранных
     const checkSelected = (id: number | null) => {
         return id !== null && selectedArticles.includes(id)
     }
 
-    // Поиск
     const search = (value: string) => {
         setSearchText(value)
 
@@ -118,7 +114,6 @@ const PopupArticleSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Добавление нового элемента
     const onClickAdd = (e: React.MouseEvent) => {
         openPopupArticleCreate(e.currentTarget, {
             onSave: () => {
@@ -127,7 +122,6 @@ const PopupArticleSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Редактирование элемента
     const onClickEdit = (e: React.MouseEvent, article: IArticle) => {
         openPopupArticleCreate(e.currentTarget, {
             article: article,
@@ -137,13 +131,11 @@ const PopupArticleSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Сохранение выбора
     const onClickSave = () => {
         props.onSelect(selectedArticles)
         close()
     }
 
-    // Удаление элемента справочника
     const onClickDelete = (e: React.MouseEvent, article: IArticle) => {
         openPopupAlert(e, {
             text: `Вы действительно хотите удалить ${article.name}?`,
@@ -172,19 +164,20 @@ const PopupArticleSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе справочника
     const onContextMenu = (e: React.MouseEvent, article: IArticle) => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, article)}]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, article)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.EDIT_ARTICLE])) {
+            menuItems.push({text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, article)})
+        }
+
+        if (checkRules([Rules.EDIT_ARTICLE])) {
+            menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, article)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     const renderSearch = () => {
@@ -198,9 +191,10 @@ const PopupArticleSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
-                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
-                {/*    : null}*/}
+                {props.buttonAdd && checkRules([Rules.ADD_ARTICLE]) ?
+                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
+                    : null
+                }
             </div>
         )
     }

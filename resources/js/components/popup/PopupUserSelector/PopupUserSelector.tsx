@@ -3,6 +3,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
 import withStore from '../../hoc/withStore'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
 import {IUser} from '../../../@types/IUser'
 import UserService from '../../../api/UserService'
@@ -10,8 +11,6 @@ import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupH
 import {Footer, Popup} from '../Popup/Popup'
 import BlockingElement from '../../ui/BlockingElement/BlockingElement'
 import Empty from '../../ui/Empty/Empty'
-import openContextMenu from '../../ui/ContextMenu/ContextMenu'
-import openPopupUserCreate from '../PopupUserCreate/PopupUserCreate'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
 import ButtonAdd from '../../form/ButtonAdd/ButtonAdd'
 import SearchBox from '../../form/SearchBox/SearchBox'
@@ -19,6 +18,8 @@ import CheckBox from '../../form/CheckBox/CheckBox'
 import Button from '../../form/Button/Button'
 import Title from '../../ui/Title/Title'
 import openPopupAlert from '../PopupAlert/PopupAlert'
+import openContextMenu from '../../ui/ContextMenu/ContextMenu'
+import openPopupUserCreate from '../PopupUserCreate/PopupUserCreate'
 import classes from './PopupUserSelector.module.scss'
 
 interface Props extends PopupProps {
@@ -50,7 +51,6 @@ const PopupUserSelector: React.FC<Props> = (props) => {
     const [selectedUsers, setSelectedUsers] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {user} = useTypedSelector(state => state.userReducer)
     const {fetching: fetchingUserList, users} = useTypedSelector(state => state.userReducer)
     const {fetchUserList} = useActions()
 
@@ -74,12 +74,10 @@ const PopupUserSelector: React.FC<Props> = (props) => {
         setFetching(fetchingUserList)
     }, [fetchingUserList])
 
-    // Закрытие Popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Клик на строку
     const selectRow = (user: IUser) => {
         if (props.multi) {
             selectRowMulti(user)
@@ -89,7 +87,6 @@ const PopupUserSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Клик на строку в мульти режиме
     const selectRowMulti = (user: IUser) => {
         if (user.id) {
             if (checkSelected(user.id)) {
@@ -100,12 +97,10 @@ const PopupUserSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка наличия элемента среди выбранных
     const checkSelected = (id: number | null) => {
         return id !== null && selectedUsers.includes(id)
     }
 
-    // Поиск
     const search = (value: string) => {
         setSearchText(value)
 
@@ -118,34 +113,28 @@ const PopupUserSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Добавление нового элемента
     const onClickAdd = (e: React.MouseEvent) => {
-        // openPopupUserCreate(e.currentTarget, {
-        //     role: role,
-        //     onSave: () => {
-        //         setIsUpdate(true)
-        //     }
-        // })
+        openPopupUserCreate(e.currentTarget, {
+            onSave: () => {
+                setIsUpdate(true)
+            }
+        })
     }
 
-    // Редактирование элемента
     const onClickEdit = (e: React.MouseEvent, user: IUser) => {
-        // openPopupUserCreate(e.currentTarget, {
-        //     user: user,
-        //     role: role,
-        //     onSave: () => {
-        //         setIsUpdate(true)
-        //     }
-        // })
+        openPopupUserCreate(e.currentTarget, {
+            user: user,
+            onSave: () => {
+                setIsUpdate(true)
+            }
+        })
     }
 
-    // Сохранение выбора
     const onClickSave = () => {
         props.onSelect(selectedUsers)
         close()
     }
 
-    // Удаление элемента справочника
     const onClickDelete = (e: React.MouseEvent, user: IUser) => {
         openPopupAlert(e, {
             text: `Вы действительно хотите удалить ${user.name}?`,
@@ -174,19 +163,20 @@ const PopupUserSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе справочника
     const onContextMenu = (e: React.MouseEvent, user: IUser) => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, user)}]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, user)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.EDIT_USER])) {
+            menuItems.push({text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, user)})
+        }
+
+        if (checkRules([Rules.REMOVE_USER])) {
+            menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, user)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     const renderSearch = () => {
@@ -200,9 +190,10 @@ const PopupUserSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
-                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
-                {/*    : null}*/}
+                {props.buttonAdd && checkRules([Rules.ADD_USER]) ?
+                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
+                    : null
+                }
             </div>
         )
     }

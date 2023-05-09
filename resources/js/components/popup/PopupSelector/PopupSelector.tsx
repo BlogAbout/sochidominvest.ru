@@ -47,12 +47,10 @@ const PopupSelector: React.FC<Props> = (props) => {
         search(searchText)
     }, [props.items])
 
-    // Закрытие Popup
     const close = () => {
         removePopup(props.id || '')
     }
 
-    // Клик на строку
     const selectRow = (item: ISelector) => {
         if (props.multi) {
             selectRowMulti(item)
@@ -62,7 +60,6 @@ const PopupSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Клик на строку в мульти режиме
     const selectRowMulti = (item: ISelector) => {
         if (checkSelected(item.key)) {
             setSelectedItems(selectedItems.filter((key: string) => key !== item.key))
@@ -71,12 +68,10 @@ const PopupSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка наличия элемента среди выбранных
     const checkSelected = (key: string) => {
         return selectedItems.includes(key)
     }
 
-    // Поиск
     const search = (value: string) => {
         setSearchText(value)
 
@@ -91,7 +86,6 @@ const PopupSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Сохранение выбора
     const onClickSave = () => {
         props.onSelect(selectedItems)
         close()

@@ -87,7 +87,6 @@ const PopupFeedCreate: React.FC<Props> = (props) => {
         setTitlePopup(text)
     }
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }

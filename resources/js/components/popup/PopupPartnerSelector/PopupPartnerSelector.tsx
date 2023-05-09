@@ -10,8 +10,6 @@ import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupH
 import {Footer, Popup} from '../Popup/Popup'
 import BlockingElement from '../../ui/BlockingElement/BlockingElement'
 import Empty from '../../ui/Empty/Empty'
-import openContextMenu from '../../ui/ContextMenu/ContextMenu'
-import ButtonAdd from '../../form/ButtonAdd/ButtonAdd'
 import SearchBox from '../../form/SearchBox/SearchBox'
 import CheckBox from '../../form/CheckBox/CheckBox'
 import Button from '../../form/Button/Button'
@@ -20,6 +18,9 @@ import openPopupAlert from '../PopupAlert/PopupAlert'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
 import classes from './PopupPartnerSelector.module.scss'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
+import openContextMenu from '../../ui/ContextMenu/ContextMenu'
+import ButtonAdd from '../../form/ButtonAdd/ButtonAdd'
 
 interface Props extends PopupProps {
     selected?: number[]
@@ -50,7 +51,6 @@ const PopupPartnerSelector: React.FC<Props> = (props) => {
     const [selectedPartners, setSelectedPartners] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {user} = useTypedSelector(state => state.userReducer)
     const {fetching: fetchingPartnerList, partners} = useTypedSelector(state => state.partnerReducer)
     const {fetchPartnerList} = useActions()
 
@@ -70,13 +70,11 @@ const PopupPartnerSelector: React.FC<Props> = (props) => {
         setFetching(fetchingPartnerList)
     }, [fetchingPartnerList])
 
-    // Закрытие Popup
-    const close = () => {
+    const close = (): void => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Клик на строку
-    const selectRow = (partner: IPartner) => {
+    const selectRow = (partner: IPartner): void => {
         if (props.multi) {
             selectRowMulti(partner)
         } else if (props.onSelect !== null) {
@@ -85,8 +83,7 @@ const PopupPartnerSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Клик на строку в мульти режиме
-    const selectRowMulti = (partner: IPartner) => {
+    const selectRowMulti = (partner: IPartner): void => {
         if (partner.id) {
             if (checkSelected(partner.id)) {
                 setSelectedPartners(selectedPartners.filter((key: number) => key !== partner.id))
@@ -96,13 +93,11 @@ const PopupPartnerSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка наличия элемента среди выбранных
-    const checkSelected = (id: number | null) => {
+    const checkSelected = (id: number | null): boolean => {
         return id !== null && selectedPartners.includes(id)
     }
 
-    // Поиск
-    const search = (value: string) => {
+    const search = (value: string): void => {
         setSearchText(value)
 
         if (value.trim() !== '') {
@@ -114,8 +109,7 @@ const PopupPartnerSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Добавление нового элемента
-    const onClickAdd = (e: React.MouseEvent) => {
+    const onClickAdd = (e: React.MouseEvent): void => {
         openPopupPartnerCreate(e.currentTarget, {
             onSave: () => {
                 setIsUpdate(true)
@@ -123,8 +117,7 @@ const PopupPartnerSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Редактирование элемента
-    const onClickEdit = (e: React.MouseEvent, partner: IPartner) => {
+    const onClickEdit = (e: React.MouseEvent, partner: IPartner): void => {
         openPopupPartnerCreate(e.currentTarget, {
             partner: partner,
             onSave: () => {
@@ -133,14 +126,12 @@ const PopupPartnerSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Сохранение выбора
-    const onClickSave = () => {
+    const onClickSave = (): void => {
         props.onSelect(selectedPartners)
         close()
     }
 
-    // Удаление элемента справочника
-    const onClickDelete = (e: React.MouseEvent, partner: IPartner) => {
+    const onClickDelete = (e: React.MouseEvent, partner: IPartner): void => {
         openPopupAlert(e, {
             text: `Вы действительно хотите удалить ${partner.name}?`,
             buttons: [
@@ -168,22 +159,23 @@ const PopupPartnerSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе справочника
-    const onContextMenu = (e: React.MouseEvent, partner: IPartner) => {
+    const onContextMenu = (e: React.MouseEvent, partner: IPartner): void => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, partner)}]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, partner)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.EDIT_PARTNER])) {
+            menuItems.push({text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, partner)})
+        }
+
+        if (checkRules([Rules.REMOVE_PARTNER])) {
+            menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, partner)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
-    const renderSearch = () => {
+    const renderSearch = (): React.ReactElement => {
         return (
             <div className={classes.search}>
                 <SearchBox value={searchText}
@@ -194,14 +186,15 @@ const PopupPartnerSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
-                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
-                {/*    : null}*/}
+                {props.buttonAdd && checkRules([Rules.ADD_PARTNER]) ?
+                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
+                    : null
+                }
             </div>
         )
     }
 
-    const renderListBox = () => {
+    const renderListBox = (): React.ReactElement => {
         return (
             <BlockingElement fetching={fetching} className={classes.list}>
                 <div className={classes.listContent}>
@@ -214,7 +207,7 @@ const PopupPartnerSelector: React.FC<Props> = (props) => {
         )
     }
 
-    const renderSelectedListBox = () => {
+    const renderSelectedListBox = (): React.ReactElement => {
         const rows = filterPartner.filter((partner: IPartner) => checkSelected(partner.id))
 
         return (
@@ -229,7 +222,7 @@ const PopupPartnerSelector: React.FC<Props> = (props) => {
         )
     }
 
-    const renderRow = (partner: IPartner, side: string, checked: boolean) => {
+    const renderRow = (partner: IPartner, side: string, checked: boolean): React.ReactElement => {
         return (
             <div className={classes.row}
                  key={partner.id}

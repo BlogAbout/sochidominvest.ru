@@ -3,6 +3,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import withStore from '../../hoc/withStore'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import BuildingService from '../../../api/BuildingService'
 import {IBuilding} from '../../../@types/IBuilding'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
@@ -52,7 +53,6 @@ const PopupBuildingSelector: React.FC<Props> = (props) => {
     const [selectedBuildings, setSelectedBuildings] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {user} = useTypedSelector(state => state.userReducer)
     const {fetching: fetchingBuildingList, buildings} = useTypedSelector(state => state.buildingReducer)
     const {fetchBuildingList} = useActions()
 
@@ -76,12 +76,10 @@ const PopupBuildingSelector: React.FC<Props> = (props) => {
         setFetching(fetchingBuildingList)
     }, [fetchingBuildingList])
 
-    // Закрытие Popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Клик на строку
     const selectRow = (building: IBuilding) => {
         if (props.multi) {
             selectRowMulti(building)
@@ -91,7 +89,6 @@ const PopupBuildingSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Клик на строку в мульти режиме
     const selectRowMulti = (building: IBuilding) => {
         if (building.id) {
             if (checkSelected(building.id)) {
@@ -102,12 +99,10 @@ const PopupBuildingSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка наличия элемента среди выбранных
     const checkSelected = (id: number | null) => {
         return id !== null && selectedBuildings.includes(id)
     }
 
-    // Поиск
     const search = (value: string) => {
         setSearchText(value)
 
@@ -122,7 +117,6 @@ const PopupBuildingSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Добавление нового элемента
     const onClickAdd = (e: React.MouseEvent) => {
         openPopupBuildingCreate(e.currentTarget, {
             onSave: () => {
@@ -131,7 +125,6 @@ const PopupBuildingSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Редактирование элемента
     const onClickEdit = (e: React.MouseEvent, building: IBuilding) => {
         openPopupBuildingCreate(e.currentTarget, {
             building: building,
@@ -141,13 +134,11 @@ const PopupBuildingSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Сохранение выбора
     const onClickSave = () => {
         props.onSelect(selectedBuildings)
         close()
     }
 
-    // Удаление элемента справочника
     const onClickDelete = (e: React.MouseEvent, building: IBuilding) => {
         openPopupAlert(e, {
             text: `Вы действительно хотите удалить ${building.name}?`,
@@ -176,19 +167,20 @@ const PopupBuildingSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе справочника
     const onContextMenu = (e: React.MouseEvent, building: IBuilding) => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, building)}]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, building)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.ADD_BUILDING]), building.id) {
+            menuItems.push({text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, building)})
+        }
+
+        if (checkRules([Rules.ADD_BUILDING]), building.id) {
+            menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, building)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     const renderSearch = () => {
@@ -202,9 +194,10 @@ const PopupBuildingSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
-                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
-                {/*    : null}*/}
+                {props.buttonAdd && checkRules([Rules.ADD_BUILDING]) ?
+                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
+                    : null
+                }
             </div>
         )
     }

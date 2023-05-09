@@ -51,12 +51,10 @@ const PopupAddressSelector: React.FC<Props> = (props) => {
         }
     }, [settings])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Сохранение изменений
     const saveHandler = () => {
         if (!coordinates.length) {
             props.onSave(address, '')

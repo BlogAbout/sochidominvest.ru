@@ -51,7 +51,6 @@ const AgentList: React.FC<Props> = (props) => {
             })
     }
 
-    // Добавление элемента из списка
     const selectHandler = () => {
         openPopupAgentSelector(document.body, {
             selected: props.selected,
@@ -62,7 +61,6 @@ const AgentList: React.FC<Props> = (props) => {
         })
     }
 
-    // Удаление элемента из списка
     const removeHandler = (agent: IAgent) => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${agent.name} из списка выбранных?`,
@@ -79,7 +77,6 @@ const AgentList: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе
     const onContextMenu = (e: React.MouseEvent, agent: IAgent) => {
         e.preventDefault()
 

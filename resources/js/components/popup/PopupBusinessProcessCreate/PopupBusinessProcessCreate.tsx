@@ -65,12 +65,10 @@ const PopupBusinessProcessCreate: React.FC<Props> = (props) => {
         }
     }, [props.blockId])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id || '')
     }
 
-    // Сохранение изменений
     const saveHandler = (isClose?: boolean) => {
         setFetching(true)
 

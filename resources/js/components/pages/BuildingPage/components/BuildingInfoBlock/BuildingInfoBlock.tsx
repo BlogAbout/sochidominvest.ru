@@ -78,7 +78,6 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
         }
     }, [props.building, userData])
 
-    // Вызов окна обратной связи
     const onFeedButtonHandler = (type: 'callback' | 'get-document' | 'get-presentation' | 'get-view'): void => {
         openPopupFeedCreate(document.body, {
             building: props.building,
@@ -86,7 +85,6 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Редактирование объекта
     const onClickEditHandler = (): void => {
         openPopupBuildingCreate(document.body, {
             building: props.building,
@@ -94,7 +92,6 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Добавление/удаление объекта в избранное
     const onChangeBuildingToFavorite = () => {
         if (props.building.id) {
             let updateFavorites: number[]
@@ -170,7 +167,6 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
         return getDistrictText(props.building.info.district, props.building.info.district_zone)
     }, [props.building])
 
-    // Вывод графика цен
     const renderDynamicChangePrices = (): React.ReactElement | null => {
         if (props.isRent || !props.building.cost || !props.building.prices || !props.building.prices.length) {
             return null
@@ -186,7 +182,6 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
         )
     }
 
-    // Вывод старой цены
     const renderOldPrice = (): React.ReactElement | null => {
         if (props.isRent || !props.building.prices || !props.building.prices.length || !props.building.cost) {
             return null

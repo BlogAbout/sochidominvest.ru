@@ -52,7 +52,6 @@ const FilesPage: React.FC = (): React.ReactElement => {
             .finally(() => setFetching(false))
     }
 
-    // Обработчик изменений
     const onSaveHandler = (attachment: IAttachment): void => {
         if (files && files.length) {
             const findIndex = files.findIndex((file: IAttachment) => file.id === attachment.id)
@@ -105,7 +104,6 @@ const FilesPage: React.FC = (): React.ReactElement => {
         })
     }
 
-    // Меню выбора создания объекта
     const onContextMenuHandler = (e: React.MouseEvent): void => {
         e.preventDefault()
 

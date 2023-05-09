@@ -1,6 +1,7 @@
 import {IPost} from './IPost'
 import {IAttachment} from './IAttachment'
 import {IBuilding} from './IBuilding'
+import {ITariff} from './ITariff'
 
 export interface IUser {
     id: number | null
@@ -19,6 +20,8 @@ export interface IUser {
     post?: IPost | null
     tariff_id?: number | null
     tariff_expired?: string | null
+    date_tariff_expired?: string | null
+    tariff?: ITariff | null
     last_active?: string | null
     created_at?: string | null
     updated_at?: string | null

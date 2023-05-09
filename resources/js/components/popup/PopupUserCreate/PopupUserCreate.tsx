@@ -207,33 +207,33 @@ const PopupUserCreate: React.FC<Props> = (props) => {
                     : null
                 }
 
-                {/*{user.role !== 'director' ?*/}
-                {/*    <>*/}
-                {/*        <div className={classes.field}>*/}
-                {/*            <Label text='Роль'/>*/}
+                {user.role_id !== 4 ?
+                    <>
+                        <div className={classes.field}>
+                            <Label text='Роль'/>
 
-                {/*            <ComboBox selected={user.role}*/}
-                {/*                      items={Object.values(rolesList)}*/}
-                {/*                      onSelect={(value: 'director' | 'administrator' | 'manager' | 'subscriber') => setUser({...user, role: value})}*/}
-                {/*                      placeHolder='Выберите роль'*/}
-                {/*                      styleType='minimal'*/}
-                {/*            />*/}
-                {/*        </div>*/}
+                            <ComboBox selected={user.role}
+                                      items={rolesList}
+                                      onSelect={(value: 'director' | 'administrator' | 'manager' | 'subscriber') => setUser({...user, role_id: +value})}
+                                      placeHolder='Выберите роль'
+                                      styleType='minimal'
+                            />
+                        </div>
 
-                {/*        <div className={classes.field}>*/}
-                {/*            <CheckBox label='Активен'*/}
-                {/*                      type='modern'*/}
-                {/*                      width={110}*/}
-                {/*                      checked={!!user.is_active}*/}
-                {/*                      onChange={(e: React.MouseEvent, value: boolean) => setUser({*/}
-                {/*                          ...user,*/}
-                {/*                          is_active: value ? 1 : 0*/}
-                {/*                      })}*/}
-                {/*            />*/}
-                {/*        </div>*/}
-                {/*    </>*/}
-                {/*    : null*/}
-                {/*}*/}
+                        <div className={classes.field}>
+                            <CheckBox label='Активен'
+                                      type='modern'
+                                      width={110}
+                                      checked={!!user.is_active}
+                                      onChange={(e: React.MouseEvent, value: boolean) => setUser({
+                                          ...user,
+                                          is_active: value ? 1 : 0
+                                      })}
+                            />
+                        </div>
+                    </>
+                    : null
+                }
             </div>
         )
     }

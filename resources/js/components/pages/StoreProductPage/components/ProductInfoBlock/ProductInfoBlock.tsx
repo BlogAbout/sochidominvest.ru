@@ -41,7 +41,6 @@ const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
         })
     }
 
-    // Вывод графика цен
     const renderDynamicChangePrices = (): React.ReactElement | null => {
         if (!props.product.cost || !props.product.prices || !props.product.prices.length) {
             return null
@@ -57,7 +56,6 @@ const ProductInfoBlock: React.FC<Props> = (props): React.ReactElement => {
         )
     }
 
-    // Вывод старой цены
     const renderOldPrice = (): React.ReactElement | null => {
         if (!props.product.cost_old) {
             return null

@@ -28,7 +28,6 @@ const PopupQuestionInfo: React.FC<Props> = (props) => {
         }
     }, [props.blockId])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }

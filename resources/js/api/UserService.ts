@@ -19,13 +19,13 @@ export default class UserService {
         return axios.get('/logout')
     }
 
-    // static async forgotPasswordUser(email: string): Promise<AxiosResponse> {
-    //     return axios.post('/forgot', {email: email})
-    // }
-    //
-    // static async resetPasswordUser(email: string, password: string): Promise<AxiosResponse> {
-    //     return axios.post('/reset', {email: email, password: password})
-    // }
+    static async forgotPasswordUser(email: string): Promise<AxiosResponse> {
+        return axios.post('/forgot', {email: email})
+    }
+
+    static async resetPasswordUser(email: string, password: string): Promise<AxiosResponse> {
+        return axios.post('/reset', {email: email, password: password})
+    }
 
     static async fetchUserById(userId: number): Promise<AxiosResponse> {
         return axios.get(`/user/${userId}`)
@@ -46,10 +46,6 @@ export default class UserService {
     static async removeUser(userId: number): Promise<AxiosResponse> {
         return axios.delete(`/user/${userId}`)
     }
-
-    // static async changeTariffUser(userId: number, tariff: string, tariffExpired: string): Promise<AxiosResponse> {
-    //     return axios.patch(`/user/${userId}/tariff`, {tariff: tariff, tariffExpired: tariffExpired})
-    // }
 
     static async fetchUserExternalById(userId: number): Promise<AxiosResponse> {
         return axios.get(`/external/${userId}`)

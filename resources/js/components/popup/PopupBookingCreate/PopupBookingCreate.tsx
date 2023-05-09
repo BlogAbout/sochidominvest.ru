@@ -75,12 +75,10 @@ const PopupBookingCreate: React.FC<Props> = (props) => {
         checkFreeDates()
     }, [booking.id, booking.dateStart, booking.dateFinish, booking.buildingId])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id || '')
     }
 
-    // Сохранение изменений
     const saveHandler = (isClose?: boolean) => {
         setFetching(true)
 
@@ -183,7 +181,6 @@ const PopupBookingCreate: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка доступности кнопок
     const checkDisabled = (): boolean => {
         if (fetching || booking.buildingId === 0) {
             return true

@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import classNames from 'classnames/bind'
-import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import {RouteNames} from '../../../../../helpers/routerHelper'
 import {IBusinessProcess} from '../../../../../@types/IBusinessProcess'
 import {IFeed} from '../../../../../@types/IFeed'
@@ -34,8 +34,6 @@ const SupportItem: React.FC<Props> = (props) => {
     const navigate = useNavigate()
 
     const [fetching, setFetching] = useState(false)
-
-    const {user} = useTypedSelector(state => state.userReducer)
 
     const removeHandler = () => {
         openPopupAlert(document.body, {
@@ -120,18 +118,20 @@ const SupportItem: React.FC<Props> = (props) => {
     const onContextMenu = (e: React.MouseEvent) => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [
-        //         {text: 'Взять в обработку', onClick: () => processHandler()},
-        //         {text: 'Закрыть заявку', onClick: () => closeHandler()}
-        //     ]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: () => removeHandler()})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.IS_MANAGER])) {
+            menuItems.push(
+                {text: 'Взять в обработку', onClick: () => processHandler()},
+                {text: 'Закрыть заявку', onClick: () => closeHandler()}
+            )
+        }
+
+        if (checkRules([Rules.REMOVE_FEED])) {
+            menuItems.push({text: 'Удалить', onClick: () => removeHandler()})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     const feedType = feedTypes.find((type: ISelector) => type.key === props.feed.type)
@@ -151,14 +151,14 @@ const SupportItem: React.FC<Props> = (props) => {
             <div className={classes.title}>{props.feed.title}</div>
             <div className={classes.status}>{feedStatus ? feedStatus.text : ''}</div>
 
-            {/*{['director', 'administrator', 'manager'].includes(role) ?*/}
-            {/*    <>*/}
-            {/*        <div className={classes.name}>{props.feed.name}</div>*/}
-            {/*        <div className={classes.phone}>{props.feed.phone}</div>*/}
-            {/*        <div className={classes.type}>{feedType ? feedType.text : ''}</div>*/}
-            {/*    </>*/}
-            {/*    : null*/}
-            {/*}*/}
+            {checkRules([Rules.IS_MANAGER]) ?
+                <>
+                    <div className={classes.name}>{props.feed.name}</div>
+                    <div className={classes.phone}>{props.feed.phone}</div>
+                    <div className={classes.type}>{feedType ? feedType.text : ''}</div>
+                </>
+                : null
+            }
         </div>
     )
 }

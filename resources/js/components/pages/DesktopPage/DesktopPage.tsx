@@ -37,14 +37,12 @@ const DesktopPage: React.FC = (): React.ReactElement => {
 
     const [userInfo, setUserInfo] = useState<IUser>({} as IUser)
     const [tickets, setTickets] = useState<IFeed[]>([])
-    const [deals, setDeals] = useState([])
     const [agents, setAgents] = useState<IAgent[]>([])
     const [developers, setDevelopers] = useState<IDeveloper[]>([])
     const [filterArticles, setFilterArticles] = useState<IArticle[]>([])
 
     const [fetchingUser, setFetchingUser] = useState(false)
     const [fetchingTickets, setFetchingTickets] = useState(false)
-    const [fetchingDeals, setFetchingDeals] = useState(false)
     const [fetchingAgents, setFetchingAgents] = useState(false)
     const [fetchingDevelopers, setFetchingDevelopers] = useState(false)
 
@@ -84,7 +82,6 @@ const DesktopPage: React.FC = (): React.ReactElement => {
         fetchArticleList({active: [0, 1]})
     }
 
-    // Загрузка данных пользователя
     const fetchUserHandler = (): void => {
         let findUserId = user.id
 
@@ -106,7 +103,6 @@ const DesktopPage: React.FC = (): React.ReactElement => {
         }
     }
 
-    // Загрузка данных о тикетах пользователя
     const fetchFeedsHandler = (): void => {
         if (!userInfo || !userInfo.id) {
             return
@@ -120,7 +116,6 @@ const DesktopPage: React.FC = (): React.ReactElement => {
             .finally(() => setFetchingTickets(false))
     }
 
-    // Загрузка данных о застройщиках пользователя
     const fetchDevelopersHandler = (): void => {
         setFetchingDevelopers(true)
 
@@ -130,7 +125,6 @@ const DesktopPage: React.FC = (): React.ReactElement => {
             .finally(() => setFetchingDevelopers(false))
     }
 
-    // Загрузка данных об агентствах пользователя
     const fetchAgentsHandler = (): void => {
         setFetchingAgents(true)
 
@@ -287,16 +281,16 @@ const DesktopPage: React.FC = (): React.ReactElement => {
                     <div className={classes.row}>
                         <div className={classes.label}>Текущий тариф:</div>
                         <div className={classes.param}>
-                            {/*{userInfo.tariff === 'free' ? 'Нет активного тарифа' : getTariffText(userInfo.tariff || 'free')}&nbsp;*/}
-                            {/*(<span className={classes.link}*/}
-                            {/*       onClick={() => navigate(RouteNames.P_TARIFF)}>изменить</span>)*/}
+                            {userInfo.tariff ? userInfo.tariff.name : 'Нет активного тарифа'}&nbsp;
+                            (<span className={classes.link}
+                                   onClick={() => navigate(RouteNames.P_TARIFF)}>изменить</span>)
                         </div>
                     </div>
 
                     <div className={classes.row}>
                         <div className={classes.label}>Дата окончания:</div>
                         <div className={classes.param}>
-                            {/*{userInfo.tariff !== 'free' ? getFormatDate(userInfo.tariffExpired) : 'Бессрочно'}*/}
+                            {userInfo.tariff ? userInfo.date_tariff_expired : 'Бессрочно'}
                         </div>
                     </div>
                 </BlockingElement>
@@ -351,34 +345,13 @@ const DesktopPage: React.FC = (): React.ReactElement => {
         )
     }
 
-    const renderDealsInfo = (): React.ReactElement => {
-        return (
-            <div className={cx({'col': true, 'col-2': true})}>
-                <Title type='h2'>Сделки</Title>
-
-                <BlockingElement fetching={fetchingDeals} className={classes.list}>
-                    {deals && deals.length ?
-                        deals.map((deal: any, index: number) => {
-                            return (
-                                <div key={index}>
-
-                                </div>
-                            )
-                        })
-                        : <Empty message='У Вас еще нет совершенных сделок.'/>
-                    }
-                </BlockingElement>
-            </div>
-        )
-    }
-
     const renderAgentsInfo = (): React.ReactElement | null => {
         if (!checkRules([Rules.SHOW_AGENTS])) {
             return null
         }
 
         const showAdd = checkRules([Rules.ADD_AGENT])
-        const isDisable = false // allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business'], userInfo.tariff) && agents.filter((agent: IAgent) => agent.is_active === 1).length > 0
+        const isDisable = checkRules([Rules.MORE_TARIFF_BASE, Rules.ADD_AGENT])
         const emptyText = showAdd ? 'У Вас еще нет созданных агентств.' : 'На текущем тарифе не доступно.'
 
         return (
@@ -410,7 +383,7 @@ const DesktopPage: React.FC = (): React.ReactElement => {
         }
 
         const showAdd = checkRules([Rules.ADD_DEVELOPER])
-        const isDisable = false //allowForRole(['subscriber'], userInfo.role) && allowForTariff(['business'], userInfo.tariff) && developers.filter((developer: IDeveloper) => developer.is_active === 1).length > 0
+        const isDisable = checkRules([Rules.MORE_TARIFF_BASE, Rules.ADD_DEVELOPER])
         const emptyText = showAdd ? 'У Вас еще нет созданных застройщиков.' : 'На текущем тарифе не доступно.'
 
         return (
@@ -447,7 +420,6 @@ const DesktopPage: React.FC = (): React.ReactElement => {
                     {renderUserInfo()}
                     {renderTariffsInfo()}
                     {renderArticlesInfo()}
-                    {renderDealsInfo()}
                     {renderAgentsInfo()}
                     {renderDevelopersInfo()}
                     {renderTicketsInfo()}

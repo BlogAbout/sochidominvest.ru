@@ -11,10 +11,6 @@ export default class WidgetService {
         return axios.get('/widget', {params: filter})
     }
 
-    // static async fetchWidgetsContent(filter: IFilter): Promise<AxiosResponse> {
-    //     return axios.get('/widget/content', {params: filter})
-    // }
-
     static async saveWidget(widget: IWidget): Promise<AxiosResponse> {
         if (widget.id) {
             return axios.patch(`/widget/${widget.id}`, widget)

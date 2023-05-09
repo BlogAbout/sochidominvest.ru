@@ -15,7 +15,6 @@ const defaultProps: Props = {
 }
 
 const BuildingCheckersBlock: React.FC<Props> = (props): React.ReactElement | null => {
-    // Вывод корпусов
     const renderHousing = () => {
         if (!props.building.checkers || !props.building.checkers.length) {
             return null

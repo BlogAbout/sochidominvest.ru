@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import withStore from '../../hoc/withStore'
 import PostService from '../../../api/PostService'
+import {useTypedSelector} from '../../../hooks/useTypedSelector'
+import {useActions} from '../../../hooks/useActions'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {IPost} from '../../../@types/IPost'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
 import openPopupPostCreate from '../../popup/PopupPostCreate/PopupPostCreate'
@@ -8,14 +11,12 @@ import {openPopup, removePopup} from '../../../helpers/popupHelper'
 import {Content, Footer, Header, Popup} from '../Popup/Popup'
 import BlockingElement from '../../ui/BlockingElement/BlockingElement'
 import Empty from '../../ui/Empty/Empty'
-import openContextMenu from '../../ui/ContextMenu/ContextMenu'
 import ButtonAdd from '../../form/ButtonAdd/ButtonAdd'
 import SearchBox from '../../form/SearchBox/SearchBox'
 import CheckBox from '../../form/CheckBox/CheckBox'
 import Button from '../../form/Button/Button'
 import openPopupAlert from '../PopupAlert/PopupAlert'
-import {useTypedSelector} from '../../../hooks/useTypedSelector'
-import {useActions} from '../../../hooks/useActions'
+import openContextMenu from '../../ui/ContextMenu/ContextMenu'
 import classes from './PopupPostSelector.module.scss'
 
 interface Props extends PopupProps {
@@ -49,7 +50,6 @@ const PopupPostSelector: React.FC<Props> = (props) => {
     const [selectedPosts, setSelectedPosts] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {user} = useTypedSelector(state => state.userReducer)
     const {fetching: fetchingPostList, posts} = useTypedSelector(state => state.postReducer)
     const {fetchPostList} = useActions()
 
@@ -69,12 +69,10 @@ const PopupPostSelector: React.FC<Props> = (props) => {
         setFetching(fetchingPostList)
     }, [fetchingPostList])
 
-    // Закрытие Popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Клик на строку
     const selectRow = (post: IPost) => {
         if (props.multi) {
             selectRowMulti(post)
@@ -84,7 +82,6 @@ const PopupPostSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Клик на строку в мульти режиме
     const selectRowMulti = (post: IPost) => {
         if (post.id) {
             if (checkSelected(post.id)) {
@@ -95,12 +92,10 @@ const PopupPostSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка наличия элемента среди выбранных
     const checkSelected = (id: number | null) => {
         return id !== null && selectedPosts.includes(id)
     }
 
-    // Поиск
     const search = (value: string) => {
         setSearchText(value)
 
@@ -113,7 +108,6 @@ const PopupPostSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Добавление нового элемента
     const onClickAdd = (e: React.MouseEvent) => {
         openPopupPostCreate(e.currentTarget, {
             onSave: () => {
@@ -122,7 +116,6 @@ const PopupPostSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Редактирование элемента
     const onClickEdit = (e: React.MouseEvent, post: IPost) => {
         openPopupPostCreate(e.currentTarget, {
             post: post,
@@ -132,13 +125,11 @@ const PopupPostSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Сохранение выбора
     const onClickSave = () => {
         props.onSelect(selectedPosts)
         close()
     }
 
-    // Удаление элемента справочника
     const onClickDelete = (e: React.MouseEvent, post: IPost) => {
         openPopupAlert(e, {
             text: `Вы действительно хотите удалить ${post.name}?`,
@@ -171,19 +162,20 @@ const PopupPostSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе справочника
     const onContextMenu = (e: React.MouseEvent, post: IPost) => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, post)}]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, post)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.EDIT_POST])) {
+            menuItems.push({text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, post)})
+        }
+
+        if (checkRules([Rules.EDIT_POST])) {
+            menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, post)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     const renderLeftBox = () => {
@@ -214,9 +206,10 @@ const PopupPostSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
-                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
-                {/*    : null}*/}
+                {props.buttonAdd && checkRules([Rules.ADD_POST]) ?
+                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
+                    : null
+                }
             </div>
         )
     }

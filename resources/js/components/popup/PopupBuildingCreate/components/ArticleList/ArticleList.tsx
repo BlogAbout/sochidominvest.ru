@@ -49,12 +49,10 @@ const ArticleList: React.FC<Props> = (props) => {
         }
     }, [articles, props.selected])
 
-    // Обработчик изменений
     const onSave = () => {
         setIsUpdate(true)
     }
 
-    // Добавление элемента из списка
     const selectHandler = () => {
         openPopupArticleSelector(document.body, {
             selected: props.selected,
@@ -65,7 +63,6 @@ const ArticleList: React.FC<Props> = (props) => {
         })
     }
 
-    // Удаление элемента из списка
     const removeHandler = (article: IArticle) => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${article.name} из списка выбранных?`,
@@ -82,7 +79,6 @@ const ArticleList: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе
     const onContextMenu = (e: React.MouseEvent, article: IArticle) => {
         e.preventDefault()
 

@@ -9,6 +9,7 @@ export enum Rules {
     SHOW_TARIFFS,
 
     SHOW_USERS,
+    ADD_USER,
     EDIT_USER,
     BLOCK_USER,
     REMOVE_USER,
@@ -27,7 +28,7 @@ export enum Rules {
     REMOVE_COMPILATION,
 
     SHOW_FEEDS,
-    EDIT_FEEDl,
+    EDIT_FEED,
     PROCESS_FEED,
     CLOSE_FEED,
     REMOVE_FEED,
@@ -93,6 +94,11 @@ export enum Rules {
     EDIT_CHECKER,
     REMOVE_CHECKER,
 
+    SHOW_PARTNERS,
+    ADD_PARTNER,
+    EDIT_PARTNER,
+    REMOVE_PARTNER,
+
     RUN_BUSINESS_PROCESS,
 }
 
@@ -118,6 +124,7 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
             case Rules.SHOW_USERS:
                 result = true
                 break
+            case Rules.ADD_USER:
             case Rules.EDIT_USER:
                 result = true
                 break
@@ -201,7 +208,7 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
                 result = true
                 break
             case Rules.SHOW_FEEDS:
-            case Rules.EDIT_FEEDl:
+            case Rules.EDIT_FEED:
             case Rules.PROCESS_FEED:
             case Rules.CLOSE_FEED:
             case Rules.REMOVE_FEED:
@@ -238,6 +245,10 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
             case Rules.ADD_CHECKER:
             case Rules.EDIT_CHECKER:
             case Rules.REMOVE_CHECKER:
+            case Rules.SHOW_PARTNERS:
+            case Rules.ADD_PARTNER:
+            case Rules.EDIT_PARTNER:
+            case Rules.REMOVE_PARTNER:
             case Rules.RUN_BUSINESS_PROCESS:
             default:
                 result = true

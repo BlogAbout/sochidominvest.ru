@@ -3,6 +3,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import withStore from '../../hoc/withStore'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {useActions} from '../../../hooks/useActions'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import StoreService from '../../../api/StoreService'
 import {ICategory} from '../../../@types/IStore'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
@@ -52,7 +53,6 @@ const PopupCategorySelector: React.FC<Props> = (props) => {
     const [selectedCategories, setSelectedCategories] = useState<number[]>(props.selected || [])
     const [fetching, setFetching] = useState(false)
 
-    const {user} = useTypedSelector(state => state.userReducer)
     const {fetching: fetchingCategoryList, categories} = useTypedSelector(state => state.storeReducer)
     const {fetchCategoryList} = useActions()
 
@@ -76,12 +76,10 @@ const PopupCategorySelector: React.FC<Props> = (props) => {
         setFetching(fetchingCategoryList)
     }, [fetchingCategoryList])
 
-    // Закрытие Popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Клик на строку
     const selectRow = (category: ICategory) => {
         if (props.multi) {
             selectRowMulti(category)
@@ -91,7 +89,6 @@ const PopupCategorySelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Клик на строку в мульти режиме
     const selectRowMulti = (category: ICategory) => {
         if (category.id) {
             if (checkSelected(category.id)) {
@@ -102,12 +99,10 @@ const PopupCategorySelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка наличия элемента среди выбранных
     const checkSelected = (id: number | null) => {
         return id !== null && selectedCategories.includes(id)
     }
 
-    // Поиск
     const search = (value: string) => {
         setSearchText(value)
 
@@ -120,7 +115,6 @@ const PopupCategorySelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Добавление нового элемента
     const onClickAdd = (e: React.MouseEvent) => {
         openPopupCategoryCreate(e.currentTarget, {
             onSave: () => {
@@ -129,7 +123,6 @@ const PopupCategorySelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Редактирование элемента
     const onClickEdit = (e: React.MouseEvent, category: ICategory) => {
         openPopupCategoryCreate(e.currentTarget, {
             category: category,
@@ -139,13 +132,11 @@ const PopupCategorySelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Сохранение выбора
     const onClickSave = () => {
         props.onSelect(selectedCategories)
         close()
     }
 
-    // Удаление элемента справочника
     const onClickDelete = (e: React.MouseEvent, category: ICategory) => {
         openPopupAlert(e, {
             text: `Вы действительно хотите удалить ${category.name}?`,
@@ -174,19 +165,20 @@ const PopupCategorySelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе справочника
     const onContextMenu = (e: React.MouseEvent, category: ICategory) => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, category)}]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, category)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.EDIT_CATEGORY])) {
+            menuItems.push({text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, category)})
+        }
+
+        if (checkRules([Rules.REMOVE_CATEGORY])) {
+            menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, category)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     const renderSearch = () => {
@@ -200,9 +192,10 @@ const PopupCategorySelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
-                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
-                {/*    : null}*/}
+                {props.buttonAdd && checkRules([Rules.ADD_CATEGORY]) ?
+                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
+                    : null
+                }
             </div>
         )
     }

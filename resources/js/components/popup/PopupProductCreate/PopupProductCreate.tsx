@@ -102,7 +102,6 @@ const PopupProductCreate: React.FC<Props> = (props) => {
             .finally(() => setFetchingProduct(false))
     }
 
-    // Добавление файла
     const addAttachmentHandler = (attachment: IAttachment) => {
         if (attachment.id) {
             switch (attachment.type) {
@@ -128,12 +127,10 @@ const PopupProductCreate: React.FC<Props> = (props) => {
         }
     }
 
-    // Смена главного изображения
     const selectImageAvatarHandler = (attachment: IAttachment) => {
         setProduct({...product, avatar_id: attachment.id, avatar: attachment})
     }
 
-    // Проверка наличия главного изображения
     const checkAvatar = () => {
         if (product.images && product.images.length && product.image_ids && product.image_ids.length) {
             if (!product.avatar_id || !product.image_ids.includes(product.avatar_id)) {
@@ -239,7 +236,6 @@ const PopupProductCreate: React.FC<Props> = (props) => {
         return null
     }
 
-    // Вкладка состояния
     const renderStateTab = () => {
         return (
             <div key='state' className={classes.tabContent}>
@@ -338,7 +334,6 @@ const PopupProductCreate: React.FC<Props> = (props) => {
         )
     }
 
-    // Вкладка информации объекта
     const renderInformationTab = (): React.ReactElement | null => {
         if (!categories || !categories.length || !product.category_id) {
             return null
@@ -356,7 +351,6 @@ const PopupProductCreate: React.FC<Props> = (props) => {
         )
     }
 
-    // Вкладка галереи объекта
     const renderMediaTab = () => {
         return (
             <div key='media' className={classes.tabContent}>

@@ -100,7 +100,6 @@ const RelationList: React.FC<Props> = (props) => {
         }
     }, [props.selected])
 
-    // Добавление элемента из списка
     const selectHandler = (e: React.MouseEvent) => {
         const menuItems = [
             {
@@ -151,7 +150,6 @@ const RelationList: React.FC<Props> = (props) => {
         openContextMenu(e, menuItems)
     }
 
-    // Удаление элемента из списка
     const removeHandler = (relation: IBusinessProcessRelation) => {
         let relationName = ''
         switch (relation.object_type) {
@@ -188,7 +186,6 @@ const RelationList: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе
     const onContextMenu = (e: React.MouseEvent, relation: IBusinessProcessRelation) => {
         e.preventDefault()
 

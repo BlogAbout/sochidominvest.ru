@@ -80,7 +80,6 @@ const UserList: React.FC<Props> = (props) => {
             .finally(() => setFetchingContactList(false))
     }
 
-    // Обработчик изменений
     const onSave = () => {
         setIsUpdate(true)
     }

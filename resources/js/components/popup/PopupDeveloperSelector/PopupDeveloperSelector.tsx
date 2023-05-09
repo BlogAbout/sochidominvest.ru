@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import withStore from '../../hoc/withStore'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
 import {IDeveloper} from '../../../@types/IDeveloper'
 import DeveloperService from '../../../api/DeveloperService'
@@ -75,12 +76,10 @@ const PopupDeveloperSelector: React.FC<Props> = (props) => {
         setFetching(fetchingDeveloperList)
     }, [fetchingDeveloperList])
 
-    // Закрытие Popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Клик на строку
     const selectRow = (developer: IDeveloper) => {
         if (props.multi) {
             selectRowMulti(developer)
@@ -90,7 +89,6 @@ const PopupDeveloperSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Клик на строку в мульти режиме
     const selectRowMulti = (developer: IDeveloper) => {
         if (developer.id) {
             if (checkSelected(developer.id)) {
@@ -101,12 +99,10 @@ const PopupDeveloperSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка наличия элемента среди выбранных
     const checkSelected = (id: number | null) => {
         return id !== null && selectedDevelopers.includes(id)
     }
 
-    // Поиск
     const search = (value: string) => {
         setSearchText(value)
 
@@ -119,7 +115,6 @@ const PopupDeveloperSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Добавление нового элемента
     const onClickAdd = () => {
         openPopupDeveloperCreate(document.body, {
             onSave: () => {
@@ -128,7 +123,6 @@ const PopupDeveloperSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Редактирование элемента
     const onClickEdit = (e: React.MouseEvent, developer: IDeveloper) => {
         openPopupDeveloperCreate(document.body, {
             developer: developer,
@@ -138,13 +132,11 @@ const PopupDeveloperSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Сохранение выбора
     const onClickSave = () => {
         props.onSelect(selectedDevelopers)
         close()
     }
 
-    // Удаление элемента справочника
     const onClickDelete = (e: React.MouseEvent, developer: IDeveloper) => {
         openPopupAlert(e, {
             text: `Вы действительно хотите удалить ${developer.name}?`,
@@ -177,19 +169,20 @@ const PopupDeveloperSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе справочника
     const onContextMenu = (e: React.MouseEvent, developer: IDeveloper) => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, developer)}]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, developer)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.EDIT_DEVELOPER])) {
+            menuItems.push({text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, developer)})
+        }
+
+        if (checkRules([Rules.REMOVE_DEVELOPER])) {
+            menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, developer)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     const renderSearch = () => {
@@ -203,10 +196,10 @@ const PopupDeveloperSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
-                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
-                {/*    : null*/}
-                {/*}*/}
+                {props.buttonAdd && checkRules([Rules.ADD_DEVELOPER]) ?
+                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
+                    : null
+                }
             </div>
         )
     }

@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import withStore from '../../hoc/withStore'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
+import {useTypedSelector} from '../../../hooks/useTypedSelector'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
 import {IAgent} from '../../../@types/IAgent'
 import AgentService from '../../../api/AgentService'
@@ -8,7 +10,6 @@ import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupH
 import {Footer, Popup} from '../Popup/Popup'
 import BlockingElement from '../../ui/BlockingElement/BlockingElement'
 import Empty from '../../ui/Empty/Empty'
-import openContextMenu from '../../ui/ContextMenu/ContextMenu'
 import openPopupAgentCreate from '../PopupAgentCreate/PopupAgentCreate'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
 import ButtonAdd from '../../form/ButtonAdd/ButtonAdd'
@@ -17,7 +18,7 @@ import CheckBox from '../../form/CheckBox/CheckBox'
 import Button from '../../form/Button/Button'
 import Title from '../../ui/Title/Title'
 import openPopupAlert from '../../popup/PopupAlert/PopupAlert'
-import {useTypedSelector} from '../../../hooks/useTypedSelector'
+import openContextMenu from '../../ui/ContextMenu/ContextMenu'
 import classes from './PopupAgentSelector.module.scss'
 
 interface Props extends PopupProps {
@@ -83,12 +84,10 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
             })
     }
 
-    // Закрытие Popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Клик на строку
     const selectRow = (agent: IAgent) => {
         if (props.multi) {
             selectRowMulti(agent)
@@ -98,7 +97,6 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Клик на строку в мульти режиме
     const selectRowMulti = (agent: IAgent) => {
         if (agent.id) {
             if (checkSelected(agent.id)) {
@@ -109,12 +107,10 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Проверка наличия элемента среди выбранных
     const checkSelected = (id: number | null) => {
         return id !== null && selectedAgents.includes(id)
     }
 
-    // Поиск
     const search = (value: string) => {
         setSearchText(value)
 
@@ -127,7 +123,6 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
         }
     }
 
-    // Добавление нового элемента
     const onClickAdd = () => {
         openPopupAgentCreate(document.body, {
             onSave: () => {
@@ -136,7 +131,6 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Редактирование элемента
     const onClickEdit = (e: React.MouseEvent, agent: IAgent) => {
         openPopupAgentCreate(document.body, {
             agent: agent,
@@ -146,13 +140,11 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Сохранение выбора
     const onClickSave = () => {
         props.onSelect(selectedAgents)
         close()
     }
 
-    // Удаление элемента справочника
     const onClickDelete = (e: React.MouseEvent, agent: IAgent) => {
         openPopupAlert(e, {
             text: `Вы действительно хотите удалить ${agent.name}?`,
@@ -185,19 +177,20 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе справочника
     const onContextMenu = (e: React.MouseEvent, agent: IAgent) => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [{text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, agent)}]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, agent)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any[] = []
+
+        if (checkRules([Rules.EDIT_AGENT])) {
+            menuItems.push({text: 'Редактировать', onClick: (e: React.MouseEvent) => onClickEdit(e, agent)})
+        }
+
+        if (checkRules([Rules.REMOVE_AGENT])) {
+            menuItems.push({text: 'Удалить', onClick: (e: React.MouseEvent) => onClickDelete(e, agent)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     const renderSearch = () => {
@@ -211,10 +204,10 @@ const PopupAgentSelector: React.FC<Props> = (props) => {
                            autoFocus
                 />
 
-                {/*{props.buttonAdd && ['director', 'administrator', 'manager'].includes(role) ?*/}
-                {/*    <ButtonAdd onClick={onClickAdd.bind(this)}/>*/}
-                {/*    : null*/}
-                {/*}*/}
+                {props.buttonAdd && checkRules([Rules.ADD_AGENT]) ?
+                    <ButtonAdd onClick={onClickAdd.bind(this)}/>
+                    : null
+                }
             </div>
         )
     }

@@ -54,12 +54,10 @@ const PopupCheckerCreate: React.FC<Props> = (props) => {
         }
     }, [props.blockId])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Сохранение изменений
     const saveHandler = (isClose?: boolean) => {
         if (!checker.building_id || checker.name.trim() === '' || !checker.area || !checker.cost) {
             return

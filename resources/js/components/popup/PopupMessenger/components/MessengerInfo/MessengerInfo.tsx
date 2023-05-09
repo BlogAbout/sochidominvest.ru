@@ -48,7 +48,7 @@ const MessengerInfo: React.FC<Props> = (props) => {
             <div className={classes.name}>{props.memberName}</div>
 
             <div className={cx({'indicator': true, 'online': usersOnline.includes(props.memberId)})}
-                 // title={usersOnline.includes(props.memberId) ? 'Online' : `Был в сети: ${getFormatDate(props.member?.lastActive)}`}
+                 title={usersOnline.includes(props.memberId) ? 'Online' : `Был в сети: ${props.member?.date_last_active}`}
             />
         </div>
     )

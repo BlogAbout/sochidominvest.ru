@@ -66,32 +66,29 @@ const BuildingItem: React.FC<Props> = (props) => {
     const districtText = getDistrictText(props.building.info.district, props.building.info.district_zone)
 
     const renderOldPrice = () => {
-        return null
-        // if (!props.building.costOld || !props.building.cost) {
-        //     return null
-        // }
-        //
-        // if (props.building.costOld === props.building.cost) {
-        //     return null
-        // }
-        //
-        // if (props.building.costOld > props.building.cost) {
-        //     return (
-        //         <span className={classes.costDown}
-        //               title={`Старая цена: ${numberWithSpaces(round(props.building.costOld || 0, 0))} руб.`}
-        //         >
-        //             <FontAwesomeIcon icon='arrow-down'/>
-        //         </span>
-        //     )
-        // } else {
-        //     return (
-        //         <span className={classes.costUp}
-        //               title={`Старая цена: ${numberWithSpaces(round(props.building.costOld || 0, 0))} руб.`}
-        //         >
-        //             <FontAwesomeIcon icon='arrow-up'/>
-        //         </span>
-        //     )
-        // }
+        if (!props.building.prices || !props.building.prices.length || !props.building.cost) {
+            return null
+        }
+
+        const costOld: number = props.building.prices[0]
+
+        if (costOld > props.building.cost) {
+            return (
+                <span className={classes.costDown}
+                      title={`Старая цена: ${numberWithSpaces(round(costOld, 0))} руб.`}
+                >
+                    <FontAwesomeIcon icon='arrow-down'/>
+                </span>
+            )
+        } else {
+            return (
+                <span className={classes.costUp}
+                      title={`Старая цена: ${numberWithSpaces(round(costOld, 0))} руб.`}
+                >
+                    <FontAwesomeIcon icon='arrow-up'/>
+                </span>
+            )
+        }
     }
 
     return (
