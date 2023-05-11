@@ -7,7 +7,7 @@ import {IUser} from '../../../../../@types/IUser'
 import {useActions} from '../../../../../hooks/useActions'
 import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
 import {bpSteps, getBpTypesText} from '../../../../../helpers/businessProcessHelper'
-import {allowForRole} from '../../../../../helpers/accessHelper'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import BusinessProcessService from '../../../../../api/BusinessProcessService'
 import UserService from '../../../../../api/UserService'
 import Title from '../../../../../components/ui/Title/Title'
@@ -121,15 +121,17 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
     const onContextMenuHandler = (businessProcess: IBusinessProcess, e: React.MouseEvent): void => {
         e.preventDefault()
 
-        if (allowForRole(['director', 'administrator', 'manager'])) {
-            const menuItems = [{text: 'Редактировать', onClick: () => onEditHandler(businessProcess)}]
+        const menuItems: any[] = []
 
-            if (allowForRole(['director', 'administrator'])) {
-                menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(businessProcess)})
-            }
-
-            openContextMenu(e, menuItems)
+        if (checkRules([Rules.EDIT_BUSINESS_PROCESS])) {
+            menuItems.push({text: 'Редактировать', onClick: () => onEditHandler(businessProcess)})
         }
+
+        if (checkRules([Rules.EDIT_BUSINESS_PROCESS])) {
+            menuItems.push({text: 'Удалить', onClick: () => onRemoveHandler(businessProcess)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     // Стили для перемещаемого элемента
@@ -197,6 +199,12 @@ const BusinessProcessList: React.FC<Props> = (props): React.ReactElement => {
                 [`${source.droppableId}`]: sourceBusinessProcesses,
                 [`${destination.droppableId}`]: destinationBusinessProcesses
             }
+
+            BusinessProcessService.saveBusinessProcess(updateBusinessProcess)
+                .then()
+                .catch((error: any) => {
+                    console.error('Ошибка сохранения изменения этапа бизнес-процесса!', error.data.message)
+                })
         }
 
         setBusinessProcesses(updatedListBusinessProcesses)

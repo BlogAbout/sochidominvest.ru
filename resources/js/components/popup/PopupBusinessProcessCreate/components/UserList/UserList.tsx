@@ -65,6 +65,7 @@ const UserList: React.FC<Props> = (props) => {
         <div className={classes.UserList}>
             <div className={classes.header}>
                 <div className={classes.name}>Имя</div>
+                <div className={classes.type}>Тип</div>
                 <div className={classes.phone}>Телефон</div>
             </div>
 

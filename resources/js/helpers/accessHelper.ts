@@ -99,6 +99,10 @@ export enum Rules {
     EDIT_PARTNER,
     REMOVE_PARTNER,
 
+    SHOW_BUSINESS_PROCESSES,
+    ADD_BUSINESS_PROCESS,
+    EDIT_BUSINESS_PROCESS,
+    REMOVE_BUSINESS_PROCESS,
     RUN_BUSINESS_PROCESS,
 }
 
@@ -249,6 +253,10 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
             case Rules.ADD_PARTNER:
             case Rules.EDIT_PARTNER:
             case Rules.REMOVE_PARTNER:
+            case Rules.SHOW_BUSINESS_PROCESSES:
+            case Rules.ADD_BUSINESS_PROCESS:
+            case Rules.EDIT_BUSINESS_PROCESS:
+            case Rules.REMOVE_BUSINESS_PROCESS:
             case Rules.RUN_BUSINESS_PROCESS:
             default:
                 result = true

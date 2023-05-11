@@ -26,7 +26,9 @@ class UpdateRequest extends FormRequest
             'role_id' => 'nullable|integer|exists:sdi_roles,id',
             'post_id' => 'nullable|integer|exists:sdi_posts,id',
             'favorite_ids' => 'nullable|array',
-            'favorite_ids.*' => 'nullable|integer'
+            'favorite_ids.*' => 'nullable|integer',
+            'business_process_sorting' => 'nullable|array',
+            'business_process_sorting.*' => 'nullable|integer'
         ];
     }
 
@@ -47,7 +49,8 @@ class UpdateRequest extends FormRequest
             'role_id.exists' => 'Роль отсутствует в базе данных',
             'post_id.integer' => 'Значение данного поля должно быть числом',
             'post_id.exists' => 'Должность отсутствует в базе данных',
-            'favorite_ids.array' => 'Значение данного поля должно быть массивом'
+            'favorite_ids.array' => 'Значение данного поля должно быть массивом',
+            'business_process_sorting.array' => 'Значение данного поля должно быть массивом'
         ];
     }
 }

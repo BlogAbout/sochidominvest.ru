@@ -15,23 +15,29 @@ class BusinessProcess extends Model
     protected $table = 'sdi_business_processes';
     protected $guarded = false;
 
+    protected $with = ['responsible', 'attendees', 'relationFeeds', 'relationBuildings'];
+
     public function responsible()
     {
-        return $this->belongsTo(User::class, 'responsible_id', 'id');
+        return $this->belongsTo(User::class, 'responsible_id', 'id')
+            ->without(['avatar', 'post', 'role', 'tariff', 'favorites', 'bpSorting']);
     }
 
     public function attendees()
     {
-        return $this->belongsToMany(User::class, 'sdi_business_process_attendees', 'business_process_id', 'user_id');
+        return $this->belongsToMany(User::class, 'sdi_business_process_attendees', 'business_process_id', 'user_id')
+            ->without(['avatar', 'post', 'role', 'tariff', 'favorites', 'bpSorting']);
     }
 
     public function relationFeeds()
     {
-        return $this->belongsToMany(Feed::class, 'sdi_business_process_relations', 'business_process_id', 'object_id')->wherePivot('object_type', 'feed');
+        return $this->morphedByMany(Feed::class, 'object', 'sdi_business_process_relations')
+            ->without(['author', 'user', 'messages']);
     }
 
     public function relationBuildings()
     {
-        return $this->belongsToMany(Building::class, 'sdi_business_process_relations', 'business_process_id', 'object_id')->wherePivot('object_type', 'building');
+        return $this->morphedByMany(Building::class, 'object', 'sdi_business_process_relations')
+            ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers', 'relationAgents', 'relationContacts', 'relationDocuments', 'relationArticles', 'relationTags']);
     }
 }

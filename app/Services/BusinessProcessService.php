@@ -16,7 +16,39 @@ class BusinessProcessService
 
             $data['author_id'] = auth()->user()->id;
 
+            if (isset($data['relations'])) {
+                $buildingIds = [];
+                $feedIds = [];
+                foreach($data['relations'] as $relation) {
+                    if ($relation['object_type'] === 'building') {
+                        array_push($buildingIds, $relation['object_id']);
+                    }
+
+                    if ($relation['object_type'] === 'feed') {
+                        array_push($feedIds, $relation['object_id']);
+                    }
+                }
+                unset($data['relations']);
+            }
+
+            if (isset($data['attendee_ids'])) {
+                $attendeeIds = $data['attendee_ids'];
+                unset($data['attendee_ids']);
+            }
+
             $businessProcess = BusinessProcess::firstOrCreate($data);
+
+            if (isset($attendeeIds)) {
+                $businessProcess->attendees()->attach($attendeeIds);
+            }
+
+            if (isset($feedIds)) {
+                $businessProcess->relationFeeds()->attach($feedIds);
+            }
+
+            if (isset($buildingIds)) {
+                $businessProcess->relationBuildings()->attach($buildingIds);
+            }
 
             DB::commit();
 
@@ -33,9 +65,43 @@ class BusinessProcessService
         try {
             DB::beginTransaction();
 
+            if (isset($data['relations'])) {
+                $buildingIds = [];
+                $feedIds = [];
+                foreach($data['relations'] as $relation) {
+                    if ($relation['object_type'] === 'building') {
+                        array_push($buildingIds, $relation['object_id']);
+                    }
+
+                    if ($relation['object_type'] === 'feed') {
+                        array_push($feedIds, $relation['object_id']);
+                    }
+                }
+                unset($data['relations']);
+            }
+
+            if (isset($data['attendee_ids'])) {
+                $attendeeIds = $data['attendee_ids'];
+                unset($data['attendee_ids']);
+            }
+
             $businessProcess->update($data);
 
+            if (isset($attendeeIds)) {
+                $businessProcess->attendees()->sync($attendeeIds);
+            }
+
+            if (isset($feedIds)) {
+                $businessProcess->relationFeeds()->sync($feedIds);
+            }
+
+            if (isset($buildingIds)) {
+                $businessProcess->relationBuildings()->sync($buildingIds);
+            }
+
             DB::commit();
+
+            $businessProcess->refresh();
 
             return (new BusinessProcessResource($businessProcess))->response()->setStatusCode(200);
         } catch (\Exception $e) {

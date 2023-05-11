@@ -50,10 +50,23 @@ class UserService
                 $data['password'] = Hash::make($data['password']);
             }
 
+            if (isset($data['business_process_sorting'])) {
+                $bpSorting = $data['business_process_sorting'];
+                unset($data['business_process_sorting']);
+            }
+
             $user->update($data);
 
             if (isset($favoriteIds)) {
                 $user->favorites()->sync($favoriteIds);
+            }
+
+            if (isset($bpSorting)) {
+                DB::table('sdi_business_process_sorting')
+                    ->updateOrInsert(
+                        ['user_id' => $user->id],
+                        ['sorting' => json_encode($bpSorting)]
+                    );
             }
 
             DB::commit();

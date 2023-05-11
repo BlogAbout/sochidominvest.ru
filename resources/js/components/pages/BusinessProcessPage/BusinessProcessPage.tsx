@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {IBusinessProcess} from '../../../@types/IBusinessProcess'
 import BusinessProcessService from '../../../api/BusinessProcessService'
 import Title from '../../ui/Title/Title'
@@ -48,7 +49,7 @@ const BusinessProcessPage: React.FC = (): React.ReactElement => {
         <PanelView pageTitle='Бизнес-процессы'>
             <Wrapper isFull>
                 <Title type='h1'
-                       onAdd={onAddHandler.bind(this)}
+                       onAdd={checkRules([Rules.ADD_BUSINESS_PROCESS]) ? onAddHandler.bind(this) : undefined}
                        className={classes.title}
                 >Бизнес-процессы</Title>
 

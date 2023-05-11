@@ -23,6 +23,8 @@ import Tabs from '../../ui/Tabs/Tabs'
 import UserList from './components/UserList/UserList'
 import RelationList from './components/RelationList/RelationList'
 import classes from './PopupBusinessProcessCreate.module.scss'
+import {IFeed} from "../../../@types/IFeed";
+import {IBuilding} from "../../../@types/IBuilding";
 
 interface Props extends PopupProps {
     businessProcess?: IBusinessProcess | null
@@ -44,10 +46,17 @@ const PopupBusinessProcessCreate: React.FC<Props> = (props) => {
         description: '',
         type: 'feed',
         step: 'default',
-        responsible: null
+        responsible: null,
+        is_active: 1
     })
 
     const [fetching, setFetching] = useState(false)
+
+    useEffect(() => {
+        return () => {
+            removePopup(props.blockId ? props.blockId : '')
+        }
+    }, [props.blockId])
 
     useEffect(() => {
         if (businessProcess && businessProcess.attendees) {
@@ -59,11 +68,29 @@ const PopupBusinessProcessCreate: React.FC<Props> = (props) => {
             })
             setBusinessProcess({...businessProcess, attendee_ids: attendee_ids})
         }
+    }, [businessProcess.attendees])
 
-        return () => {
-            removePopup(props.blockId ? props.blockId : '')
+    useEffect(() => {
+        const relations: IBusinessProcessRelation[] = []
+
+        if (businessProcess.feeds && businessProcess.feeds.length) {
+            businessProcess.feeds.forEach((feed: IFeed) => {
+                if (feed.id) {
+                    relations.push({'object_id': feed.id, 'object_type': 'feed'})
+                }
+            })
         }
-    }, [props.blockId])
+
+        if (businessProcess.buildings && businessProcess.buildings.length) {
+            businessProcess.buildings.forEach((building: IBuilding) => {
+                if (building.id) {
+                    relations.push({'object_id': building.id, 'object_type': 'building'})
+                }
+            })
+        }
+
+        setBusinessProcess({...businessProcess, relations: relations})
+    }, [businessProcess.feeds, businessProcess.buildings])
 
     const close = () => {
         removePopup(props.id || '')
