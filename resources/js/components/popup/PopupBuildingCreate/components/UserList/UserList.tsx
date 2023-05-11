@@ -157,7 +157,17 @@ const UserList: React.FC<Props> = (props) => {
                 <div className={classes.phone}>Телефон</div>
             </div>
 
-            <div className={classes.addUser} onClick={onContextMenuCreate.bind(this)}>
+            <div className={classes.addUser}
+                 onClick={() => {
+                     openPopupContactSelector(document.body, {
+                         includeAgents: props.selectedAgents,
+                         selected: props.selectedContacts,
+                         multi: true,
+                         onSelect: (value: number[]) => props.onSelectContacts(value),
+                         onAdd: () => onSave()
+                     })
+                 }}
+            >
                 <FontAwesomeIcon icon='plus'/> Добавить
             </div>
 

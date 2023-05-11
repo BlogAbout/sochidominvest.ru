@@ -69,6 +69,11 @@ class BuildingService
                 $buildingInfoData['advantages'] = isset($buildingInfoData['advantages']) ? implode(',', $buildingInfoData['advantages']) : '';
                 $buildingInfoData['payments'] = isset($buildingInfoData['payments']) ? implode(',', $buildingInfoData['payments']) : '';
                 $buildingInfoData['formalization'] = isset($buildingInfoData['formalization']) ? implode(',', $buildingInfoData['formalization']) : '';
+                $buildingInfoData['passed'] = isset($buildingInfoData['passed']) ? json_encode($buildingInfoData['passed']) : '';
+
+                if (isset($buildingInfoData['avatar'])) {
+                    unset($buildingInfoData['avatar']);
+                }
 
                 BuildingInfo::firstOrCreate($buildingInfoData);
             }
@@ -109,7 +114,7 @@ class BuildingService
 
             $building->refresh();
 
-            return (new BuildingResource($building))->response()->setStatusCode(201);
+            return (new BuildingResource(Building::find($building->id)))->response()->setStatusCode(201);
         } catch (Exception $e) {
             DB::rollBack();
 
@@ -123,7 +128,7 @@ class BuildingService
             DB::beginTransaction();
 
             if (isset($data['info'])) {
-                $buildingInfo = $data['info'];
+                $buildingInfoData = $data['info'];
                 unset($data['info']);
             }
 
@@ -173,6 +178,11 @@ class BuildingService
                 $buildingInfoData['advantages'] = isset($buildingInfoData['advantages']) ? implode(',', $buildingInfoData['advantages']) : '';
                 $buildingInfoData['payments'] = isset($buildingInfoData['payments']) ? implode(',', $buildingInfoData['payments']) : '';
                 $buildingInfoData['formalization'] = isset($buildingInfoData['formalization']) ? implode(',', $buildingInfoData['formalization']) : '';
+                $buildingInfoData['passed'] = isset($buildingInfoData['passed']) ? json_encode($buildingInfoData['passed']) : '';
+
+                if (isset($buildingInfoData['avatar'])) {
+                    unset($buildingInfoData['avatar']);
+                }
 
                 BuildingInfo::updateOrCreate(['id' => $building->id], $buildingInfoData);
             }

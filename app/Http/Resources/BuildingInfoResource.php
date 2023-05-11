@@ -39,7 +39,7 @@ class BuildingInfoResource extends JsonResource
             'surcharge_doc' => $this->surcharge_doc,
             'surcharge_gas' => $this->surcharge_gas,
             'is_sale_no_resident' => $this->is_sale_no_resident,
-            'passed' => $this->passed,
+            'passed' => $this->passed ? json_decode($this->passed) : null,
             'cadastral_number' => $this->cadastral_number,
             'cadastral_cost' => $this->cadastral_cost,
             'avatar_id' => $this->avatar_id,
