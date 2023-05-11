@@ -1,6 +1,6 @@
 import {ISelector} from '../@types/ISelector'
 import {IBuilding, IBuildingPassed} from '../@types/IBuilding'
-import {allowForRole} from './accessHelper'
+import {checkRules, Rules} from './accessHelper'
 
 /**
  * Список статусов объектов недвижимости
@@ -571,7 +571,7 @@ export const checkBuildingByDistrict = (building: IBuilding, filters: any) => {
 }
 
 export const checkVisibleBuildingByAuthor = (building: IBuilding, authorId: number | null): boolean => {
-    if (allowForRole(['director', 'administrator', 'manager'])) {
+    if (checkRules([Rules.IS_MANAGER])) {
         return true
     }
 
