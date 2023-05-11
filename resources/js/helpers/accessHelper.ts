@@ -104,6 +104,11 @@ export enum Rules {
     EDIT_BUSINESS_PROCESS,
     REMOVE_BUSINESS_PROCESS,
     RUN_BUSINESS_PROCESS,
+
+    SHOW_ATTACHMENTS,
+    ADD_ATTACHMENT,
+    EDIT_ATTACHMENT,
+    REMOVE_ATTACHMENT,
 }
 
 export const checkRules = (rules: Rules[] = [], id?: number | null) => {
@@ -258,6 +263,10 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
             case Rules.EDIT_BUSINESS_PROCESS:
             case Rules.REMOVE_BUSINESS_PROCESS:
             case Rules.RUN_BUSINESS_PROCESS:
+            case Rules.SHOW_ATTACHMENTS:
+            case Rules.ADD_ATTACHMENT:
+            case Rules.EDIT_ATTACHMENT:
+            case Rules.REMOVE_ATTACHMENT:
             default:
                 result = true
         }

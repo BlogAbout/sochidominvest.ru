@@ -12,6 +12,7 @@ import openPopupAlert from '../../popup/PopupAlert/PopupAlert'
 import Empty from '../Empty/Empty'
 import BlockingElement from '../BlockingElement/BlockingElement'
 import classes from './FileList.module.scss'
+import {checkRules, Rules} from "../../../helpers/accessHelper";
 
 interface Props {
     files: IAttachment[]
@@ -116,13 +117,13 @@ const FileList: React.FC<Props> = (props) => {
             }
         }]
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     menuItems.push({text: 'Редактировать', onClick: () => updateHandler(file)})
-        //
-        //     if (['director', 'administrator'].includes(role) && !props.onRemove) {
-        //         menuItems.push({text: 'Удалить', onClick: () => removeHandler(file)})
-        //     }
-        // }
+        if (checkRules([Rules.EDIT_ATTACHMENT], file.id)) {
+            menuItems.push({text: 'Редактировать', onClick: () => updateHandler(file)})
+        }
+
+        if (checkRules([Rules.REMOVE_ATTACHMENT], file.id)) {
+            menuItems.push({text: 'Удалить', onClick: () => removeHandler(file)})
+        }
 
         if (props.onRemove) {
             menuItems.push({text: 'Удалить из списка', onClick: () => removeHandler(file)})

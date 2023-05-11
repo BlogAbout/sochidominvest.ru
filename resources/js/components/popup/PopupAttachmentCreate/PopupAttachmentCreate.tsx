@@ -12,7 +12,6 @@ import BlockingElement from '../../ui/BlockingElement/BlockingElement'
 import TextBox from '../../form/TextBox/TextBox'
 import TextAreaBox from '../../form/TextAreaBox/TextAreaBox'
 import Button from '../../form/Button/Button'
-import CheckBox from '../../form/CheckBox/CheckBox'
 import Title from '../../ui/Title/Title'
 import Label from '../../form/Label/Label'
 import classes from './PopupAttachmentCreate.module.scss'
@@ -42,18 +41,15 @@ const PopupAttachmentCreate: React.FC<Props> = (props) => {
         }
     }, [props.blockId])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }
 
-    // Сохранение изменений
     const saveHandler = (isClose?: boolean) => {
         setFetching(true)
 
         AttachmentService.updateAttachment(attachment)
             .then((response: any) => {
-                setFetching(false)
                 setAttachment(response.data.data)
 
                 props.onSave(response.data.data)
@@ -67,9 +63,8 @@ const PopupAttachmentCreate: React.FC<Props> = (props) => {
                     title: 'Ошибка!',
                     text: error.data.message
                 })
-
-                setFetching(false)
             })
+            .finally(() => setFetching(false))
     }
 
     return (
@@ -125,18 +120,6 @@ const PopupAttachmentCreate: React.FC<Props> = (props) => {
                         </div>
                         : null
                     }
-
-                    <div className={classes.field}>
-                        <CheckBox label='Активен'
-                                  type='modern'
-                                  width={110}
-                                  checked={!!attachment.is_active}
-                                  onChange={(e: React.MouseEvent, value: boolean) => setAttachment({
-                                      ...attachment,
-                                      is_active: value ? 1 : 0
-                                  })}
-                        />
-                    </div>
                 </div>
             </BlockingElement>
 

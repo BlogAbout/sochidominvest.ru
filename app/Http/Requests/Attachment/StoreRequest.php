@@ -14,7 +14,8 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
+            'file' => 'required|file',
+            'name' => 'nullable|string',
             'description' => 'nullable|string',
             'content' => 'nullable|string',
             'type' => 'nullable|string',
@@ -27,7 +28,8 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Это поле обязательно для заполнения',
+            'file.required' => 'Это поле обязательно для заполнения',
+            'file.file' => 'Значение данного поля должно быть файлов',
             'name.string' => 'Значение данного поля должно быть строкой',
             'description.string' => 'Значение данного поля должно быть строкой',
             'content.string' => 'Значение данного поля должно быть строкой',

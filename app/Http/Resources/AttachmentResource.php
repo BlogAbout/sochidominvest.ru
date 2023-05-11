@@ -23,7 +23,6 @@ class AttachmentResource extends JsonResource
             'extension' => $this->extension,
             'author_id' => $this->author_id,
             'author' => new UserResource($this->whenLoaded('author')),
-            'is_active' => $this->is_active,
             'poster_id' => $this->poster_id,
             'poster' => new AttachmentResource($this->whenLoaded('poster')),
             'created_at' => $this->created_at,

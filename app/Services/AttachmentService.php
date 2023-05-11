@@ -6,6 +6,8 @@ use App\Http\Resources\AttachmentResource;
 use App\Models\Attachment;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class AttachmentService
 {
@@ -14,12 +16,56 @@ class AttachmentService
         try {
             DB::beginTransaction();
 
-            $data['author_id'] = auth()->user()->id;
+            $errorMimeType = false;
+            $file = $data['file'];
+            $type = $data['type'];
+            $mimeType = $file->getClientMimeType();
+            $extension = $file->extension();
 
-            // Todo: получить расширение файла $data['extension']
-            // Todo: получить ссылку на файл $data['content']
+            switch($type) {
+                case 'image': {
+                    if (!in_array($mimeType, ['image/jpeg', 'image/png'])) {
+                        $errorMimeType = true;
+                    }
+                    break;
+                }
+                case 'document': {
+                    if (!in_array($mimeType, [
+                        'image/jpeg', 'image/png', 'application/msword', 'application/pdf', 'application/vnd.ms-excel',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    ])) {
+                        $errorMimeType = true;
+                    }
+                    break;
+                }
+                case 'video': {
+                    if (!in_array($mimeType, ['video/mp4'])) {
+                        $errorMimeType = true;
+                    }
+                    break;
+                }
+            }
 
-            $attachment = Attachment::firstOrCreate($data);
+            if ($errorMimeType) {
+                return response(['message' => 'Загружаемый файл имеет неподдерживаемый формат. Попробуйте загрузить другой файл.'])->setStatusCode(500);
+            }
+
+            $fileUrl = Storage::disk('public')->put('/' . $type, $file);
+            $fileName = explode('/', $fileUrl)[1];
+
+            $this->resizeImage($fileName, 400, 400);
+            $this->resizeImage($fileName, 2000, 2000, true);
+
+            $attachmentData = [
+                'name' => '',
+                'content' => $fileName,
+                'author_id' => auth()->user()->id,
+                'type' => $type,
+                'extension' => $extension
+            ];
+
+            $attachment = Attachment::firstOrCreate($attachmentData);
 
             DB::commit();
 
@@ -36,9 +82,6 @@ class AttachmentService
         try {
             DB::beginTransaction();
 
-            // Todo: получить расширение файла $data['extension']
-            // Todo: получить ссылку на файл $data['content']
-
             $attachment->update($data);
 
             DB::commit();
@@ -49,5 +92,22 @@ class AttachmentService
 
             return response($e->getMessage())->setStatusCode(500);
         }
+    }
+
+    private function resizeImage(string $fileName, int $width, int $height, bool $isFull = false)
+    {
+        $catalog = 'thumb/';
+        if ($isFull) {
+            $catalog = 'full/';
+        }
+
+        $pathToFile = Storage::path('public/image/' . $fileName);
+
+        $resizeImageThumb = Image::make($pathToFile)->resize($width, $height, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+
+        $resizeImageThumb->save(storage_path() . '/app/public/image/' . $catalog . $fileName);
     }
 }
