@@ -168,12 +168,12 @@ class PopupMessenger extends React.Component<Props, State> {
         this.setState({
             currentMessengerInfo: {
                 id: null,
-                author: this.state.userId,
+                author_id: this.state.userId,
                 name: '',
                 type: 'message',
                 members: members,
                 messages: []
-            },
+            } as IMessenger,
             currentMessengerId: -2
         } as State)
     }
@@ -429,7 +429,7 @@ class PopupMessenger extends React.Component<Props, State> {
 
                 <div className={classes.field}>
                     <TextBox value={this.state.textMessage}
-                             onChange={(e: React.MouseEvent, value: string) => this.setState({textMessage: value} as State)}
+                             onChange={(value: string) => this.setState({textMessage: value} as State)}
                              placeHolder='Введите текст сообщения'
                     />
 
