@@ -2,6 +2,7 @@ import {getUserFromStorage} from './userHelper'
 
 export enum Rules {
     AUTH,
+    IS_ADMINISTRATOR,
     IS_MANAGER,
     MORE_TARIFF_FREE,
     MORE_TARIFF_BASE,
@@ -120,6 +121,7 @@ export const checkRules = (rules: Rules[] = [], id?: number | null) => {
                 // проверить, что авторизован
                 result = true
                 break
+            case Rules.IS_ADMINISTRATOR:
             case Rules.IS_MANAGER:
             case Rules.MORE_TARIFF_FREE:
                 result = true

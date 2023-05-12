@@ -1,5 +1,6 @@
 import {RouteNames} from './routerHelper'
 import {IMenuLink, ISubMenu} from '../@types/IMenu'
+import {checkRules, Rules} from "./accessHelper";
 
 export const menuMain: IMenuLink[] = [
     {
@@ -55,100 +56,89 @@ export const menuPanel: IMenuLink[] = [
     {
         route: RouteNames.P_DESKTOP,
         title: 'Рабочий стол',
-        icon: 'house',
-        hasRole: [],
-        unavailable: false
+        icon: 'house'
     },
     {
         route: RouteNames.SEPARATOR,
         title: '',
-        hasRole: [],
         isSeparator: true
     },
     {
         route: RouteNames.P_USER,
         title: 'Пользователи',
         icon: 'user',
-        hasRole: ['director', 'administrator']
+        unavailable: !checkRules([Rules.IS_ADMINISTRATOR])
     },
     {
         route: RouteNames.P_BUILDING,
         title: 'Недвижимость',
-        icon: 'building',
-        hasRole: []
+        icon: 'building'
     },
     {
         route: RouteNames.P_ARTICLE,
         title: 'Статьи',
-        icon: 'newspaper',
-        hasRole: []
+        icon: 'newspaper'
     },
     {
         route: RouteNames.P_STORE_PRODUCTS,
         title: 'Магазин',
-        icon: 'store',
-        hasRole: []
+        icon: 'store'
     },
     {
         route: RouteNames.SEPARATOR,
         title: '',
-        hasRole: [],
         isSeparator: true
     },
     {
         route: RouteNames.P_FILE_MANAGER,
         title: 'Файловый менеджер',
-        icon: 'photo-film',
-        hasRole: []
+        icon: 'photo-film'
     },
     {
         route: RouteNames.P_CATALOG,
         title: 'Каталоги',
         icon: 'folder-tree',
-        hasTariff: ['base', 'business', 'effectivePlus']
+        unavailable: !checkRules([Rules.MORE_TARIFF_FREE])
     },
     {
         route: RouteNames.P_CRM,
         title: 'CRM',
         icon: 'chart-pie',
-        hasTariff: ['base', 'business', 'effectivePlus']
+        unavailable: !checkRules([Rules.MORE_TARIFF_FREE])
     },
     {
         route: RouteNames.P_DOCUMENT,
         title: 'Документы',
         icon: 'book',
-        hasRole: [],
-        hasTariff: ['business', 'effectivePlus']
+        unavailable: !checkRules([Rules.MORE_TARIFF_BASE])
     },
     {
         route: RouteNames.P_REPORT,
         title: 'Отчеты',
         icon: 'file-excel',
-        hasRole: ['director', 'administrator', 'manager']
+        unavailable: !checkRules([Rules.IS_MANAGER])
     },
     {
         route: RouteNames.SEPARATOR,
         title: '',
-        hasRole: [],
         isSeparator: true
     },
     {
         route: RouteNames.P_TOOL,
         title: 'Инструменты',
         icon: 'screwdriver-wrench',
-        hasRole: ['director', 'administrator']
+        unavailable: !checkRules([Rules.IS_ADMINISTRATOR])
     },
     {
         route: RouteNames.P_ADMINISTRATION,
         title: 'Администрирование',
         icon: 'gear',
-        hasRole: ['director', 'administrator']
+        unavailable: !checkRules([Rules.IS_ADMINISTRATOR])
     },
     {
         route: RouteNames.P_SUPPORT,
         title: 'Поддержка',
-        icon: 'question',
-        hasRole: []
+        icon: 'question'
     },
 ]
 
@@ -160,7 +150,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'catalog',
         description: 'Предоставляет функционал управления застройщиками',
-        hasTariff: ['base', 'business', 'effectivePlus']
+        unavailable: !checkRules([Rules.MORE_TARIFF_FREE])
     },
     {
         href: RouteNames.P_AGENT,
@@ -169,7 +159,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'catalog',
         description: 'Предоставляет функционал управления агентствами',
-        hasTariff: ['base', 'business', 'effectivePlus']
+        unavailable: !checkRules([Rules.MORE_TARIFF_FREE])
     },
     {
         href: RouteNames.P_POST,
@@ -178,7 +168,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'catalog',
         description: 'Организация должностей для структуризации сотрудников',
-        hasRole: ['director', 'administrator']
+        unavailable: !checkRules([Rules.IS_ADMINISTRATOR])
     },
     {
         href: RouteNames.P_COMPILATION,
@@ -187,7 +177,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'catalog',
         description: 'Подборки объектов недвижимости, статей и других наборов для последующей рассылки',
-        hasRole: ['director', 'administrator', 'manager']
+        unavailable: !checkRules([Rules.IS_MANAGER])
     },
     {
         href: RouteNames.P_WIDGET,
@@ -196,7 +186,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'catalog',
         description: 'Создание дополнительных виджетов для главной страницы сайта',
-        hasRole: ['director', 'administrator', 'manager']
+        unavailable: !checkRules([Rules.IS_MANAGER])
     },
     {
         href: RouteNames.P_BANNER,
@@ -205,7 +195,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'catalog',
         description: 'Функционал управления и публикации собственных рекламных баннеров для привлечения клиентов и заработка',
-        hasTariff: ['effectivePlus']
+        unavailable: !checkRules([Rules.MORE_TARIFF_BUSINESS])
     },
     {
         href: RouteNames.P_QUESTION,
@@ -214,7 +204,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'catalog',
         description: 'Управление списками вопросов и ответов для помощи пользователям',
-        hasRole: ['director', 'administrator', 'manager']
+        unavailable: !checkRules([Rules.IS_MANAGER])
     },
     {
         href: RouteNames.P_STORE_CATEGORIES,
@@ -223,7 +213,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'catalog',
         description: 'Настройка категорий товаров для магазина с возможностью задания необходимых полей',
-        hasRole: ['director', 'administrator', 'manager']
+        unavailable: !checkRules([Rules.IS_MANAGER])
     },
     {
         href: RouteNames.P_BP,
@@ -232,7 +222,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'crm',
         description: 'Организация бизнес-процессов для поддержания деятельности компании и проведения сделок',
-        hasTariff: ['base', 'business', 'effectivePlus']
+        unavailable: !checkRules([Rules.MORE_TARIFF_FREE])
     },
     {
         href: RouteNames.P_BOOKING,
@@ -241,7 +231,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'crm',
         description: 'Функционал организации бронирования и аренды объектов недвижимости',
-        hasRole: ['director', 'administrator', 'manager']
+        unavailable: !checkRules([Rules.IS_MANAGER])
     },
     {
         href: RouteNames.P_PAYMENT,
@@ -250,7 +240,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'crm',
         description: 'Управление платежами и транзакциями, производимыми пользователями',
-        hasTariff: ['base', 'business', 'effectivePlus']
+        unavailable: !checkRules([Rules.MORE_TARIFF_FREE])
     },
     {
         href: RouteNames.P_USER_EXTERNAL,
@@ -259,7 +249,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'crm',
         description: 'Каталог управления внешними (не зарегистрированными) пользователями',
-        hasRole: ['director', 'administrator', 'manager']
+        unavailable: !checkRules([Rules.IS_MANAGER])
     },
     {
         href: RouteNames.P_MAILING,
@@ -268,7 +258,7 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'crm',
         description: 'Функционал управления рассылками почтовых и браузерных уведомлений для пользователей',
-        hasRole: ['director', 'administrator']
+        unavailable: !checkRules([Rules.IS_ADMINISTRATOR])
     },
     {
         href: RouteNames.P_PARTNER,
@@ -277,6 +267,6 @@ export const subMenuCatalog: ISubMenu[] = [
         icon: '',
         type: 'crm',
         description: 'Средства работы с партнерами и спонсорами, заработок на партнерстве',
-        hasTariff: ['effectivePlus']
+        unavailable: !checkRules([Rules.MORE_TARIFF_BUSINESS])
     }
 ]

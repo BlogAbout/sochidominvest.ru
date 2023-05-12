@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react'
+import UtilService from '../../../api/UtilService'
+import {checkRules, Rules} from '../../../helpers/accessHelper'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
-import openPopupAlert from '../PopupAlert/PopupAlert'
 import {Footer, Popup} from '../Popup/Popup'
 import BlockingElement from '../../ui/BlockingElement/BlockingElement'
 import Button from '../../form/Button/Button'
@@ -9,6 +10,7 @@ import Title from '../../ui/Title/Title'
 import SearchBox from '../../form/SearchBox/SearchBox'
 import SearchList from './components/SearchList/SearchList'
 import Tabs from '../../ui/Tabs/Tabs'
+import openPopupAlert from '../PopupAlert/PopupAlert'
 import {PopupDisplayOptions, PopupProps} from '../../../@types/IPopup'
 import {IUser} from '../../../@types/IUser'
 import {IBuilding} from '../../../@types/IBuilding'
@@ -18,7 +20,6 @@ import {IDeveloper} from '../../../@types/IDeveloper'
 import {IAttachment} from '../../../@types/IAttachment'
 import {IPartner} from '../../../@types/IPartner'
 import {ITab} from '../../../@types/ITab'
-import UtilService from '../../../api/UtilService'
 import classes from './PopupSearchPanel.module.scss'
 
 interface Props extends PopupProps {
@@ -47,7 +48,6 @@ const PopupSearchPanel: React.FC<Props> = (props) => {
         }
     }, [props.blockId])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id || '')
     }
@@ -59,29 +59,27 @@ const PopupSearchPanel: React.FC<Props> = (props) => {
 
         setFetching(true)
 
-        // UtilService.fetchSearchGlobal({active: [0, 1], text: searchText})
-        //     .then((result: any) => {
-        //         setUsers(result.data.data.users)
-        //         setBuildings(result.data.data.buildings)
-        //         setArticles(result.data.data.articles)
-        //         setDocuments(result.data.data.documents)
-        //         setDevelopers(result.data.data.developers)
-        //         setAttachments(result.data.data.attachments)
-        //         setPartners(result.data.data.partners)
-        //
-        //         updateCountResults()
-        //     })
-        //     .catch((error: any) => {
-        //         console.error('Ошибка загрузки данных!', error)
-        //
-        //         openPopupAlert(document.body, {
-        //             title: 'Ошибка!',
-        //             text: error.data.message,
-        //         })
-        //     })
-        //     .finally(() => {
-        //         setFetching(false)
-        //     })
+        UtilService.fetchSearchGlobal({active: [0, 1], text: searchText})
+            .then((result: any) => {
+                setUsers(result.data.data.users)
+                setBuildings(result.data.data.buildings)
+                setArticles(result.data.data.articles)
+                setDocuments(result.data.data.documents)
+                setDevelopers(result.data.data.developers)
+                setAttachments(result.data.data.attachments)
+                setPartners(result.data.data.partners)
+
+                updateCountResults()
+            })
+            .catch((error: any) => {
+                console.error('Ошибка загрузки данных!', error)
+
+                openPopupAlert(document.body, {
+                    title: 'Ошибка!',
+                    text: error.data.message,
+                })
+            })
+            .finally(() => setFetching(false))
     }
 
     const updateCountResults = () => {
@@ -196,33 +194,33 @@ const PopupSearchPanel: React.FC<Props> = (props) => {
 
     const tabs: ITab = {} as ITab
 
-    // if (['director', 'administrator', 'manager'].includes(props.role) && users.length) {
-    //     tabs['users'] = {title: 'Пользователи', render: renderUsersTab()}
-    // }
-    //
-    // if (buildings.length) {
-    //     tabs['buildings'] = {title: 'Объекты недвижимости', render: renderBuildingsTab()}
-    // }
-    //
-    // if (articles.length) {
-    //     tabs['articles'] = {title: 'Статьи', render: renderArticlesTab()}
-    // }
-    //
-    // if (documents.length) {
-    //     tabs['documents'] = {title: 'Документы', render: renderDocumentsTab()}
-    // }
-    //
-    // if (developers.length) {
-    //     tabs['developers'] = {title: 'Застройщики', render: renderDevelopersTab()}
-    // }
-    //
-    // if (attachments.length) {
-    //     tabs['attachments'] = {title: 'Вложения', render: renderAttachmentsTab()}
-    // }
-    //
-    // if (partners.length) {
-    //     tabs['partners'] = {title: 'Партнеры', render: renderPartnersTab()}
-    // }
+    if (checkRules([Rules.IS_ADMINISTRATOR])) {
+        tabs['users'] = {title: 'Пользователи', render: renderUsersTab()}
+    }
+
+    if (buildings.length) {
+        tabs['buildings'] = {title: 'Объекты недвижимости', render: renderBuildingsTab()}
+    }
+
+    if (articles.length) {
+        tabs['articles'] = {title: 'Статьи', render: renderArticlesTab()}
+    }
+
+    if (checkRules([Rules.SHOW_DOCUMENTS]) && documents.length) {
+        tabs['documents'] = {title: 'Документы', render: renderDocumentsTab()}
+    }
+
+    if (checkRules([Rules.SHOW_DEVELOPERS]) && developers.length) {
+        tabs['developers'] = {title: 'Застройщики', render: renderDevelopersTab()}
+    }
+
+    if (attachments.length) {
+        tabs['attachments'] = {title: 'Вложения', render: renderAttachmentsTab()}
+    }
+
+    if (checkRules([Rules.SHOW_PARTNERS]) && partners.length) {
+        tabs['partners'] = {title: 'Партнеры', render: renderPartnersTab()}
+    }
 
     return (
         <Popup className={classes.PopupSearchPanel}>

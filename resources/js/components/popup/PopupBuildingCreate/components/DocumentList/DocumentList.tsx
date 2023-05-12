@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
+import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import {IDocument} from '../../../../../@types/IDocument'
 import DocumentService from '../../../../../api/DocumentService'
 import BlockingElement from '../../../../ui/BlockingElement/BlockingElement'
@@ -24,8 +24,6 @@ const DocumentList: React.FC<Props> = (props) => {
     const [fetching, setFetching] = useState(false)
     const [documents, setDocuments] = useState<IDocument[]>([])
 
-    const {user} = useTypedSelector(state => state.userReducer)
-
     useEffect(() => {
         if (isUpdate && props.buildingId) {
             DocumentService.fetchDocuments({active: [0, 1], objectId: [props.buildingId], objectType: 'building'})
@@ -46,12 +44,10 @@ const DocumentList: React.FC<Props> = (props) => {
         }
     }, [isUpdate])
 
-    // Обработчик изменений
     const onSave = () => {
         setIsUpdate(true)
     }
 
-    // Обновление элемента
     const updateHandler = (documentInfo: IDocument) => {
         openPopupDocumentCreate(document.body, {
             document: documentInfo,
@@ -61,7 +57,6 @@ const DocumentList: React.FC<Props> = (props) => {
         })
     }
 
-    // Удаление элемента из списка
     const removeHandler = (documentInfo: IDocument) => {
         openPopupAlert(document.body, {
             text: `Вы действительно хотите удалить ${documentInfo.name}?`,
@@ -93,19 +88,20 @@ const DocumentList: React.FC<Props> = (props) => {
         })
     }
 
-    // Открытие контекстного меню на элементе
     const onContextMenu = (e: React.MouseEvent, document: IDocument) => {
         e.preventDefault()
 
-        // if (['director', 'administrator', 'manager'].includes(role)) {
-        //     const menuItems = [{text: 'Редактировать', onClick: () => updateHandler(document)}]
-        //
-        //     if (['director', 'administrator'].includes(role)) {
-        //         menuItems.push({text: 'Удалить', onClick: () => removeHandler(document)})
-        //     }
-        //
-        //     openContextMenu(e, menuItems)
-        // }
+        const menuItems: any = []
+
+        if (checkRules([Rules.EDIT_DOCUMENT], document.id)) {
+            menuItems.push({text: 'Редактировать', onClick: () => updateHandler(document)})
+        }
+
+        if (checkRules([Rules.REMOVE_DOCUMENT], document.id)) {
+            menuItems.push({text: 'Удалить', onClick: () => removeHandler(document)})
+        }
+
+        openContextMenu(e, menuItems)
     }
 
     const onContextMenuCreate = (e: React.MouseEvent) => {
@@ -154,9 +150,10 @@ const DocumentList: React.FC<Props> = (props) => {
                 <div className={classes.type}>Тип</div>
             </div>
 
+            {checkRules([Rules.ADD_DOCUMENT]) &&
             <div className={classes.addDocument} onClick={onContextMenuCreate.bind(this)}>
                 <FontAwesomeIcon icon='plus'/> Добавить
-            </div>
+            </div>}
 
             <BlockingElement fetching={fetching} className={classes.list}>
                 {documents && documents.length ?

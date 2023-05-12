@@ -6,9 +6,7 @@ export interface IMenuLink {
     title: string
     text?: string
     icon?: IconProp
-    hasRole?: ('director' | 'administrator' | 'manager' | 'subscriber')[]
     isSeparator?: boolean
-    hasTariff?: ('free' | 'base' | 'business' | 'effectivePlus')[]
     unavailable?: boolean
 }
 
@@ -19,7 +17,5 @@ export interface ISubMenu {
     icon: string
     description: string
     type: 'crm' | 'catalog'
-    hasRole?: ('director' | 'administrator' | 'manager' | 'subscriber')[]
-    hasTariff?: ('free' | 'base' | 'business' | 'effectivePlus')[]
     unavailable?: boolean
 }
