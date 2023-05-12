@@ -32,7 +32,7 @@ class ProductResource extends JsonResource
             'fields' => $this->fields ? json_decode($this->fields) : [],
             'meta_title' => html_entity_decode($this->meta_title),
             'meta_description' => html_entity_decode($this->meta_description),
-            'views' => 0,
+            'views' => $this->views,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'date_created' => $this->dateCreatedFormat,

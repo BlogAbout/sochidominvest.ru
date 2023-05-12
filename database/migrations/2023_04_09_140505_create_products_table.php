@@ -27,6 +27,7 @@ class CreateProductsTable extends Migration
             $table->text('fields')->nullable();
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
+            $table->unsignedInteger('views')->default(0);
 
             $table->timestamps();
 

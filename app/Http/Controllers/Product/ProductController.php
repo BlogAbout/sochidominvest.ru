@@ -41,6 +41,8 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        $product->increment('views');
+
         return (new ProductResource($product))->response()->setStatusCode(200);
     }
 

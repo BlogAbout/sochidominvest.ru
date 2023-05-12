@@ -46,6 +46,7 @@ class BuildingResource extends JsonResource
             'articles' => ArticleResource::collection($this->whenLoaded('relationArticles')),
             'tags' => TagResource::collection($this->whenLoaded('relationTags')),
             'checkers' => CheckerResource::collection($this->whenLoaded('checkers')),
+            'views' => $this->views,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'date_created' => $this->dateCreatedFormat,

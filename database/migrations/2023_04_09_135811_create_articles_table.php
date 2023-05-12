@@ -25,6 +25,7 @@ class CreateArticlesTable extends Migration
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
             $table->unsignedBigInteger('avatar_id')->nullable();
+            $table->unsignedInteger('views')->default(0);
 
             $table->timestamps();
 

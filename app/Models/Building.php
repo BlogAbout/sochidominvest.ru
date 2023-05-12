@@ -82,7 +82,7 @@ class Building extends Model
 
     public function relationArticles()
     {
-        return $this->morphedByMany(Article::class, 'object', 'sdi_building_relations')->without(['author', 'images', 'videos', 'relationBuildings']);
+        return $this->morphedByMany(Article::class, 'object', 'sdi_building_relations')->without(['author', 'images', 'videos', 'buildings']);
     }
 
     public function relationTags()

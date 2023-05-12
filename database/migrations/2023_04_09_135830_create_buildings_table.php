@@ -35,6 +35,7 @@ class CreateBuildingsTable extends Migration
             $table->float('cost_min_unit', 11)->nullable();
             $table->string('meta_title')->nullable();;
             $table->text('meta_description')->nullable();
+            $table->unsignedInteger('views')->default(0);
 
             $table->timestamps();
 

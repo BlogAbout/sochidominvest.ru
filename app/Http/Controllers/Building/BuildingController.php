@@ -50,6 +50,8 @@ class BuildingController extends Controller
 
     public function show(Building $building)
     {
+        $building->increment('views');
+
         return (new BuildingResource($building))->response()->setStatusCode(200);
     }
 

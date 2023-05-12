@@ -2,100 +2,111 @@
 
 namespace App\Services;
 
+use App\Http\Requests\Article\StoreRequest;
+use App\Http\Requests\Article\UpdateRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ArticleService
 {
-    public function store(array $data)
+    public function index(Request $request)
+    {
+        $filter = $request->all();
+
+        $articles = Article::query()
+            ->when(isset($filter['id']), function ($query) use ($filter) {
+                $query->whereIn('id', $filter['id']);
+            })
+            ->when(isset($filter['active']), function ($query) use ($filter) {
+                $query->whereIn('is_active', $filter['active']);
+            })
+            ->when(isset($filter['publish']), function ($query) use ($filter) {
+                $query->where('is_publish', '=', $filter['publish']);
+            })
+            ->when(isset($filter['author']), function ($query) use ($filter) {
+                $query->whereIn('author_id', $filter['author']);
+            })
+            ->when(isset($filter['type']), function ($query) use ($filter) {
+                $query->where('type', '=', $filter['type']);
+            })
+            ->limit($filter['limit'] ?? -1)
+            ->get();
+
+        return ArticleResource::collection($articles)->response()->setStatusCode(200);
+    }
+
+    public function show(Article $article)
+    {
+        $article->increment('views');
+
+        return (new ArticleResource($article))->response()->setStatusCode(200);
+    }
+
+    public function store(StoreRequest $request)
     {
         try {
+            $data = $request->validated();
+
             DB::beginTransaction();
 
-            $data['author_id'] = auth()->user()->id;
+            $article = new Article(
+                array_merge($data, [
+                    'author_id' => Auth::user()->id
+                ])
+            );
 
-            if (isset($data['building_ids'])) {
-                $buildingIds = $data['building_ids'];
-                unset($data['building_ids']);
-            }
+            $article->save();
 
-            if (isset($data['image_ids'])) {
-                $imageIds = $data['image_ids'];
-                unset($data['image_ids']);
-            }
-
-            if (isset($data['video_ids'])) {
-                $videoIds = $data['video_ids'];
-                unset($data['video_ids']);
-            }
-
-            $article = Article::firstOrCreate($data);
-
-            if (isset($buildingIds)) {
-                $article->relationBuildings()->attach($buildingIds);
-            }
-
-            if (isset($imageIds)) {
-                $article->images()->attach($imageIds);
-            }
-
-            if (isset($videoIds)) {
-                $article->videos()->attach($videoIds);
-            }
+            isset($data['building_ids']) && $article->buildings()->attach($data['building_ids']);
+            isset($data['image_ids']) && $article->images()->attach($data['image_ids']);
+            isset($data['video_ids']) && $article->videos()->attach($data['video_ids']);
 
             DB::commit();
+
+            $article->refresh();
 
             return (new ArticleResource($article))->response()->setStatusCode(201);
         } catch (Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 
-    public function update(array $data, Article $article)
+    public function update(UpdateRequest $request, Article $article)
     {
         try {
+            $data = $request->validated();
+
             DB::beginTransaction();
 
-            if (isset($data['building_ids'])) {
-                $buildingIds = $data['building_ids'];
-                unset($data['building_ids']);
-            }
-
-            if (isset($data['image_ids'])) {
-                $imageIds = $data['image_ids'];
-                unset($data['image_ids']);
-            }
-
-            if (isset($data['video_ids'])) {
-                $videoIds = $data['video_ids'];
-                unset($data['video_ids']);
-            }
-
+            $article->fill($data);
             $article->update($data);
 
-            if (isset($buildingIds)) {
-                $article->buildings()->sync($buildingIds);
-            }
-
-            if (isset($imageIds)) {
-                $article->images()->sync($imageIds);
-            }
-
-            if (isset($videoIds)) {
-                $article->videos()->attach($videoIds);
-            }
+            isset($data['building_ids']) && $article->buildings()->sync($data['building_ids']);
+            isset($data['image_ids']) && $article->images()->sync($data['image_ids']);
+            isset($data['video_ids']) && $article->videos()->sync($data['video_ids']);
 
             DB::commit();
+
+            $article->refresh();
 
             return (new ArticleResource($article))->response()->setStatusCode(200);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
+    }
+
+    public function destroy(Article $article)
+    {
+        $article->delete();
+
+        return response([])->setStatusCode(200);
     }
 }

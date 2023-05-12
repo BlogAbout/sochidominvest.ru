@@ -14,9 +14,30 @@ class Article extends Model
     use HasFactory, SoftDeletes, HasAvatarAttribute, HasAuthorAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_articles';
-    protected $guarded = false;
 
-    protected $with = ['avatar', 'author', 'images', 'videos', 'relationBuildings'];
+    protected $fillable = [
+        'name',
+        'description',
+        'type',
+        'is_active',
+        'is_publish',
+        'avatar_id',
+        'meta_title',
+        'meta_description'
+    ];
+
+    protected $attributes = [
+        'name' => '',
+        'description' => '',
+        'type' => 'article',
+        'is_active' => 1,
+        'is_publish' => 0,
+        'meta_title' => '',
+        'meta_description' => '',
+        'views' => 0
+    ];
+
+    protected $with = ['avatar', 'author', 'images', 'videos', 'buildings'];
 
     public function images()
     {
@@ -30,7 +51,7 @@ class Article extends Model
             ->without(['author']);
     }
 
-    public function relationBuildings()
+    public function buildings()
     {
         return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')
             ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers',

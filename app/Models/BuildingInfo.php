@@ -14,5 +14,9 @@ class BuildingInfo extends Model
     protected $guarded = false;
     public $timestamps = false;
 
+    protected $casts = [
+        'passed' => 'array'
+    ];
+
     protected $with = ['avatar'];
 }
