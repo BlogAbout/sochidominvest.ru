@@ -14,5 +14,19 @@ class Partner extends Model
     use HasFactory, SoftDeletes, HasAvatarAttribute, HasAuthorAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_partners';
-    protected $guarded = false;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'info',
+        'subtitle',
+        'type',
+        'author_id',
+        'is_active',
+        'avatar_id',
+        'meta_title',
+        'meta_description'
+    ];
+
+    protected $with = ['author', 'avatar'];
 }

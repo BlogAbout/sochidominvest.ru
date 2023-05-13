@@ -50,7 +50,7 @@ class WidgetService
         } catch (Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 
@@ -75,7 +75,7 @@ class WidgetService
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 

@@ -13,7 +13,10 @@ class Post extends Model
     use HasFactory, SoftDeletes, HasAuthorAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_posts';
-    protected $guarded = false;
+
+    protected $fillable = ['post_id', 'name', 'description', 'type', 'author_id', 'is_active'];
+
+    protected $with = ['postParent'];
 
     public function postParent()
     {

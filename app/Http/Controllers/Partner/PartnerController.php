@@ -5,55 +5,40 @@ namespace App\Http\Controllers\Partner;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Partner\StoreRequest;
 use App\Http\Requests\Partner\UpdateRequest;
-use App\Http\Resources\PartnerResource;
 use App\Models\Partner;
-use Exception;
+use App\Services\PartnerService;
 
 class PartnerController extends Controller
 {
+    public $service;
+
+    public function __construct(PartnerService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index()
     {
-        $partners = Partner::all();
-
-        return PartnerResource::collection($partners)->response()->setStatusCode(200);
+        return $this->service->index();
     }
 
     public function show(Partner $partner)
     {
-        return (new PartnerResource($partner))->response()->setStatusCode(200);
+        return $this->service->show($partner);
     }
 
     public function store(StoreRequest $request)
     {
-        try {
-            $data = $request->validated();
-            $data['author_id'] = auth()->user()->id;
-
-            $partner = Partner::create($data);
-
-            return (new PartnerResource($partner))->response()->setStatusCode(201);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->store($request);
     }
 
     public function update(UpdateRequest $request, Partner $partner)
     {
-        try {
-            $data = $request->validated();
-
-            $partner->update($data);
-
-            return (new PartnerResource($partner))->response()->setStatusCode(200);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->update($request, $partner);
     }
 
     public function destroy(Partner $partner)
     {
-        $partner->delete();
-
-        return response([])->setStatusCode(200);
+        return $this->service->destroy($partner);
     }
 }
