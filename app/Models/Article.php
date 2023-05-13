@@ -18,6 +18,7 @@ class Article extends Model
     protected $fillable = [
         'name',
         'description',
+        'author_id',
         'type',
         'is_active',
         'is_publish',

@@ -11,5 +11,6 @@ class Tariff extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'sdi_tariffs';
-    protected $guarded = false;
+
+    protected $fillable = ['name', 'cost', 'privileges'];
 }

@@ -36,7 +36,7 @@ class SettingController extends Controller
 
             return SettingResource::collection($settings)->response()->setStatusCode(200);
         } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
+            return response(['message' => $e->getMessage()])->setStatusCode(400);
         }
     }
 }

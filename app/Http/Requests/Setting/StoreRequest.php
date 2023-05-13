@@ -21,8 +21,8 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Это поле обязательно для заполнения',
-            'name.array' => 'Значение данного поля должно быть массивом'
+            'settings.required' => 'Это поле обязательно для заполнения',
+            'settings.array' => 'Значение данного поля должно быть массивом'
         ];
     }
 }

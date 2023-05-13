@@ -13,7 +13,8 @@ class Tag extends Model
     use HasFactory, SoftDeletes, HasAuthorAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_tags';
-    protected $guarded = false;
+
+    protected $fillable = ['name', 'author_id', 'is_active'];
 
     protected $with = ['author'];
 }

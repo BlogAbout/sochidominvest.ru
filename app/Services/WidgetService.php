@@ -2,32 +2,49 @@
 
 namespace App\Services;
 
+use App\Http\Requests\Widget\StoreRequest;
+use App\Http\Requests\Widget\UpdateRequest;
 use App\Http\Resources\WidgetResource;
 use App\Models\Widget;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class WidgetService
 {
-    public function store(array $data)
+    public function index()
+    {
+        $widgets = Widget::all();
+
+        return WidgetResource::collection($widgets)->response()->setStatusCode(200);
+    }
+
+    public function show(Widget $widget)
+    {
+        return (new WidgetResource($widget))->response()->setStatusCode(200);
+    }
+
+    public function store(StoreRequest $request)
     {
         try {
+            $data = $request->validated();
+
             DB::beginTransaction();
 
-            $data['author_id'] = auth()->user()->id;
+            $widget = new Widget;
+            $widget->fill(
+                array_merge($data, [
+                    'author_id' => Auth::user()->id
+                ])
+            )->save();
 
             if (isset($data['items'])) {
-                $items = $data['items'];
-                unset($data['items']);
-            }
-
-            $widget = Widget::firstOrCreate($data);
-
-            if (isset($items)) {
                 // Todo: Обработать сохранение элементов
             }
 
             DB::commit();
+
+            $widget->refresh();
 
             return (new WidgetResource($widget))->response()->setStatusCode(201);
         } catch (Exception $e) {
@@ -37,23 +54,22 @@ class WidgetService
         }
     }
 
-    public function update(array $data, Widget $widget)
+    public function update(UpdateRequest $request, Widget $widget)
     {
         try {
-            DB::beginTransaction();
+            $data = $request->validated();
 
-            if (isset($data['items'])) {
-                $items = $data['items'];
-                unset($data['items']);
-            }
+            DB::beginTransaction();
 
             $widget->update($data);
 
-            if (isset($items)) {
+            if (isset($data['items'])) {
                 // Todo: Обработать сохранение элементов
             }
 
             DB::commit();
+
+            $widget->refresh();
 
             return (new WidgetResource($widget))->response()->setStatusCode(200);
         } catch (\Exception $e) {
@@ -61,5 +77,12 @@ class WidgetService
 
             return response($e->getMessage())->setStatusCode(500);
         }
+    }
+
+    public function destroy(Widget $widget)
+    {
+        $widget->delete();
+
+        return response([])->setStatusCode(200);
     }
 }

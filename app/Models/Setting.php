@@ -10,6 +10,8 @@ class Setting extends Model
     use HasFactory;
 
     protected $table = 'sdi_settings';
-    protected $guarded = false;
+
+    protected $fillable = ['name', 'value'];
+
     public $timestamps = false;
 }

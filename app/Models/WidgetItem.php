@@ -10,6 +10,8 @@ class WidgetItem extends Model
     use HasFactory;
 
     protected $table = 'sdi_widget_items';
-    protected $guarded = false;
+
+    protected $fillable = ['widget_id', 'object_id', 'object_type', 'ordering'];
+
     public $timestamps = false;
 }

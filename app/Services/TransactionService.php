@@ -2,67 +2,81 @@
 
 namespace App\Services;
 
+use App\Http\Requests\Transaction\StoreRequest;
+use App\Http\Requests\Transaction\UpdateRequest;
 use App\Http\Resources\TransactionResource;
 use App\Models\Transaction;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class TransactionService
 {
-    public function store(array $data)
+    public function index()
+    {
+        $transactions = Transaction::all();
+
+        return TransactionResource::collection($transactions)->response()->setStatusCode(200);
+    }
+
+    public function show(Transaction $transaction)
+    {
+        return (new TransactionResource($transaction))->response()->setStatusCode(200);
+    }
+
+    public function store(StoreRequest $request)
     {
         try {
-            DB::beginTransaction();
-
-            $payment = $data['payment'];
+            $data = $request->validated();
             $sendLink = $data['sendLink'] ?? false;
 
-            $payment['user_id'] = $payment['user_id'] ?? auth()->user()->id;
+            DB::beginTransaction();
 
-            $transaction = Transaction::firstOrCreate($payment);
+            $transaction = new Transaction;
+            $transaction->fill(
+                array_merge($data['payment'], [
+                    'user_id' => $data['payment']['user_id'] ?? Auth::user()->id
+                ])
+            )->save();
 
             DB::commit();
+
+            $transaction->refresh();
 
             return (new TransactionResource($transaction))->response()->setStatusCode(201);
         } catch (Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 
-    public function update(array $data, Transaction $transaction)
+    public function update(UpdateRequest $request, Transaction $transaction)
     {
         try {
-            DB::beginTransaction();
-
-            $payment = [
-                'name' => $data['payment']['name'],
-                'status' => $data['payment']['status'],
-                'email' => $data['payment']['email'],
-                'cost' => $data['payment']['cost'],
-                'object_id' => $data['payment']['object_id'],
-                'object_type' => $data['payment']['object_type'],
-                'duration' => $data['payment']['duration']
-            ];
-
+            $data = $request->validated();
             $sendLink = $data['sendLink'] ?? false;
 
-            if (isset($payment['user'])) {
-                unset($payment['user']);
-            }
+            DB::beginTransaction();
 
-            $transaction->update($payment);
-
-            $transaction->refresh();
+            $transaction->update($data['payment']);
 
             DB::commit();
+
+            $transaction->refresh();
 
             return (new TransactionResource($transaction))->response()->setStatusCode(200);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
+    }
+
+    public function destroy(Transaction $transaction)
+    {
+        $transaction->delete();
+
+        return response([])->setStatusCode(200);
     }
 }

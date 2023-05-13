@@ -53,13 +53,12 @@ class ArticleService
 
             DB::beginTransaction();
 
-            $article = new Article(
+            $article = new Article;
+            $article->fill(
                 array_merge($data, [
                     'author_id' => Auth::user()->id
                 ])
-            );
-
-            $article->save();
+            )->save();
 
             isset($data['building_ids']) && $article->buildings()->attach($data['building_ids']);
             isset($data['image_ids']) && $article->images()->attach($data['image_ids']);
@@ -84,7 +83,6 @@ class ArticleService
 
             DB::beginTransaction();
 
-            $article->fill($data);
             $article->update($data);
 
             isset($data['building_ids']) && $article->buildings()->sync($data['building_ids']);

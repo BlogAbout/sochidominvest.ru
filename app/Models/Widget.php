@@ -13,9 +13,12 @@ class Widget extends Model
     use HasFactory, SoftDeletes, HasAuthorAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_widgets';
-    protected $guarded = false;
 
-    public function widgetItems()
+    protected $fillable = ['name', 'type', 'style', 'page', 'author_id', 'is_active', 'ordering'];
+
+    protected $with = ['items'];
+
+    public function items()
     {
         return $this->hasMany(WidgetItem::class, 'widget_id', 'id');
     }

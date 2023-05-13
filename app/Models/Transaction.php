@@ -13,7 +13,28 @@ class Transaction extends Model
     use HasFactory, SoftDeletes, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_transactions';
-    protected $guarded = false;
+
+    protected $dates = ['paid_at'];
+
+    protected $fillable = [
+        'name',
+        'status',
+        'user_id',
+        'email',
+        'cost',
+        'object_id',
+        'object_type',
+        'duration',
+        'paid_at'
+    ];
+
+    protected $attributes = [
+        'name' => '',
+        'status' => 'new',
+        'email' => '',
+        'cost' => 0,
+        'duration' => 0
+    ];
 
     protected $with = ['user'];
 

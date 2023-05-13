@@ -11,5 +11,10 @@ class Role extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'sdi_roles';
-    protected $guarded = false;
+
+    protected $fillable = ['name', 'commands'];
+
+    protected $attributes = [
+        'name' => 'Подписчик'
+    ];
 }

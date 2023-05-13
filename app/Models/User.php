@@ -17,22 +17,48 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasAvatarAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_users';
-    protected $guarded = false;
 
-    protected $with = ['avatar', 'post', 'role', 'tariff', 'favorites'];
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'phone',
+        'last_active',
+        'is_active',
+        'is_block',
+        'settings',
+        'avatar_id',
+        'role_id',
+        'post_id',
+        'tariff_id',
+        'tariff_expired'
+    ];
+
+    protected $attributes = [
+        'name' => '',
+        'email' => '',
+        'password' => '',
+        'phone' => '',
+        'is_active' => 1,
+        'is_block' => 0,
+        'role_id' => 1
+    ];
+
+    protected $with = ['avatar', 'post', 'role', 'tariff', 'favorites'];
+
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'settings' => 'array'
     ];
+
+    protected $dates = ['last_active'];
+
+    protected $appends = ['bp_sorting'];
 
     public function post()
     {
@@ -54,7 +80,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Building::class, 'sdi_favorites', 'user_id', 'building_id');
     }
 
-    public function bpSorting()
+    public function getBpSortingAttribute()
     {
         $sorting = DB::table('sdi_business_process_sorting')->where('user_id', '=', $this->id)->limit(1)->value('sorting');
 

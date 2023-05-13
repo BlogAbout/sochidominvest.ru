@@ -5,55 +5,40 @@ namespace App\Http\Controllers\Tag;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tag\StoreRequest;
 use App\Http\Requests\Tag\UpdateRequest;
-use App\Http\Resources\TagResource;
 use App\Models\Tag;
-use Exception;
+use App\Services\TagService;
 
 class TagController extends Controller
 {
+    public $service;
+
+    public function __construct(TagService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index()
     {
-        $tags = Tag::all();
-
-        return TagResource::collection($tags)->response()->setStatusCode(200);
+        return $this->service->index();
     }
 
     public function show(Tag $tag)
     {
-        return (new TagResource($tag))->response()->setStatusCode(200);
+        return $this->service->show($tag);
     }
 
     public function store(StoreRequest $request)
     {
-        try {
-            $data = $request->validated();
-            $data['author_id'] = auth()->user()->id;
-
-            $tag = Tag::create($data);
-
-            return (new TagResource($tag))->response()->setStatusCode(201);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->store($request);
     }
 
     public function update(UpdateRequest $request, Tag $tag)
     {
-        try {
-            $data = $request->validated();
-
-            $tag->update($data);
-
-            return (new TagResource($tag))->response()->setStatusCode(200);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->update($request, $tag);
     }
 
     public function destroy(Tag $tag)
     {
-        $tag->delete();
-
-        return response([])->setStatusCode(200);
+        return $this->service->destroy($tag);
     }
 }

@@ -30,7 +30,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/user', 'User\UserController');
     Route::apiResource('/widget', 'Widget\WidgetController');
 
-    Route::post('/logout', [UserController::class, 'logout']);
+    Route::get('/logout', [UserController::class, 'logout']);
     Route::group(['namespace' => 'Notification'], function () {
         Route::get('/notification', [NotificationController::class, 'index']);
         Route::post('/notification', [NotificationController::class, 'store']);
