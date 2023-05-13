@@ -13,5 +13,12 @@ class Question extends Model
     use HasFactory, SoftDeletes, HasAuthorAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_questions';
-    protected $guarded = false;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'type',
+        'author_id',
+        'is_active'
+    ];
 }

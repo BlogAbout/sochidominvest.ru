@@ -14,7 +14,34 @@ class Product extends Model
     use HasFactory, SoftDeletes, HasAvatarAttribute, HasAuthorAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_products';
-    protected $guarded = false;
+
+    protected $fillable = [
+        'category_id',
+        'name',
+        'description',
+        'cost',
+        'cost_old',
+        'author_id',
+        'is_active',
+        'avatar_id',
+        'fields',
+        'meta_title',
+        'meta_description'
+    ];
+
+    protected $attributes = [
+        'name' => '',
+        'description' => '',
+        'cost' => 0,
+        'is_active' => 1,
+        'meta_title' => '',
+        'meta_description' => '',
+        'views' => 0
+    ];
+
+    protected $casts = [
+        'fields' => 'array'
+    ];
 
     protected $with = ['category', 'avatar', 'author', 'images', 'videos'];
 

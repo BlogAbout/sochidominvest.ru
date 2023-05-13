@@ -29,7 +29,7 @@ class ProductResource extends JsonResource
             'avatar' => new AttachmentResource($this->whenLoaded('avatar')),
             'images' => AttachmentResource::collection($this->whenLoaded('images')),
             'videos' => AttachmentResource::collection($this->whenLoaded('videos')),
-            'fields' => $this->fields ? json_decode($this->fields) : [],
+            'fields' => $this->fields,
             'meta_title' => html_entity_decode($this->meta_title),
             'meta_description' => html_entity_decode($this->meta_description),
             'views' => $this->views,

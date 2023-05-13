@@ -2,43 +2,64 @@
 
 namespace App\Services;
 
+use App\Http\Requests\Product\StoreRequest;
+use App\Http\Requests\Product\UpdateRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
-    public function store(array $data)
+    public function index(Request $request)
+    {
+        $filter = $request->all();
+
+        $products = Product::query()
+            ->when(isset($filter['id']), function ($query) use ($filter) {
+                $query->whereIn('id', $filter['id']);
+            })
+            ->when(isset($filter['active']), function ($query) use ($filter) {
+                $query->whereIn('is_active', $filter['active']);
+            })
+            ->when(isset($filter['author']), function ($query) use ($filter) {
+                $query->whereIn('author_id', $filter['author']);
+            })
+            ->limit($filter['limit'] ?? -1)
+            ->get();
+
+        return ProductResource::collection($products)->response()->setStatusCode(200);
+    }
+
+    public function show(Product $product)
+    {
+        $product->increment('views');
+
+        return (new ProductResource($product))->response()->setStatusCode(200);
+    }
+
+    public function store(StoreRequest $request)
     {
         try {
+            $data = $request->validated();
+
             DB::beginTransaction();
 
-            $data['author_id'] = auth()->user()->id;
+            $product = new Product;
+            $product->fill(
+                array_merge($data, [
+                    'author_id' => Auth::user()->id
+                ])
+            )->save();
 
-            if (isset($data['image_ids'])) {
-                $imageIds = $data['image_ids'];
-                unset($data['image_ids']);
-            }
-
-            if (isset($data['video_ids'])) {
-                $videoIds = $data['video_ids'];
-                unset($data['video_ids']);
-            }
-
-            $data['fields'] = isset($data['fields']) ? json_encode($data['fields']) : '';
-
-            $product = Product::firstOrCreate($data);
-
-            if (isset($imageIds)) {
-                $product->images()->attach($imageIds);
-            }
-
-            if (isset($videoIds)) {
-                $product->videos()->attach($videoIds);
-            }
+            isset($data['image_ids']) && $product->images()->attach($data['image_ids']);
+            isset($data['video_ids']) && $product->videos()->attach($data['video_ids']);
 
             DB::commit();
+
+            $product->refresh();
 
             return (new ProductResource($product))->response()->setStatusCode(201);
         } catch (Exception $e) {
@@ -48,36 +69,21 @@ class ProductService
         }
     }
 
-    public function update(array $data, Product $product)
+    public function update(UpdateRequest $request, Product $product)
     {
         try {
+            $data = $request->validated();
+
             DB::beginTransaction();
-
-            if (isset($data['image_ids'])) {
-                $imageIds = $data['image_ids'];
-                unset($data['image_ids']);
-            }
-
-            if (isset($data['video_ids'])) {
-                $videoIds = $data['video_ids'];
-                unset($data['video_ids']);
-            }
-
-            if (isset($data['fields'])) {
-                $data['fields'] = json_encode($data['fields']);
-            }
 
             $product->update($data);
 
-            if (isset($imageIds)) {
-                $product->images()->sync($imageIds);
-            }
-
-            if (isset($videoIds)) {
-                $product->videos()->attach($videoIds);
-            }
+            isset($data['image_ids']) && $product->images()->sync($data['image_ids']);
+            isset($data['video_ids']) && $product->videos()->sync($data['video_ids']);
 
             DB::commit();
+
+            $product->refresh();
 
             return (new ProductResource($product))->response()->setStatusCode(200);
         } catch (\Exception $e) {
@@ -85,5 +91,12 @@ class ProductService
 
             return response($e->getMessage())->setStatusCode(500);
         }
+    }
+
+    public function destroy(Product $product)
+    {
+        $product->delete();
+
+        return response([])->setStatusCode(200);
     }
 }

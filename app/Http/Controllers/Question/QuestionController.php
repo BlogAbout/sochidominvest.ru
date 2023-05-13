@@ -5,72 +5,41 @@ namespace App\Http\Controllers\Question;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Question\StoreRequest;
 use App\Http\Requests\Question\UpdateRequest;
-use App\Http\Resources\QuestionResource;
 use App\Models\Question;
-use Exception;
+use App\Services\QuestionService;
 use Illuminate\Http\Request;
 
 class QuestionController extends Controller
 {
+    public $service;
+
+    public function __construct(QuestionService $service)
+    {
+        return $this->service = $service;
+    }
+
     public function index(Request $request)
     {
-        $filter = $request->all();
-
-        $questions = Question::query()
-            ->when(isset($filter['id']), function ($query) use ($filter) {
-                $query->whereIn('id', $filter['id']);
-            })
-            ->when(isset($filter['active']), function ($query) use ($filter) {
-                $query->whereIn('is_active', $filter['active']);
-            })
-            ->when(isset($filter['author']), function ($query) use ($filter) {
-                $query->whereIn('author_id', $filter['author']);
-            })
-            ->when(isset($filter['type']), function ($query) use ($filter) {
-                $query->where('type', '=', $filter['type']);
-            })
-            ->limit($filter['limit'] ?? -1)
-            ->get();
-
-        return QuestionResource::collection($questions)->response()->setStatusCode(200);
+        return $this->service->index($request);
     }
 
     public function show(Question $question)
     {
-        return (new QuestionResource($question))->response()->setStatusCode(200);
+        return $this->service->show($question);
     }
 
     public function store(StoreRequest $request)
     {
-        try {
-            $data = $request->validated();
-            $data['author_id'] = auth()->user()->id;
-
-            $question = Question::create($data);
-
-            return (new QuestionResource($question))->response()->setStatusCode(201);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->store($request);
     }
 
     public function update(UpdateRequest $request, Question $question)
     {
-        try {
-            $data = $request->validated();
-
-            $question->update($data);
-
-            return (new QuestionResource($question))->response()->setStatusCode(200);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->update($request, $question);
     }
 
     public function destroy(Question $question)
     {
-        $question->delete();
-
-        return response([])->setStatusCode(200);
+        return $this->service->destroy($question);
     }
 }
