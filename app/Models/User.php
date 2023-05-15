@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasAvatarAttribute;
 use App\Traits\HasCarbonDatesAttributes;
+use App\Traits\HasEntityDecodeNameAttribute;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,7 +15,8 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasAvatarAttribute, HasCarbonDatesAttributes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasAvatarAttribute, HasCarbonDatesAttributes,
+        HasEntityDecodeNameAttribute;
 
     protected $table = 'sdi_users';
 

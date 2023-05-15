@@ -16,7 +16,7 @@ class TagResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => html_entity_decode($this->name),
+            'name' => $this->name,
             'author_id' => $this->author_id,
             'author' => new UserResource($this->whenLoaded('author')),
             'is_active' => $this->is_active,

@@ -16,7 +16,7 @@ class TransactionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => html_entity_decode($this->name),
+            'name' => $this->name,
             'status' => $this->status,
             'user_id' => $this->user_id,
             'user' => new UserResource($this->whenLoaded('user')),

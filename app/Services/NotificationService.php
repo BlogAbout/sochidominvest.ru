@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use App\Http\Requests\Notification\StoreRequest;
 use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
 use Exception;
-use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -15,33 +16,36 @@ class NotificationService
     {
         $notifications = Notification::select('sdi_notifications.*', 'sdi_notification_users.status')
             ->join('sdi_notification_users', 'sdi_notifications.id', '=', 'sdi_notification_users.notification_id')
-            ->where('sdi_notification_users.user_id', '=', auth()->user()->id)
+            ->where('sdi_notification_users.user_id', '=', Auth::user()->id)
             ->where('sdi_notification_users.status', '!=', 'trash')
             ->get();
 
         return NotificationResource::collection($notifications)->response()->setStatusCode(200);
     }
 
-    public function store(array $data)
+    public function store(StoreRequest $request)
     {
         try {
-            DB::beginTransaction();
+            $data = $request->validated();
 
-            if (auth()->check()) {
+            if (Auth()->check()) {
                 $data['author_id'] = auth()->user()->id;
             }
 
-            $userIds = [];
-            if (isset($data['user_ids'])) {
-                $userIds = $data['user_ids'];
-                unset($data['user_ids']);
-            }
+            DB::beginTransaction();
 
-            $notification = Notification::firstOrCreate($data);
+            $notification = new Notification;
+            $notification->fill(
+                array_merge($data, [
+                    'author_id' => Auth::user()->id
+                ])
+            )->save();
 
-            $this->setNotificationForUsers($notification, $userIds);
+            $this->setNotificationForUsers($notification, $data['user_ids']);
 
             DB::commit();
+
+            $notification->refresh();
 
             return (new NotificationResource($notification))->response()->setStatusCode(201);
         } catch (Exception $e) {
@@ -51,8 +55,10 @@ class NotificationService
         }
     }
 
-    public function updateNotificationForUser(array $filter, $type = 'read')
+    public function updateNotificationForUser(Request $request, $type = 'read')
     {
+        $filter = $request->all();
+
         DB::table('sdi_notification_users')
             ->where('user_id', auth()->user()->id)
             ->when(isset($filter['id']), function ($query) use ($filter) {
