@@ -10,8 +10,12 @@ class MessengerInterval extends Model
     use HasFactory;
 
     protected $table = 'sdi_messenger_intervals';
-    protected $guarded = false;
+
+    protected $fillable = ['messenger_id', 'user_id', 'message_start_id', 'message_last_id'];
+
     public $timestamps = false;
+
+    protected $with = ['messenger', 'user', 'messageStart', 'messageLast'];
 
     public function messenger()
     {

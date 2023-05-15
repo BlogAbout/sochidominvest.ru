@@ -10,8 +10,12 @@ class MessengerMember extends Model
     use HasFactory;
 
     protected $table = 'sdi_messenger_members';
-    protected $guarded = false;
+
+    protected $fillable = ['messenger_id', 'user_id', 'message_read_id', 'message_deleted_id', 'is_active'];
+
     public $timestamps = false;
+
+    protected $with = ['messenger', 'user', 'messageRead', 'messageDeleted'];
 
     public function messenger()
     {

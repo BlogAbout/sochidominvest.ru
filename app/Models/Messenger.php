@@ -14,15 +14,20 @@ class Messenger extends Model
     use HasFactory, SoftDeletes, HasAvatarAttribute, HasAuthorAttribute, HasCarbonDatesAttributes;
 
     protected $table = 'sdi_messengers';
-    protected $guarded = false;
+
+    protected $fillable = ['name', 'type', 'author_id', 'avatar_id'];
+
+    protected $with = ['avatar', 'author', 'intervals', 'members'];
 
     public function intervals()
     {
-        return $this->hasMany(MessengerInterval::class, 'messenger_id', 'id');
+        return $this->hasMany(MessengerInterval::class, 'messenger_id', 'id')
+            ->without(['messenger', 'user', 'messageStart', 'messageLast']);
     }
 
     public function members()
     {
-        return $this->hasMany(MessengerMember::class, 'messenger_id', 'id');
+        return $this->hasMany(MessengerMember::class, 'messenger_id', 'id')
+            ->without(['messenger', 'user', 'messageRead', 'messageDeleted']);
     }
 }
