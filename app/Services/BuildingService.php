@@ -6,6 +6,7 @@ use App\Http\Resources\BuildingResource;
 use App\Models\Building;
 use App\Models\BuildingInfo;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class BuildingService
@@ -15,7 +16,7 @@ class BuildingService
         try {
             DB::beginTransaction();
 
-            $data['author_id'] = auth()->user()->id;
+            $data['author_id'] = Auth::user()->id;
 
             if (isset($data['info'])) {
                 $buildingInfoData = $data['info'];
@@ -118,7 +119,7 @@ class BuildingService
         } catch (Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 
@@ -227,7 +228,7 @@ class BuildingService
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 }

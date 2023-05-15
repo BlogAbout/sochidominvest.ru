@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Resources\CheckerResource;
 use App\Models\Checker;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CheckerService
@@ -14,7 +15,7 @@ class CheckerService
         try {
             DB::beginTransaction();
 
-            $data['author_id'] = auth()->user()->id;
+            $data['author_id'] = Auth::user()->id;
 
             $checker = Checker::firstOrCreate($data);
 
@@ -24,7 +25,7 @@ class CheckerService
         } catch (Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 
@@ -41,7 +42,7 @@ class CheckerService
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 }

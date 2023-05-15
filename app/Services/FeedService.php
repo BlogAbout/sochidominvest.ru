@@ -2,40 +2,52 @@
 
 namespace App\Services;
 
+use App\Http\Requests\Feed\StoreRequest;
+use App\Http\Requests\Feed\UpdateRequest;
 use App\Http\Resources\FeedResource;
 use App\Models\Feed;
 use App\Models\FeedMessage;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class FeedService
 {
-    public function store(array $data)
+    public function index()
+    {
+        $feeds = Feed::all();
+
+        return FeedResource::collection($feeds)->response()->setStatusCode(200);
+    }
+
+    public function show(Feed $feed)
+    {
+        return (new FeedResource($feed))->response()->setStatusCode(200);
+    }
+
+    public function store(StoreRequest $request)
     {
         try {
+            $data = $request->validated();
+
+            if (Auth::check()) {
+                $data['author_id'] = Auth::user()->id;
+            }
+
             DB::beginTransaction();
 
-            if (auth()->check()) {
-                $data['author_id'] = auth()->user()->id;
-            }
+            $feed = new Feed;
+            $feed->fill($data)->save();
 
             if (isset($data['message_text'])) {
-                $messageText = $data['message_text'];
-                unset($data['message_text']);
-            }
-
-            $feed = Feed::firstOrCreate($data);
-
-            if (isset($messageText)) {
-                $messageData = [
+                $feedMessage = new FeedMessage;
+                $feedMessage->fill([
                     'feed_id' => $feed->id,
-                    'author_id' => auth()->user()->id,
+                    'author_id' => Auth::user()->id,
                     'status' => 'new',
-                    'content' => $messageText,
+                    'content' => $data['message_text'],
                     'is_active' => true
-                ];
-
-                FeedMessage::firstOrCreate($messageData);
+                ])->save();
             }
 
             DB::commit();
@@ -46,32 +58,28 @@ class FeedService
         } catch (Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 
-    public function update(array $data, Feed $feed)
+    public function update(UpdateRequest $request, Feed $feed)
     {
         try {
-            DB::beginTransaction();
+            $data = $request->validated();
 
-            if (isset($data['message_text'])) {
-                $messageText = $data['message_text'];
-                unset($data['message_text']);
-            }
+            DB::beginTransaction();
 
             $feed->update($data);
 
-            if (isset($messageText)) {
-                $messageData = [
+            if (isset($data['message_text'])) {
+                $feedMessage = new FeedMessage;
+                $feedMessage->fill([
                     'feed_id' => $feed->id,
-                    'author_id' => auth()->user()->id,
+                    'author_id' => Auth::user()->id,
                     'status' => 'new',
-                    'content' => $messageText,
+                    'content' => $data['message_text'],
                     'is_active' => true
-                ];
-
-                FeedMessage::firstOrCreate($messageData);
+                ])->save();
             }
 
             DB::commit();
@@ -82,7 +90,14 @@ class FeedService
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
+    }
+
+    public function destroy(Feed $feed)
+    {
+        $feed->delete();
+
+        return response([])->setStatusCode(200);
     }
 }

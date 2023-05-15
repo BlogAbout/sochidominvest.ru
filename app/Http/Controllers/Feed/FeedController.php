@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Feed;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Feed\StoreRequest;
 use App\Http\Requests\Feed\UpdateRequest;
-use App\Http\Resources\FeedResource;
 use App\Models\Feed;
 use App\Services\FeedService;
 
@@ -20,34 +19,26 @@ class FeedController extends Controller
 
     public function index()
     {
-        $feeds = Feed::all();
-
-        return FeedResource::collection($feeds)->response()->setStatusCode(200);
+        $this->service->index();
     }
 
     public function show(Feed $feed)
     {
-        return (new FeedResource($feed))->response()->setStatusCode(200);
+        return $this->service->show($feed);
     }
 
     public function store(StoreRequest $request)
     {
-        $data = $request->validated();
-
-        return $this->service->store($data);
+        return $this->service->store($request);
     }
 
     public function update(UpdateRequest $request, Feed $feed)
     {
-        $data = $request->validated();
-
-        return $this->service->update($data, $feed);
+        return $this->service->update($request, $feed);
     }
 
     public function destroy(Feed $feed)
     {
-        $feed->delete();
-
-        return response([])->setStatusCode(200);
+        return $this->service->destroy($feed);
     }
 }

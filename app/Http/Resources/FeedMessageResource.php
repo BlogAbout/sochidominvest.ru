@@ -16,11 +16,11 @@ class FeedMessageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'feed_id' => ($this->feed_id),
+            'feed_id' => $this->feed_id,
             'author_id' => $this->author_id,
             'author' => new UserResource($this->whenLoaded('author')),
             'status' => $this->status,
-            'content' => html_entity_decode($this->content),
+            'content' => $this->content,
             'is_active' => $this->is_active,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

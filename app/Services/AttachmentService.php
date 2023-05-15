@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Resources\AttachmentResource;
 use App\Models\Attachment;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
@@ -60,7 +61,7 @@ class AttachmentService
             $attachmentData = [
                 'name' => '',
                 'content' => $fileName,
-                'author_id' => auth()->user()->id,
+                'author_id' => Auth::user()->id,
                 'type' => $type,
                 'extension' => $extension
             ];
@@ -73,7 +74,7 @@ class AttachmentService
         } catch (Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 
@@ -90,7 +91,7 @@ class AttachmentService
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 

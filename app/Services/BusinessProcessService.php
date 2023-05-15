@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Resources\BusinessProcessResource;
 use App\Models\BusinessProcess;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class BusinessProcessService
@@ -14,7 +15,7 @@ class BusinessProcessService
         try {
             DB::beginTransaction();
 
-            $data['author_id'] = auth()->user()->id;
+            $data['author_id'] = Auth::user()->id;
 
             if (isset($data['relations'])) {
                 $buildingIds = [];
@@ -56,7 +57,7 @@ class BusinessProcessService
         } catch (Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 
@@ -107,7 +108,7 @@ class BusinessProcessService
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response($e->getMessage())->setStatusCode(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
 }

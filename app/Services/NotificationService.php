@@ -28,18 +28,14 @@ class NotificationService
         try {
             $data = $request->validated();
 
-            if (Auth()->check()) {
-                $data['author_id'] = auth()->user()->id;
+            if (Auth::check()) {
+                $data['author_id'] = Auth::user()->id;
             }
 
             DB::beginTransaction();
 
             $notification = new Notification;
-            $notification->fill(
-                array_merge($data, [
-                    'author_id' => Auth::user()->id
-                ])
-            )->save();
+            $notification->fill($data)->save();
 
             $this->setNotificationForUsers($notification, $data['user_ids']);
 
@@ -60,7 +56,7 @@ class NotificationService
         $filter = $request->all();
 
         DB::table('sdi_notification_users')
-            ->where('user_id', auth()->user()->id)
+            ->where('user_id', Auth::user()->id)
             ->when(isset($filter['id']), function ($query) use ($filter) {
                 $query->whereIn('notification_id', $filter['id']);
             })
