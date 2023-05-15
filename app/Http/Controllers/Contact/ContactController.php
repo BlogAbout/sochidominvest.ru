@@ -5,55 +5,40 @@ namespace App\Http\Controllers\Contact;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Contact\StoreRequest;
 use App\Http\Requests\Contact\UpdateRequest;
-use App\Http\Resources\ContactResource;
 use App\Models\Contact;
-use Exception;
+use App\Services\ContactService;
 
 class ContactController extends Controller
 {
+    public $service;
+
+    public function __construct(ContactService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index()
     {
-        $contacts = Contact::all();
-
-        return ContactResource::collection($contacts)->response()->setStatusCode(200);
+        return $this->service->index();
     }
 
     public function show(Contact $contact)
     {
-        return (new ContactResource($contact))->response()->setStatusCode(200);
+        return $this->service->show($contact);
     }
 
     public function store(StoreRequest $request)
     {
-        try {
-            $data = $request->validated();
-            $data['author_id'] = auth()->user()->id;
-
-            $contact = Contact::create($data);
-
-            return (new ContactResource($contact))->response()->setStatusCode(201);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->store($request);
     }
 
     public function update(UpdateRequest $request, Contact $contact)
     {
-        try {
-            $data = $request->validated();
-
-            $contact->update($data);
-
-            return (new ContactResource($contact))->response()->setStatusCode(200);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->update($request, $contact);
     }
 
     public function destroy(Contact $contact)
     {
-        $contact->delete();
-
-        return response([])->setStatusCode(200);
+        return $this->service->destroy($contact);
     }
 }

@@ -5,55 +5,40 @@ namespace App\Http\Controllers\Developer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Developer\StoreRequest;
 use App\Http\Requests\Developer\UpdateRequest;
-use App\Http\Resources\DeveloperResource;
 use App\Models\Developer;
-use Exception;
+use App\Services\DeveloperService;
 
 class DeveloperController extends Controller
 {
+    public $service;
+
+    public function __construct(DeveloperService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index()
     {
-        $developers = Developer::all();
-
-        return DeveloperResource::collection($developers)->response()->setStatusCode(200);
+        return $this->service->index();
     }
 
     public function show(Developer $developer)
     {
-        return (new DeveloperResource($developer))->response()->setStatusCode(200);
+        return $this->service->show($developer);
     }
 
     public function store(StoreRequest $request)
     {
-        try {
-            $data = $request->validated();
-            $data['author_id'] = auth()->user()->id;
-
-            $developer = Developer::create($data);
-
-            return (new DeveloperResource($developer))->response()->setStatusCode(201);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->store($request);
     }
 
     public function update(UpdateRequest $request, Developer $developer)
     {
-        try {
-            $data = $request->validated();
-
-            $developer->update($data);
-
-            return (new DeveloperResource($developer))->response()->setStatusCode(200);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->update($request, $developer);
     }
 
     public function destroy(Developer $developer)
     {
-        $developer->delete();
-
-        return response([])->setStatusCode(200);
+        return $this->service->destroy($developer);
     }
 }

@@ -37,18 +37,7 @@ class Document extends Model
     public function buildings()
     {
         return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')
-            ->without([
-                'rentInfo',
-                'author',
-                'images',
-                'videos',
-                'checkers',
-                'relationDevelopers',
-                'relationAgents',
-                'relationContacts',
-                'relationDocuments',
-                'relationArticles',
-                'relationTags'
-            ]);
+            ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers',
+                'relationAgents', 'relationContacts', 'relationDocuments', 'relationArticles', 'relationTags']);
     }
 }

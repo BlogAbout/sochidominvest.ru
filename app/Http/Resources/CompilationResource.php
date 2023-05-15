@@ -9,15 +9,15 @@ class CompilationResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function toArray($request): array
     {
         return [
             'id' => $this->id,
-            'name' => html_entity_decode($this->name),
-            'description' => html_entity_decode($this->description),
+            'name' => $this->name,
+            'description' => $this->description,
             'author_id' => $this->author_id,
             'author' => new UserResource($this->whenLoaded('author')),
             'buildings' => BuildingResource::collection($this->whenLoaded('buildings')),

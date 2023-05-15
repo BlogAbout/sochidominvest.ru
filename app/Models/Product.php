@@ -51,17 +51,20 @@ class Product extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id', 'id');
+        return $this->belongsTo(Category::class, 'category_id', 'id')
+            ->without(['avatar', 'author', 'products']);
     }
 
     public function images()
     {
-        return $this->morphToMany(Attachment::class, 'object', 'sdi_images');
+        return $this->morphToMany(Attachment::class, 'object', 'sdi_images')
+            ->without(['poster', 'author']);
     }
 
     public function videos()
     {
-        return $this->morphToMany(Attachment::class, 'object', 'sdi_videos');
+        return $this->morphToMany(Attachment::class, 'object', 'sdi_videos')
+            ->without(['author']);
     }
 
     public function prices()

@@ -5,60 +5,40 @@ namespace App\Http\Controllers\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\StoreRequest;
 use App\Http\Requests\Category\UpdateRequest;
-use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use Exception;
+use App\Services\CategoryService;
 
 class CategoryController extends Controller
 {
+    public $service;
+
+    public function __construct(CategoryService $service)
+    {
+        return $this->service = $service;
+    }
+
     public function index()
     {
-        $categories = Category::all();
-
-        return CategoryResource::collection($categories)->response()->setStatusCode(200);
+        return $this->service->index();
     }
 
     public function show(Category $category)
     {
-        return (new CategoryResource($category))->response()->setStatusCode(200);
+        return $this->service->show($category);
     }
 
     public function store(StoreRequest $request)
     {
-        try {
-            $data = $request->validated();
-            $data['author_id'] = auth()->user()->id;
-            $data['fields'] = isset($data['fields']) ? json_encode($data['fields']) : '';
-
-            $category = Category::create($data);
-
-            return (new CategoryResource($category))->response()->setStatusCode(201);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->store($request);
     }
 
     public function update(UpdateRequest $request, Category $category)
     {
-        try {
-            $data = $request->validated();
-
-            if (isset($data['fields'])) {
-                $data['fields'] = json_encode($data['fields']);
-            }
-
-            $category->update($data);
-
-            return (new CategoryResource($category))->response()->setStatusCode(200);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->update($request, $category);
     }
 
     public function destroy(Category $category)
     {
-        $category->delete();
-
-        return response([])->setStatusCode(200);
+        return $this->service->destroy($category);
     }
 }

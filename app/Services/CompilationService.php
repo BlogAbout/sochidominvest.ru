@@ -1,71 +1,84 @@
 <?php
 
-
 namespace App\Services;
 
-
+use App\Http\Requests\Compilation\StoreRequest;
+use App\Http\Requests\Compilation\UpdateRequest;
+use App\Http\Resources\CompilationResource;
+use App\Models\Compilation;
+use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class CompilationService
 {
-    public function store($data)
+    public function index()
+    {
+        $compilations = Compilation::all();
+
+        return CompilationResource::collection($compilations)->response()->setStatusCode(200);
+    }
+
+    public function show(Compilation $compilation)
+    {
+        return (new CompilationResource($compilation))->response()->setStatusCode(200);
+    }
+
+    public function store(StoreRequest $request)
     {
         try {
+            $data = $request->validated();
+
             DB::beginTransaction();
 
-            if (isset($data['tag_ids'])) {
-                $tagIds = $data['tag_ids'];
-                unset($data['tag_ids']);
-            }
+            $compilation = new Compilation;
+            $compilation->fill(
+                array_merge($data, [
+                    'author_id' => Auth::user()->id
+                ])
+            )->save();
 
-            $data['preview_image'] = Storage::disk('public')->put('/images', $data['preview_image']);
-            $data['main_image'] = Storage::disk('public')->put('/images', $data['main_image']);
-
-            $post = Post::firstOrCreate($data);
-
-            if (isset($tagIds)) {
-                $post->tags()->attach($tagIds);
-            }
+            isset($data['building_ids']) && $compilation->buildings()->attach($data['building_ids']);
 
             DB::commit();
-        } catch (\Exception $e) {
+
+            $compilation->refresh();
+
+            return (new CompilationResource($compilation))->response()->setStatusCode(201);
+        } catch (Exception $e) {
             DB::rollBack();
-            abort(500);
+
+            return response(['message' => $e->getMessage()])->setStatusCode(400);
         }
     }
 
-    public function update($data, $post)
+    public function update(UpdateRequest $request, Compilation $compilation)
     {
         try {
+            $data = $request->validated();
+
             DB::beginTransaction();
 
-            if (isset($data['tag_ids'])) {
-                $tagIds = $data['tag_ids'];
-                unset($data['tag_ids']);
-            }
+            $compilation->update($data);
 
-            if (isset($data['preview_image'])) {
-                $data['preview_image'] = Storage::disk('public')->put('/images', $data['preview_image']);
-            }
-
-            if ($data['main_image']) {
-                $data['main_image'] = Storage::disk('public')->put('/images', $data['main_image']);
-            }
-
-            $post->update($data);
-
-            if (isset($tagIds)) {
-                $post->tags()->sync($tagIds);
-            }
+            isset($data['building_ids']) && $compilation->buildings()->sync($data['building_ids']);
 
             DB::commit();
-        } catch (\Exception $e) {
+
+            $compilation->refresh();
+
+            return (new CompilationResource($compilation))->response()->setStatusCode(200);
+        } catch (Exception $e) {
             DB::rollBack();
 
-            abort(500);
+            return response(['message' => $e->getMessage()])->setStatusCode(400);
         }
+    }
 
-        return $post;
+    public function destroy(Compilation $compilation)
+    {
+        $compilation->delete();
+
+        return response([])->setStatusCode(200);
     }
 }

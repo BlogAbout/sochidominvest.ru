@@ -2,24 +2,57 @@
 
 namespace App\Services;
 
+use App\Http\Requests\Checker\StoreRequest;
+use App\Http\Requests\Checker\UpdateRequest;
 use App\Http\Resources\CheckerResource;
 use App\Models\Checker;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CheckerService
 {
-    public function store(array $data)
+    public function index(Request $request)
+    {
+        $filter = $request->all();
+
+        $checkers = Checker::query()
+            ->when(isset($filter['id']), function ($query) use ($filter) {
+                $query->whereIn('id', $filter['id']);
+            })
+            ->when(isset($filter['buildingId']), function ($query) use ($filter) {
+                $query->whereIn('building_id', $filter['buildingId']);
+            })
+            ->when(isset($filter['active']), function ($query) use ($filter) {
+                $query->whereIn('is_active', $filter['active']);
+            })
+            ->when(isset($filter['author']), function ($query) use ($filter) {
+                $query->whereIn('author_id', $filter['author']);
+            })
+            ->limit($filter['limit'] ?? -1)
+            ->get();
+
+        return CheckerResource::collection($checkers)->response()->setStatusCode(200);
+    }
+
+    public function store(StoreRequest $request)
     {
         try {
+            $data = $request->validated();
+
             DB::beginTransaction();
 
-            $data['author_id'] = Auth::user()->id;
-
-            $checker = Checker::firstOrCreate($data);
+            $checker = new Checker;
+            $checker->fill(
+                array_merge($data, [
+                    'author_id' => Auth::user()->id
+                ])
+            )->save();
 
             DB::commit();
+
+            $checker->refresh();
 
             return (new CheckerResource($checker))->response()->setStatusCode(201);
         } catch (Exception $e) {
@@ -29,9 +62,11 @@ class CheckerService
         }
     }
 
-    public function update(array $data, Checker $checker)
+    public function update(UpdateRequest $request, Checker $checker)
     {
         try {
+            $data = $request->validated();
+
             DB::beginTransaction();
 
             $checker->update($data);
@@ -44,5 +79,12 @@ class CheckerService
 
             return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
+    }
+
+    public function destroy(Checker $checker)
+    {
+        $checker->delete();
+
+        return response([])->setStatusCode(200);
     }
 }
