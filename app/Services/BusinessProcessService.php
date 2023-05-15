@@ -48,7 +48,7 @@ class BusinessProcessService
             }
 
             if (isset($buildingIds)) {
-                $businessProcess->relationBuildings()->attach($buildingIds);
+                $businessProcess->buildings()->attach($buildingIds);
             }
 
             DB::commit();
@@ -97,7 +97,7 @@ class BusinessProcessService
             }
 
             if (isset($buildingIds)) {
-                $businessProcess->relationBuildings()->sync($buildingIds);
+                $businessProcess->buildings()->sync($buildingIds);
             }
 
             DB::commit();

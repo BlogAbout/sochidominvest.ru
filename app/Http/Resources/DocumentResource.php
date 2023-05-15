@@ -16,7 +16,7 @@ class DocumentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => html_entity_decode($this->name),
+            'name' => $this->name,
             'content' => $this->content,
             'type' => $this->type,
             'author_id' => $this->author_id,
@@ -26,7 +26,7 @@ class DocumentResource extends JsonResource
             'attachment' => new AttachmentResource($this->whenLoaded('attachment')),
             'object_id' => $this->object_id,
             'object_type' => $this->object_type,
-            'buildings' => BuildingResource::collection($this->whenLoaded('relationBuildings')),
+            'buildings' => BuildingResource::collection($this->whenLoaded('buildings')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'date_created' => $this->dateCreatedFormat,

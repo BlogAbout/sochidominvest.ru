@@ -16,9 +16,9 @@ class Developer extends Model
     protected $table = 'sdi_developers';
     protected $guarded = false;
 
-    protected $with = ['avatar', 'author', 'relationBuildings'];
+    protected $with = ['avatar', 'author', 'buildings'];
 
-    public function relationBuildings()
+    public function buildings()
     {
         return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')
             ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers',

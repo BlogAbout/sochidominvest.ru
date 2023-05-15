@@ -15,7 +15,7 @@ class BusinessProcess extends Model
     protected $table = 'sdi_business_processes';
     protected $guarded = false;
 
-    protected $with = ['responsible', 'attendees', 'relationFeeds', 'relationBuildings'];
+    protected $with = ['responsible', 'attendees', 'relationFeeds', 'buildings'];
 
     public function responsible()
     {
@@ -35,7 +35,7 @@ class BusinessProcess extends Model
             ->without(['author', 'user', 'messages']);
     }
 
-    public function relationBuildings()
+    public function buildings()
     {
         return $this->morphedByMany(Building::class, 'object', 'sdi_business_process_relations')
             ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers', 'relationAgents', 'relationContacts', 'relationDocuments', 'relationArticles', 'relationTags']);

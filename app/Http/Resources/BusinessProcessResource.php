@@ -26,7 +26,7 @@ class BusinessProcessResource extends JsonResource
             'responsible' => new UserResource($this->whenLoaded('responsible')),
             'attendees' => UserResource::collection($this->whenLoaded('attendees')),
             'feeds' => FeedResource::collection($this->whenLoaded('relationFeeds')),
-            'buildings' => BuildingResource::collection($this->whenLoaded('relationBuildings')),
+            'buildings' => BuildingResource::collection($this->whenLoaded('buildings')),
             'is_active' => $this->is_active,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

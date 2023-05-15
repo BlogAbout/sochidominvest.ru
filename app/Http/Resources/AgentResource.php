@@ -27,7 +27,7 @@ class AgentResource extends JsonResource
             'avatar_id' => $this->avatar_id,
             'avatar' => new AttachmentResource($this->whenLoaded('avatar')),
             'contacts' => BuildingResource::collection($this->whenLoaded('contacts')),
-            'buildings' => BuildingResource::collection($this->whenLoaded('relationBuildings')),
+            'buildings' => BuildingResource::collection($this->whenLoaded('buildings')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'date_created' => $this->dateCreatedFormat,

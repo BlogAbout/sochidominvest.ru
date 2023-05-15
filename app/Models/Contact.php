@@ -15,15 +15,15 @@ class Contact extends Model
     protected $table = 'sdi_contacts';
     protected $guarded = false;
 
-    protected $with = ['agent', 'author', 'relationBuildings'];
+    protected $with = ['agent', 'author', 'buildings'];
 
     public function agent()
     {
         return $this->belongsTo(Agent::class, 'agent_id', 'id')
-            ->without(['avatar', 'author', 'relationBuildings', 'contacts']);
+            ->without(['avatar', 'author', 'buildings', 'contacts']);
     }
 
-    public function relationBuildings()
+    public function buildings()
     {
         return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')->without(['relationContacts']);
     }

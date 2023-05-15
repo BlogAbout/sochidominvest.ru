@@ -5,54 +5,40 @@ namespace App\Http\Controllers\ExternalUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ExternalUser\StoreRequest;
 use App\Http\Requests\ExternalUser\UpdateRequest;
-use App\Http\Resources\ExternalUserResource;
 use App\Models\ExternalUser;
-use Exception;
+use App\Services\ExternalUserService;
 
 class ExternalUserController extends Controller
 {
+    public $service;
+
+    public function __construct(ExternalUserService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index()
     {
-        $externalUsers = ExternalUser::all();
-
-        return ExternalUserResource::collection($externalUsers)->response()->setStatusCode(200);
+        return $this->service->index();
     }
 
     public function show(ExternalUser $externalUser)
     {
-        return (new ExternalUserResource($externalUser))->response()->setStatusCode(200);
+        return $this->service->show($externalUser);
     }
 
     public function store(StoreRequest $request)
     {
-        try {
-            $data = $request->validated();
-
-            $externalUser = ExternalUser::create($data);
-
-            return (new ExternalUserResource($externalUser))->response()->setStatusCode(201);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->store($request);
     }
 
     public function update(UpdateRequest $request, ExternalUser $externalUser)
     {
-        try {
-            $data = $request->validated();
-
-            $externalUser->update($data);
-
-            return (new ExternalUserResource($externalUser))->response()->setStatusCode(200);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->update($request, $externalUser);
     }
 
     public function destroy(ExternalUser $externalUser)
     {
-        $externalUser->delete();
-
-        return response([])->setStatusCode(200);
+        return $this->service->destroy($externalUser);
     }
 }

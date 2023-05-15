@@ -16,9 +16,9 @@ class Agent extends Model
     protected $table = 'sdi_agents';
     protected $guarded = false;
 
-    protected $with = ['avatar', 'author', 'relationBuildings', 'contacts'];
+    protected $with = ['avatar', 'author', 'buildings', 'contacts'];
 
-    public function relationBuildings()
+    public function buildings()
     {
         return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')
             ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers',
@@ -28,6 +28,6 @@ class Agent extends Model
     public function contacts()
     {
         return $this->hasMany(Contact::class, 'agent_id', 'id')
-            ->without(['agent', 'author', 'relationBuildings']);
+            ->without(['agent', 'author', 'buildings']);
     }
 }

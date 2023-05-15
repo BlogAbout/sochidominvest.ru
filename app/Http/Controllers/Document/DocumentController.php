@@ -5,55 +5,40 @@ namespace App\Http\Controllers\Document;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Document\StoreRequest;
 use App\Http\Requests\Document\UpdateRequest;
-use App\Http\Resources\DocumentResource;
 use App\Models\Document;
-use Exception;
+use App\Services\DocumentService;
 
 class DocumentController extends Controller
 {
+    public $service;
+
+    public function __construct(DocumentService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index()
     {
-        $documents = Document::all();
-
-        return DocumentResource::collection($documents)->response()->setStatusCode(200);
+        return $this->service->index();
     }
 
     public function show(Document $document)
     {
-        return (new DocumentResource($document))->response()->setStatusCode(200);
+        return $this->service->show($document);
     }
 
     public function store(StoreRequest $request)
     {
-        try {
-            $data = $request->validated();
-            $data['author_id'] = auth()->user()->id;
-
-            $document = Document::create($data);
-
-            return (new DocumentResource($document))->response()->setStatusCode(201);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->store($request);
     }
 
     public function update(UpdateRequest $request, Document $document)
     {
-        try {
-            $data = $request->validated();
-
-            $document->update($data);
-
-            return (new DocumentResource($document))->response()->setStatusCode(200);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->update($request, $document);
     }
 
     public function destroy(Document $document)
     {
-        $document->delete();
-
-        return response([])->setStatusCode(200);
+        return $this->service->destroy($document);
     }
 }

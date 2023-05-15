@@ -62,22 +62,22 @@ class Building extends Model
 
     public function relationDevelopers()
     {
-        return $this->morphedByMany(Developer::class, 'object', 'sdi_building_relations')->without(['author', 'avatar', 'relationBuildings']);
+        return $this->morphedByMany(Developer::class, 'object', 'sdi_building_relations')->without(['author', 'avatar', 'buildings']);
     }
 
     public function relationAgents()
     {
-        return $this->morphedByMany(Agent::class, 'object', 'sdi_building_relations')->without(['author', 'avatar', 'relationBuildings', 'contacts']);
+        return $this->morphedByMany(Agent::class, 'object', 'sdi_building_relations')->without(['author', 'avatar', 'buildings', 'contacts']);
     }
 
     public function relationContacts()
     {
-        return $this->morphedByMany(Contact::class, 'object', 'sdi_building_relations')->without(['agent', 'avatar', 'relationBuildings']);
+        return $this->morphedByMany(Contact::class, 'object', 'sdi_building_relations')->without(['agent', 'avatar', 'buildings']);
     }
 
     public function relationDocuments()
     {
-        return $this->morphedByMany(Document::class, 'object', 'sdi_building_relations')->without(['author', 'relationBuildings']);
+        return $this->morphedByMany(Document::class, 'object', 'sdi_building_relations')->without(['author', 'buildings']);
     }
 
     public function relationArticles()
