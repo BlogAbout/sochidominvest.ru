@@ -5,55 +5,40 @@ namespace App\Http\Controllers\Agent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Agent\StoreRequest;
 use App\Http\Requests\Agent\UpdateRequest;
-use App\Http\Resources\AgentResource;
 use App\Models\Agent;
-use Exception;
+use App\Services\AgentService;
 
 class AgentController extends Controller
 {
+    public $service;
+
+    public function __construct(AgentService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index()
     {
-        $agents = Agent::all();
-
-        return AgentResource::collection($agents)->response()->setStatusCode(200);
+        return $this->service->index();
     }
 
     public function show(Agent $agent)
     {
-        return (new AgentResource($agent))->response()->setStatusCode(200);
+        return $this->service->show($agent);
     }
 
     public function store(StoreRequest $request)
     {
-        try {
-            $data = $request->validated();
-            $data['author_id'] = auth()->user()->id;
-
-            $agent = Agent::create($data);
-
-            return (new AgentResource($agent))->response()->setStatusCode(201);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->store($request);
     }
 
     public function update(UpdateRequest $request, Agent $agent)
     {
-        try {
-            $data = $request->validated();
-
-            $agent->update($data);
-
-            return (new AgentResource($agent))->response()->setStatusCode(200);
-        } catch (Exception $e) {
-            return response($e->getMessage())->setStatusCode(400);
-        }
+        return $this->service->update($request, $agent);
     }
 
     public function destroy(Agent $agent)
     {
-        $agent->delete();
-
-        return response([])->setStatusCode(200);
+        return $this->service->destroy($agent);
     }
 }

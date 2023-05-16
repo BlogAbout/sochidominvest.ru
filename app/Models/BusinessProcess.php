@@ -4,18 +4,22 @@ namespace App\Models;
 
 use App\Traits\HasAuthorAttribute;
 use App\Traits\HasCarbonDatesAttributes;
+use App\Traits\HasEntityDecodeDescriptionAttribute;
+use App\Traits\HasEntityDecodeNameAttribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BusinessProcess extends Model
 {
-    use HasFactory, SoftDeletes, HasAuthorAttribute, HasCarbonDatesAttributes;
+    use HasFactory, SoftDeletes, HasAuthorAttribute, HasCarbonDatesAttributes, HasEntityDecodeNameAttribute,
+        HasEntityDecodeDescriptionAttribute;
 
     protected $table = 'sdi_business_processes';
-    protected $guarded = false;
 
-    protected $with = ['responsible', 'attendees', 'relationFeeds', 'buildings'];
+    protected $fillable = ['name', 'description', 'type', 'step', 'author_id', 'responsible_id', 'is_active'];
+
+    protected $with = ['responsible', 'attendees', 'feeds', 'buildings'];
 
     public function responsible()
     {
@@ -29,7 +33,7 @@ class BusinessProcess extends Model
             ->without(['avatar', 'post', 'role', 'tariff', 'favorites', 'bpSorting']);
     }
 
-    public function relationFeeds()
+    public function feeds()
     {
         return $this->morphedByMany(Feed::class, 'object', 'sdi_business_process_relations')
             ->without(['author', 'user', 'messages']);
@@ -38,6 +42,6 @@ class BusinessProcess extends Model
     public function buildings()
     {
         return $this->morphedByMany(Building::class, 'object', 'sdi_business_process_relations')
-            ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers', 'relationAgents', 'relationContacts', 'relationDocuments', 'relationArticles', 'relationTags']);
+            ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers', 'relationAgents', 'relationContacts', 'relationDocuments', 'articles', 'tags']);
     }
 }

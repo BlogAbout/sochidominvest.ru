@@ -25,6 +25,6 @@ class Compilation extends Model
     {
         return $this->belongsToMany(Building::class, 'sdi_compilation_buildings', 'compilation_id', 'building_id')
             ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers',
-                'relationAgents', 'relationContacts', 'relationDocuments', 'relationArticles', 'relationTags']);
+                'relationAgents', 'relationContacts', 'relationDocuments', 'articles', 'tags']);
     }
 }

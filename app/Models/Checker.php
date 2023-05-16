@@ -37,7 +37,7 @@ class Checker extends Model
     {
         return $this->belongsTo(Building::class, 'building_id', 'id')->without(['checkers'])
             ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers',
-                'relationAgents', 'relationContacts', 'relationDocuments', 'relationArticles', 'relationTags']);
+                'relationAgents', 'relationContacts', 'relationDocuments', 'articles', 'tags']);
     }
 
     public function prices()
