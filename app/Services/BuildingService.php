@@ -99,6 +99,8 @@ class BuildingService
 
             DB::beginTransaction();
 
+            // Todo: isset($data['cost'] && $building->cost !== $data['cost']) добавить новую цену в график цен
+
             $building->update($data);
 
             BuildingInfo::updateOrCreate(['id' => $building->id], $data['info']);
@@ -111,6 +113,10 @@ class BuildingService
             isset($data['document_ids']) && $building->relationDocuments()->sync($data['document_ids']);
             isset($data['article_ids']) && $building->articles()->sync($data['article_ids']);
             isset($data['tag_ids']) && $building->tags()->sync($data['tag_ids']);
+
+            if ($building->type === 'building') {
+                $this->updateMinMaxForBuilding($building->id);
+            }
 
             DB::commit();
 
@@ -129,5 +135,22 @@ class BuildingService
         $building->delete();
 
         return response([])->setStatusCode(200);
+    }
+
+    public function updateMinMaxForBuilding(int $buildingId)
+    {
+        $values = DB::table('sdi_checkers')
+            ->select(DB::raw('MIN(`area`) as areaMin, MAX(`area`) as areaMax, MIN(`cost`) as costMin, MAX(`cost`) as costMax, MIN(`cost` / `area`) as costMinUnit'))
+            ->where('building_id', $buildingId)
+            ->where('is_active', 1)
+            ->first();
+
+        Building::where('id', $buildingId)->update([
+            'area_min' => $values->areaMin,
+            'area_max' => $values->areaMax,
+            'cost_min' => $values->costMin,
+            'cost_max' => $values->costMax,
+            'cost_min_unit' => $values->costMinUnit,
+        ]);
     }
 }

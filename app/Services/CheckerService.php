@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\DB;
 
 class CheckerService
 {
+    private $buildingService;
+
+    public function __construct(BuildingService $buildingService)
+    {
+        $this->buildingService = $buildingService;
+    }
+
     public function index(Request $request)
     {
         $filter = $request->all();
@@ -50,6 +57,8 @@ class CheckerService
                 ])
             )->save();
 
+            $this->buildingService->updateMinMaxForBuilding($checker->building_id);
+
             DB::commit();
 
             $checker->refresh();
@@ -70,6 +79,8 @@ class CheckerService
             DB::beginTransaction();
 
             $checker->update($data);
+
+            $this->buildingService->updateMinMaxForBuilding($checker->building_id);
 
             DB::commit();
 
