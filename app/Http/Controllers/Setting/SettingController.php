@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers\Setting;
 
+use App\Facades\Setting;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Setting\StoreRequest;
-use App\Http\Resources\SettingResource;
-use App\Models\Setting;
 use Exception;
 
 class SettingController extends Controller
 {
     public function index()
     {
-        $settings = Setting::all();
+        $settings = Setting::get();
 
-        return SettingResource::collection($settings)->response()->setStatusCode(200);
+        return response(['data' => $settings])->setStatusCode(200);
     }
 
     public function store(StoreRequest $request)
@@ -22,19 +21,11 @@ class SettingController extends Controller
         try {
             $data = $request->validated();
 
-            $arrayForStore = [];
-            foreach($data['settings'] as $key => $value) {
-                array_push($arrayForStore, [
-                    'name' => $key,
-                    'value' => $value
-                ]);
-            }
+            Setting::set($data['settings']);
 
-            Setting::upsert($arrayForStore, ['name'], ['value']);
+            $settings = Setting::get();
 
-            $settings = Setting::all();
-
-            return SettingResource::collection($settings)->response()->setStatusCode(200);
+            return response(['data' => $settings])->setStatusCode(200);
         } catch (Exception $e) {
             return response(['message' => $e->getMessage()])->setStatusCode(400);
         }

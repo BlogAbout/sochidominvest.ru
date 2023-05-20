@@ -23,12 +23,7 @@ export const SettingActionCreators = {
             const response = await SettingService.fetchSettings()
 
             if (response.status === 200) {
-                const settings: ISetting = {}
-                response.data.data.forEach((setting: any) => {
-                    settings[setting.key] = setting.value
-                })
-
-                dispatch(SettingActionCreators.setSettings(settings))
+                dispatch(SettingActionCreators.setSettings(response.data.data))
             } else {
                 dispatch(SettingActionCreators.setError('Ошибка загрузки данных'))
             }
@@ -44,12 +39,7 @@ export const SettingActionCreators = {
             const response = await SettingService.saveSetting(settings)
 
             if (response.status === 200) {
-                const settings: ISetting = {}
-                response.data.data.forEach((setting: any) => {
-                    settings[setting.key] = setting.value
-                })
-
-                dispatch(SettingActionCreators.setSettings(settings))
+                dispatch(SettingActionCreators.setSettings(response.data.data))
             } else {
                 dispatch(SettingActionCreators.setError('Ошибка обновления данных'))
             }
