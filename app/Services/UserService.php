@@ -7,12 +7,14 @@ use App\Http\Requests\User\RegistrationRequest;
 use App\Http\Requests\User\StoreRequest;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\UserResource;
+use App\Mail\RegistrationMail;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserService
 {
@@ -28,6 +30,8 @@ class UserService
         )->save();
 
         if ($user) {
+            Mail::to($user)->send(new RegistrationMail($data['email'], $data['password']));
+
             $credentials = [
                 'email' => $data['email'],
                 'password' => $data['password'],
