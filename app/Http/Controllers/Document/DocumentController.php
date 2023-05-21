@@ -7,6 +7,7 @@ use App\Http\Requests\Document\StoreRequest;
 use App\Http\Requests\Document\UpdateRequest;
 use App\Models\Document;
 use App\Services\DocumentService;
+use Illuminate\Http\Request;
 
 class DocumentController extends Controller
 {
@@ -17,9 +18,9 @@ class DocumentController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->service->index();
+        return $this->service->index($request);
     }
 
     public function show(Document $document)

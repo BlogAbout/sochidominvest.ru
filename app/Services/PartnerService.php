@@ -7,13 +7,27 @@ use App\Http\Requests\Partner\UpdateRequest;
 use App\Http\Resources\PartnerResource;
 use App\Models\Partner;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PartnerService
 {
-    public function index()
+    public function index(Request $request)
     {
-        $partners = Partner::all();
+        $filter = $request->all();
+
+        $partners = Partner::query()
+            ->when(isset($filter['id']), function ($query) use ($filter) {
+                $query->whereIn('id', $filter['id']);
+            })
+            ->when(isset($filter['active']), function ($query) use ($filter) {
+                $query->whereIn('is_active', $filter['active']);
+            })
+            ->when(isset($filter['text']), function ($query) use ($filter) {
+                $query->where('name', 'like', '%' . $filter['text'] . '%');
+            })
+            ->limit($filter['limit'] ?? -1)
+            ->get();
 
         return PartnerResource::collection($partners)->response()->setStatusCode(200);
     }

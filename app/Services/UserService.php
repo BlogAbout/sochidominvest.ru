@@ -79,9 +79,22 @@ class UserService
         return response([])->setStatusCode(200);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $filter = $request->all();
+
+        $users = User::query()
+            ->when(isset($filter['id']), function ($query) use ($filter) {
+                $query->whereIn('id', $filter['id']);
+            })
+            ->when(isset($filter['active']), function ($query) use ($filter) {
+                $query->whereIn('is_active', $filter['active']);
+            })
+            ->when(isset($filter['text']), function ($query) use ($filter) {
+                $query->where('name', 'like', '%' . $filter['text'] . '%');
+            })
+            ->limit($filter['limit'] ?? -1)
+            ->get();
 
         return UserResource::collection($users)->response()->setStatusCode(200);
     }

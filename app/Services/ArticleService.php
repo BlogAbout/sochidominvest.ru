@@ -33,6 +33,9 @@ class ArticleService
             ->when(isset($filter['type']), function ($query) use ($filter) {
                 $query->where('type', '=', $filter['type']);
             })
+            ->when(isset($filter['text']), function ($query) use ($filter) {
+                $query->where('name', 'like', '%' . $filter['text'] . '%');
+            })
             ->limit($filter['limit'] ?? -1)
             ->get();
 

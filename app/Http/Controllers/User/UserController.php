@@ -35,9 +35,9 @@ class UserController extends Controller
         return $this->service->logout($request);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->service->index();
+        return $this->service->index($request);
     }
 
     public function show(User $user)

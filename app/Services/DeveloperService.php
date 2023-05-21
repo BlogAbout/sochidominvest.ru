@@ -7,14 +7,28 @@ use App\Http\Requests\Developer\UpdateRequest;
 use App\Http\Resources\DeveloperResource;
 use App\Models\Developer;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DeveloperService
 {
-    public function index()
+    public function index(Request $request)
     {
-        $developers = Developer::all();
+        $filter = $request->all();
+
+        $developers = Developer::query()
+            ->when(isset($filter['id']), function ($query) use ($filter) {
+                $query->whereIn('id', $filter['id']);
+            })
+            ->when(isset($filter['active']), function ($query) use ($filter) {
+                $query->whereIn('is_active', $filter['active']);
+            })
+            ->when(isset($filter['text']), function ($query) use ($filter) {
+                $query->where('name', 'like', '%' . $filter['text'] . '%');
+            })
+            ->limit($filter['limit'] ?? -1)
+            ->get();
 
         return DeveloperResource::collection($developers)->response()->setStatusCode(200);
     }

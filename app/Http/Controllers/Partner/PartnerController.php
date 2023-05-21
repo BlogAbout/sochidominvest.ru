@@ -7,6 +7,7 @@ use App\Http\Requests\Partner\StoreRequest;
 use App\Http\Requests\Partner\UpdateRequest;
 use App\Models\Partner;
 use App\Services\PartnerService;
+use Illuminate\Http\Request;
 
 class PartnerController extends Controller
 {
@@ -17,9 +18,9 @@ class PartnerController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->service->index();
+        return $this->service->index($request);
     }
 
     public function show(Partner $partner)

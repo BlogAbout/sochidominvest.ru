@@ -7,6 +7,7 @@ use App\Http\Requests\Developer\StoreRequest;
 use App\Http\Requests\Developer\UpdateRequest;
 use App\Models\Developer;
 use App\Services\DeveloperService;
+use Illuminate\Http\Request;
 
 class DeveloperController extends Controller
 {
@@ -17,9 +18,9 @@ class DeveloperController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->service->index();
+        return $this->service->index($request);
     }
 
     public function show(Developer $developer)

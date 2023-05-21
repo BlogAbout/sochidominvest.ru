@@ -7,14 +7,28 @@ use App\Http\Requests\Document\UpdateRequest;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DocumentService
 {
-    public function index()
+    public function index(Request $request)
     {
-        $documents = Document::all();
+        $filter = $request->all();
+
+        $documents = Document::query()
+            ->when(isset($filter['id']), function ($query) use ($filter) {
+                $query->whereIn('id', $filter['id']);
+            })
+            ->when(isset($filter['active']), function ($query) use ($filter) {
+                $query->whereIn('is_active', $filter['active']);
+            })
+            ->when(isset($filter['text']), function ($query) use ($filter) {
+                $query->where('name', 'like', '%' . $filter['text'] . '%');
+            })
+            ->limit($filter['limit'] ?? -1)
+            ->get();
 
         return DocumentResource::collection($documents)->response()->setStatusCode(200);
     }
