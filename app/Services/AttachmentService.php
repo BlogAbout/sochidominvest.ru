@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Facades\Setting;
 use App\Http\Requests\Attachment\StoreRequest;
 use App\Http\Requests\Attachment\UpdateRequest;
 use App\Http\Resources\AttachmentResource;
@@ -88,8 +89,8 @@ class AttachmentService
             $fileUrl = Storage::disk('public')->put('/' . $type, $file);
             $fileName = explode('/', $fileUrl)[1];
 
-            $this->resizeImage($fileName, 400, 400);
-            $this->resizeImage($fileName, 2000, 2000, true);
+            $this->resizeImage($fileName, (int)Setting::get('image_thumb_width', '400'), (int)Setting::get('image_thumb_height', '400'));
+            $this->resizeImage($fileName, (int)Setting::get('image_full_width', '2000'), (int)Setting::get('image_full_height', '2000'), true);
 
             $attachment = new Attachment;
             $attachment->fill([
