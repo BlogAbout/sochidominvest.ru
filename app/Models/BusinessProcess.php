@@ -42,6 +42,7 @@ class BusinessProcess extends Model
     public function buildings()
     {
         return $this->morphedByMany(Building::class, 'object', 'sdi_business_process_relations')
-            ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers', 'relationAgents', 'relationContacts', 'relationDocuments', 'articles', 'tags']);
+            ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers', 'relationAgents',
+                'relationContacts', 'relationDocuments', 'articles', 'tags', 'prices']);
     }
 }

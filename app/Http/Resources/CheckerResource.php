@@ -31,6 +31,7 @@ class CheckerResource extends JsonResource
             'is_active' => $this->is_active,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
+            'prices' => PriceResource::collection($this->whenLoaded('prices')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'date_created' => $this->dateCreatedFormat,

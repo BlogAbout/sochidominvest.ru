@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
+    private $priceService;
+
+    public function __construct(PriceService $priceService)
+    {
+        $this->priceService = $priceService;
+    }
+
     public function index(Request $request)
     {
         $filter = $request->all();
@@ -75,6 +82,15 @@ class ProductService
             $data = $request->validated();
 
             DB::beginTransaction();
+
+            if (isset($data['cost']) && $product->cost !== $data['cost']) {
+                $this->priceService->store([
+                    'object_id' => $product->id,
+                    'object_type' => Product::class,
+                    'date_update' => now()->setTime(0, 0, 0),
+                    'cost' => $data['cost']
+                ]);
+            }
 
             $product->update($data);
 

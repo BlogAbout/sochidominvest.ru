@@ -29,7 +29,7 @@ class Contact extends Model
     {
         return $this->morphToMany(Building::class, 'object', 'sdi_building_relations')
             ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers',
-                'relationAgents', 'relationContacts', 'relationDocuments', 'articles', 'tags']);
+                'relationAgents', 'relationContacts', 'relationDocuments', 'articles', 'tags', 'prices']);
     }
 
     public function getPostAttribute($value)

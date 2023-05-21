@@ -39,6 +39,6 @@ class Category extends Model
     public function products()
     {
         return $this->hasMany(Product::class, 'category_id', 'id')
-            ->without(['category', 'avatar', 'author', 'images', 'videos']);
+            ->without(['category', 'avatar', 'author', 'images', 'videos', 'prices']);
     }
 }

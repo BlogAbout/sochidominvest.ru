@@ -58,6 +58,7 @@ class Building extends Model
         'author',
         'images',
         'videos',
+        'prices',
         'checkers',
         'relationDevelopers',
         'relationAgents',
@@ -89,12 +90,14 @@ class Building extends Model
 
     public function prices()
     {
-        return $this->morphToMany(Price::class, 'object', 'sdi_prices');
+        return $this->morphMany(Price::class, 'object')
+            ->orderBy('date_update', 'DESC')
+            ->limit(20);
     }
 
     public function checkers()
     {
-        return $this->hasMany(Checker::class, 'building_id', 'id')->without(['author', 'building']);
+        return $this->hasMany(Checker::class, 'building_id', 'id')->without(['author', 'building', 'prices']);
     }
 
     public function relationDevelopers()

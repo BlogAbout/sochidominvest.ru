@@ -1,5 +1,6 @@
 import {IUser} from './IUser'
 import {IAttachment} from './IAttachment'
+import {IPrice} from './IPrice'
 
 export interface ICategory {
     id: number | null
@@ -42,7 +43,7 @@ export interface IProduct {
     meta_title?: string
     meta_description?: string
     views?: number | null
-    prices?: any[]
+    prices?: IPrice[]
     created_at?: string | null
     updated_at?: string | null
     date_created?: string | null

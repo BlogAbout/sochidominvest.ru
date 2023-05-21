@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import BuildingService from '../../../api/BuildingService'
 import {PopupProps} from '../../../@types/IPopup'
+import {IPrice} from '../../../@types/IPrice'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
-import openPopupAlert from '../PopupAlert/PopupAlert'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
 import {Content, Footer, Header, Popup} from '../Popup/Popup'
 import BlockingElement from '../../ui/BlockingElement/BlockingElement'
@@ -12,7 +11,7 @@ import {getFormatDate} from '../../../helpers/dateHelper'
 import classes from './PopupPriceChart.module.scss'
 
 interface Props extends PopupProps {
-    prices?: any[]
+    prices?: IPrice[]
 }
 
 const defaultProps: Props = {
@@ -20,17 +19,22 @@ const defaultProps: Props = {
 }
 
 const PopupPriceChart: React.FC<Props> = (props) => {
-    const [prices, setPrices] = useState<{[key: string]: number}>({})
+    const [prices, setPrices] = useState<{ [key: string]: number }>({})
 
     useEffect(() => {
-        // Todo: заполнить цены
+        if (props.prices && props.prices.length) {
+            const pricesList: { [key: string]: number } = {}
+
+            props.prices.forEach((price: IPrice) => pricesList[price.date] = price.cost)
+
+            setPrices(pricesList)
+        }
 
         return () => {
             removePopup(props.blockId ? props.blockId : '')
         }
     }, [props.blockId])
 
-    // Закрытие popup
     const close = () => {
         removePopup(props.id ? props.id : '')
     }

@@ -19,7 +19,7 @@ class CreatePricesTable extends Migration
             $table->timestamp('date_update')->nullable();
             $table->float('cost', 11)->nullable();
 
-            $table->index(['object_id', 'object_type', 'date_update'], 'price_idx');
+            $table->unique(['object_id', 'object_type', 'date_update'], 'price_idx');
         });
     }
 

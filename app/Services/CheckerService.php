@@ -14,10 +14,12 @@ use Illuminate\Support\Facades\DB;
 class CheckerService
 {
     private $buildingService;
+    private $priceService;
 
-    public function __construct(BuildingService $buildingService)
+    public function __construct(BuildingService $buildingService, PriceService $priceService)
     {
         $this->buildingService = $buildingService;
+        $this->priceService = $priceService;
     }
 
     public function index(Request $request)
@@ -77,6 +79,15 @@ class CheckerService
             $data = $request->validated();
 
             DB::beginTransaction();
+
+            if (isset($data['cost']) && $checker->cost !== $data['cost']) {
+                $this->priceService->store([
+                    'object_id' => $checker->id,
+                    'object_type' => Checker::class,
+                    'date_update' => now()->setTime(0, 0, 0),
+                    'cost' => $data['cost']
+                ]);
+            }
 
             $checker->update($data);
 

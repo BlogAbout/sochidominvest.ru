@@ -22,8 +22,4 @@ export default class BuildingService {
     static async removeBuilding(buildingId: number): Promise<AxiosResponse> {
         return axios.delete(`/building/${buildingId}`)
     }
-
-    static async fetchBuildingPrices(buildingId: number): Promise<AxiosResponse> {
-        return axios.get(`/building/${buildingId}/prices`)
-    }
 }

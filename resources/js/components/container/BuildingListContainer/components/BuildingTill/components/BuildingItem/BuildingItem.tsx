@@ -13,6 +13,7 @@ import {
 import {IBuilding} from '../../../../../../../@types/IBuilding'
 import {ISelector} from '../../../../../../../@types/ISelector'
 import {ITag} from '../../../../../../../@types/ITag'
+import {IPrice} from '../../../../../../../@types/IPrice'
 import Avatar from '../../../../../../ui/Avatar/Avatar'
 import classes from './BuildingItem.module.scss'
 
@@ -70,12 +71,12 @@ const BuildingItem: React.FC<Props> = (props) => {
             return null
         }
 
-        const costOld: number = props.building.prices[0]
+        const costOld: IPrice = props.building.prices[0]
 
-        if (costOld > props.building.cost) {
+        if (costOld.cost > props.building.cost) {
             return (
                 <span className={classes.costDown}
-                      title={`Старая цена: ${numberWithSpaces(round(costOld, 0))} руб.`}
+                      title={`Старая цена: ${numberWithSpaces(round(costOld.cost, 0))} руб.`}
                 >
                     <FontAwesomeIcon icon='arrow-down'/>
                 </span>
@@ -83,7 +84,7 @@ const BuildingItem: React.FC<Props> = (props) => {
         } else {
             return (
                 <span className={classes.costUp}
-                      title={`Старая цена: ${numberWithSpaces(round(costOld, 0))} руб.`}
+                      title={`Старая цена: ${numberWithSpaces(round(costOld.cost, 0))} руб.`}
                 >
                     <FontAwesomeIcon icon='arrow-up'/>
                 </span>

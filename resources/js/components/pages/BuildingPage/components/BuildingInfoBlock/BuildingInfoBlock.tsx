@@ -4,11 +4,15 @@ import {useNavigate} from 'react-router-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import classNames from 'classnames/bind'
 import UserService from '../../../../../api/UserService'
+import CompilationService from '../../../../../api/CompilationService'
 import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
+import {useActions} from '../../../../../hooks/useActions'
 import {RouteNames} from '../../../../../helpers/routerHelper'
 import {IBuilding} from '../../../../../@types/IBuilding'
 import {ITag} from '../../../../../@types/ITag'
 import {IUser} from '../../../../../@types/IUser'
+import {ICompilation} from '../../../../../@types/ICompilation'
+import {IPrice} from '../../../../../@types/IPrice'
 import {configuration} from '../../../../../helpers/utilHelper'
 import {checkRules, Rules} from '../../../../../helpers/accessHelper'
 import {declension} from '../../../../../helpers/stringHelper'
@@ -27,9 +31,6 @@ import openPopupCompilationSelector
     from '../../../../../components/popup/PopupCompilationSelector/PopupCompilationSelector'
 import openPopupMap from '../../../../popup/PopupMap/PopupMap'
 import classes from './BuildingInfoBlock.module.scss'
-import {useActions} from "../../../../../hooks/useActions";
-import {ICompilation} from "../../../../../@types/ICompilation";
-import CompilationService from "../../../../../api/CompilationService";
 
 interface Props {
     building: IBuilding
@@ -187,12 +188,12 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
             return null
         }
 
-        const costOld: number = props.building.prices[0]
+        const costOld: IPrice = props.building.prices[0]
 
-        if (costOld > props.building.cost) {
+        if (costOld.cost > props.building.cost) {
             return (
                 <span className={classes.costDown}
-                      title={`Старая цена: ${numberWithSpaces(round(costOld, 0))} руб.`}
+                      title={`Старая цена: ${numberWithSpaces(round(costOld.cost, 0))} руб.`}
                 >
                     <FontAwesomeIcon icon='arrow-down'/>
                 </span>
@@ -200,7 +201,7 @@ const BuildingInfoBlock: React.FC<Props> = (props): React.ReactElement => {
         } else {
             return (
                 <span className={classes.costUp}
-                      title={`Старая цена: ${numberWithSpaces(round(costOld, 0))} руб.`}
+                      title={`Старая цена: ${numberWithSpaces(round(costOld.cost, 0))} руб.`}
                 >
                     <FontAwesomeIcon icon='arrow-up'/>
                 </span>

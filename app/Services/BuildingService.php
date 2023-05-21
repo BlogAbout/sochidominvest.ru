@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\DB;
 
 class BuildingService
 {
+    private $priceService;
+
+    public function __construct(PriceService $priceService)
+    {
+        $this->priceService = $priceService;
+    }
+
     public function index(Request $request)
     {
         $filter = $request->all();
@@ -99,7 +106,14 @@ class BuildingService
 
             DB::beginTransaction();
 
-            // Todo: isset($data['cost'] && $building->cost !== $data['cost']) добавить новую цену в график цен
+            if ($building->type !== 'building' && isset($data['cost']) && $building->cost !== $data['cost']) {
+                $this->priceService->store([
+                    'object_id' => $building->id,
+                    'object_type' => Building::class,
+                    'date_update' => now()->setTime(0, 0, 0),
+                    'cost' => $data['cost']
+                ]);
+            }
 
             $building->update($data);
 

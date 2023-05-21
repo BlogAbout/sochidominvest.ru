@@ -5,6 +5,7 @@ import {IAgent, IContact} from './IAgent'
 import {IDocument} from './IDocument'
 import {IArticle} from './IArticle'
 import {ITag} from './ITag'
+import {IPrice} from './IPrice'
 
 export interface IBuilding {
     id: number | null
@@ -48,7 +49,7 @@ export interface IBuilding {
     tags?: ITag[] | null
     checkers?: IBuildingChecker[] | null
     rentData?: IBuildingRent
-    prices?: any[]
+    prices?: IPrice[]
     created_at?: string | null
     updated_at?: string | null
     date_created?: string | null
@@ -110,6 +111,7 @@ export interface IBuildingChecker {
     is_active?: number
     meta_title?: string | null
     meta_description?: string | null
+    prices?: IPrice[]
     created_at?: string | null
     updated_at?: string | null
     date_created?: string | null

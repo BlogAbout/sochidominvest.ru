@@ -31,17 +31,19 @@ class Checker extends Model
         'status'
     ];
 
-    protected $with = ['building', 'author'];
+    protected $with = ['building', 'author', 'prices'];
 
     public function building()
     {
         return $this->belongsTo(Building::class, 'building_id', 'id')->without(['checkers'])
             ->without(['rentInfo', 'author', 'images', 'videos', 'checkers', 'relationDevelopers',
-                'relationAgents', 'relationContacts', 'relationDocuments', 'articles', 'tags']);
+                'relationAgents', 'relationContacts', 'relationDocuments', 'articles', 'tags', 'prices']);
     }
 
     public function prices()
     {
-        return $this->morphToMany(Price::class, 'object', 'sdi_prices');
+        return $this->morphMany(Price::class, 'object')
+            ->orderBy('date_update', 'DESC')
+            ->limit(20);
     }
 }

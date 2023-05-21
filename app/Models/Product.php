@@ -47,7 +47,7 @@ class Product extends Model
         'fields' => 'array'
     ];
 
-    protected $with = ['category', 'avatar', 'author', 'images', 'videos'];
+    protected $with = ['category', 'avatar', 'author', 'images', 'videos', 'prices'];
 
     public function category()
     {
@@ -69,6 +69,8 @@ class Product extends Model
 
     public function prices()
     {
-        return $this->hasMany(Price::class, 'object_id', 'id')->where('object_type', 'like', 'product');
+        return $this->morphMany(Price::class, 'object')
+            ->orderBy('date_update', 'DESC')
+            ->limit(20);
     }
 }
