@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Notification\NotificationController;
-use App\Http\Controllers\SearchController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -39,7 +38,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/registration/trash', [NotificationController::class, 'trashNotifications']);
     });
 
-    Route::get('/search', SearchController::class);
+    Route::get('/search', 'SearchController');
 });
 
 Route::group(['namespace' => 'User'], function () {

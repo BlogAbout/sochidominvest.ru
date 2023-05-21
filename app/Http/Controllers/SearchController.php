@@ -40,10 +40,9 @@ class SearchController extends Controller
         $this->partnerService = $partnerService;
     }
 
-
     public function __invoke(Request $request)
     {
-        if (!isset($request->text) || trim($request->text) === '') {
+        if (!$request->input('text') || trim($request->input('text')) === '') {
             return response([])->setStatusCode(200);
         }
 

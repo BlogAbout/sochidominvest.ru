@@ -48,6 +48,10 @@ const PopupSearchPanel: React.FC<Props> = (props) => {
         }
     }, [props.blockId])
 
+    useEffect(() => {
+        setResultCount(users.length + buildings.length + articles.length + documents.length + developers.length + attachments.length)
+    }, [users, buildings, articles, documents, developers, attachments])
+
     const close = () => {
         removePopup(props.id || '')
     }
@@ -61,15 +65,13 @@ const PopupSearchPanel: React.FC<Props> = (props) => {
 
         UtilService.fetchSearchGlobal({active: [0, 1], text: searchText})
             .then((result: any) => {
-                setUsers(result.data.data.users)
-                setBuildings(result.data.data.buildings)
-                setArticles(result.data.data.articles)
-                setDocuments(result.data.data.documents)
-                setDevelopers(result.data.data.developers)
-                setAttachments(result.data.data.attachments)
-                setPartners(result.data.data.partners)
-
-                updateCountResults()
+                setUsers(result.data.users.original)
+                setBuildings(result.data.buildings.original)
+                setArticles(result.data.articles.original)
+                setDocuments(result.data.documents.original)
+                setDevelopers(result.data.developers.original)
+                setAttachments(result.data.attachments.original)
+                setPartners(result.data.partners.original)
             })
             .catch((error: any) => {
                 console.error('Ошибка загрузки данных!', error)
@@ -80,10 +82,6 @@ const PopupSearchPanel: React.FC<Props> = (props) => {
                 })
             })
             .finally(() => setFetching(false))
-    }
-
-    const updateCountResults = () => {
-        setResultCount(users.length + buildings.length + articles.length + documents.length + developers.length + attachments.length)
     }
 
     const renderUsersTab = () => {
