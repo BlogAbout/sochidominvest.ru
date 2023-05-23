@@ -115,4 +115,7 @@ return [
         ],
     ],
 
+    'local' => [
+        'address' => env('MAIL_FOR_LOCAL_DEBUG_ADDRESS', 'info@sochidominvest.ru'),
+    ]
 ];
