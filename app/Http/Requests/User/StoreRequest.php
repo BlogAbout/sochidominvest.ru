@@ -24,7 +24,8 @@ class StoreRequest extends FormRequest
             'settings.*' => 'nullable',
             'avatar_id' => 'nullable|integer|exists:sdi_attachments,id',
             'role_id' => 'nullable|integer|exists:sdi_roles,id',
-            'post_id' => 'nullable|integer|exists:sdi_posts,id'
+            'post_id' => 'nullable|integer|exists:sdi_posts,id',
+            'sendMailNotification' => 'nullable|boolean'
         ];
     }
 
@@ -44,7 +45,8 @@ class StoreRequest extends FormRequest
             'role_id.integer' => 'Значение данного поля должно быть числом',
             'role_id.exists' => 'Роль отсутствует в базе данных',
             'post_id.integer' => 'Значение данного поля должно быть числом',
-            'post_id.exists' => 'Должность отсутствует в базе данных'
+            'post_id.exists' => 'Должность отсутствует в базе данных',
+            'sendMailNotification.boolean' => 'Значение данного поля должно быть переключателем'
         ];
     }
 }

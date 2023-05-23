@@ -7,6 +7,7 @@ use App\Http\Requests\User\RegistrationRequest;
 use App\Http\Requests\User\StoreRequest;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\UserResource;
+use App\Mail\CreateUserMail;
 use App\Mail\RegistrationMail;
 use App\Models\User;
 use Exception;
@@ -123,6 +124,10 @@ class UserService
             )->save();
 
             DB::commit();
+
+            if ($data['sendMailNotification']) {
+                Mail::to($user)->send(new CreateUserMail($data['email'], $data['password']));
+            }
 
             $user->refresh();
 

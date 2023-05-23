@@ -31,6 +31,7 @@ export interface IUser {
     favorite_ids?: number[] | null
     favorites?: IBuilding[] | null
     business_process_sorting?: number[]
+    sendMailNotification?: boolean
 }
 
 export interface IUserSetting {

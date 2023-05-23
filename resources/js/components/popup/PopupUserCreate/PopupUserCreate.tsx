@@ -214,11 +214,30 @@ const PopupUserCreate: React.FC<Props> = (props) => {
 
                             <ComboBox selected={user.role_id || null}
                                       items={rolesList}
-                                      onSelect={(value: 'director' | 'administrator' | 'manager' | 'subscriber') => setUser({...user, role_id: +value})}
+                                      onSelect={(value: 'director' | 'administrator' | 'manager' | 'subscriber') => setUser({
+                                          ...user,
+                                          role_id: +value
+                                      })}
                                       placeHolder='Выберите роль'
                                       styleType='minimal'
                             />
                         </div>
+
+                        {!user.id ?
+                            <div className={classes.field}>
+                                <CheckBox label='Отправить параметры входа на почту пользователя'
+                                          title='Отправить параметры входа на почту пользователя'
+                                          type='modern'
+                                          width={110}
+                                          checked={!!user.sendMailNotification}
+                                          onChange={(e: React.MouseEvent, value: boolean) => setUser({
+                                              ...user,
+                                              sendMailNotification: value
+                                          })}
+                                />
+                            </div>
+                            : null
+                        }
 
                         <div className={classes.field}>
                             <CheckBox label='Активен'
