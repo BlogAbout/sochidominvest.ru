@@ -23,9 +23,9 @@ class CreateUserMail extends Mailable implements ShouldQueue
     public function build()
     {
         return $this->from(config('mail.from.address', 'info@sochidominvest.ru'))
-            ->subject('Для Вас создан аккаунт в сервисе')
-            ->markdown('emails.create_user')
-            ->text('emails.create_user_plain')
+            ->subject('Для Вас создан аккаунт')
+            ->markdown('emails.users.create_user')
+            ->text('emails.users.create_user_plain')
             ->with(['login' => $this->login, 'password' => $this->password]);
     }
 }

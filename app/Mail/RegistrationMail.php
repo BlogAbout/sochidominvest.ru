@@ -23,9 +23,9 @@ class RegistrationMail extends Mailable implements ShouldQueue
     public function build()
     {
         return $this->from(config('mail.from.address', 'info@sochidominvest.ru'))
-            ->subject('Успешная регистрация в сервисе')
-            ->markdown('emails.registration')
-            ->text('emails.registration_plain')
+            ->subject('Успешная регистрация')
+            ->markdown('emails.users.registration')
+            ->text('emails.users.registration_plain')
             ->with(['login' => $this->login, 'password' => $this->password]);
     }
 }
