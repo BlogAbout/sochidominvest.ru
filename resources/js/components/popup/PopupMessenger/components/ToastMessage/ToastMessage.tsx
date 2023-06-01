@@ -3,7 +3,6 @@ import {useActions} from '../../../../../hooks/useActions'
 import {useTypedSelector} from '../../../../../hooks/useTypedSelector'
 import {IFilter} from '../../../../../@types/IFilter'
 import {IMessage} from '../../../../../@types/IMessenger'
-import {getUserAvatar, getUserName} from '../../../../../helpers/userHelper'
 import Avatar from '../../../../ui/Avatar/Avatar'
 import classes from './ToastMessage.module.scss'
 
@@ -45,16 +44,17 @@ const ToastMessage: React.FC<Props> = (props) => {
 
     return (
         <div className={classes.ToastMessage}>
-            <Avatar href={getUserAvatar(users, props.message.author)}
-                    alt={getUserName(users, props.message.author)}
-                    width={48}
-                    height={48}
-                    isRound
+            <Avatar
+                href={props.message.author && props.message.author.avatar ? props.message.author.avatar.content : ''}
+                alt={props.message.author ? props.message.author.name : ''}
+                width={48}
+                height={48}
+                isRound
             />
 
             <div className={classes.content}>
                 <div className={classes.meta}>{getMessageType()}</div>
-                <div className={classes.name}>{getUserName(users, props.message.author)}</div>
+                <div className={classes.name}>{props.message.author ? props.message.author.name : ''}</div>
                 <div className={classes.text}>{text}</div>
             </div>
         </div>

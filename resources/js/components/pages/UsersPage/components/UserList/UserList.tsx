@@ -31,7 +31,7 @@ const defaultProps: Props = {
 }
 
 const UserList: React.FC<Props> = (props): React.ReactElement => {
-    const {usersOnline} = useTypedSelector(state => state.userReducer)
+    const {onlineUsers} = useTypedSelector(state => state.messengerReducer)
 
     return (
         <List className={classes.UserList}>
@@ -54,8 +54,8 @@ const UserList: React.FC<Props> = (props): React.ReactElement => {
                                      isBlock={!!user.is_block}
                             >
                                 <ListCell className={classes.name}>
-                                    <Indicator color={user.id && usersOnline.includes(user.id) ? 'green' : 'red'}
-                                               text={user.id && usersOnline.includes(user.id) ? 'Online' : `Был в сети: ${user.date_last_active}`}
+                                    <Indicator color={user.id && onlineUsers.includes(user.id) ? 'green' : 'red'}
+                                               text={user.id && onlineUsers.includes(user.id) ? 'Online' : `Был в сети: ${user.date_last_active}`}
                                     />
 
                                     <span>{user.name}</span>

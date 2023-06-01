@@ -15,7 +15,7 @@ class MessengerInterval extends Model
 
     public $timestamps = false;
 
-    protected $with = ['messenger', 'user', 'messageStart', 'messageLast'];
+    protected $with = ['messenger', 'user'];
 
     public function messenger()
     {
@@ -26,15 +26,5 @@ class MessengerInterval extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id')
             ->without(['avatar', 'post', 'role', 'tariff', 'favorites', 'bpSorting']);
-    }
-
-    public function messageStart()
-    {
-        return $this->belongsTo(Message::class, 'message_start_id', 'id');
-    }
-
-    public function messageLast()
-    {
-        return $this->belongsTo(Message::class, 'message_last_id', 'id');
     }
 }

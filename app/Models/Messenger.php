@@ -22,12 +22,12 @@ class Messenger extends Model
     public function intervals()
     {
         return $this->hasMany(MessengerInterval::class, 'messenger_id', 'id')
-            ->without(['messenger', 'user', 'messageStart', 'messageLast']);
+            ->without(['messenger', 'user']);
     }
 
     public function members()
     {
         return $this->hasMany(MessengerMember::class, 'messenger_id', 'id')
-            ->without(['messenger', 'user', 'messageRead', 'messageDeleted']);
+            ->without(['messenger', 'user']);
     }
 }

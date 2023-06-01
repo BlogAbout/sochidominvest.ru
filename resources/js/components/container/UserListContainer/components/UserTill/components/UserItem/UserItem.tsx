@@ -43,7 +43,7 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const UserItem: React.FC<Props> = (props) => {
-    const {usersOnline} = useTypedSelector(state => state.userReducer)
+    const {onlineUsers} = useTypedSelector(state => state.messengerReducer)
 
     return (
         <div className={cx({'UserItem': true, 'block': props.user.is_block})}
@@ -55,8 +55,8 @@ const UserItem: React.FC<Props> = (props) => {
 
             <div className={classes.itemContent}>
                 <h2>
-                    <Indicator color={props.user.id && usersOnline.includes(props.user.id) ? 'green' : 'red'}
-                               text={props.user.id && usersOnline.includes(props.user.id) ? 'Online' : `Был в сети: ${props.user.date_last_active}`}
+                    <Indicator color={props.user.id && onlineUsers.includes(props.user.id) ? 'green' : 'red'}
+                               text={props.user.id && onlineUsers.includes(props.user.id) ? 'Online' : `Был в сети: ${props.user.date_last_active}`}
                     />
                     <span>{props.user.name}</span>
                 </h2>

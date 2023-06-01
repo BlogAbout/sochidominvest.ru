@@ -23,13 +23,13 @@ export class WS {
 
             const message: IMessage = {
                 id: null,
-                messengerId: null,
-                active: 1,
+                messenger_id: null,
+                is_active: 1,
                 type: 'welcome',
                 text: '',
-                author: this.userId,
-                parentMessageId: null,
-                attendees: []
+                author_id: this.userId,
+                message_id: null,
+                attendee_ids: []
             }
 
             this.webSocket.send(JSON.stringify(message))
@@ -146,7 +146,7 @@ export const findMembersIds = (members?: IMessengerMember[]): number[] => {
         return []
     }
 
-    return Object.keys(members).map(Number)
+    return members.map((member: IMessengerMember) => member.userId)
 }
 
 /**
@@ -173,13 +173,13 @@ export const isNewMessage = (userId: number, members?: IMessengerMember[], messa
  * @param message Объект сообщения
  */
 export const newToastMessage = (userId: number, message: IMessage): void => {
-    if (message.author !== userId) {
+    if (message.author_id !== userId) {
         switch (message.type) {
             case 'message':
                 toast(<ToastMessage message={message}/>, {
                     onClick: () => {
                         openPopupMessenger(document.body, {
-                            currentMessengerId: message.messengerId || 0
+                            currentMessengerId: message.messenger_id || 0
                         })
                     }
                 })

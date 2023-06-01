@@ -20,7 +20,7 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const UserItem: React.FC<Props> = (props) => {
-    const {usersOnline} = useTypedSelector(state => state.userReducer)
+    const {onlineUsers} = useTypedSelector(state => state.messengerReducer)
 
     return (
         <div className={classes.UserItem} onClick={props.onClick}>
@@ -34,13 +34,13 @@ const UserItem: React.FC<Props> = (props) => {
 
             <div className={classes.post}>{props.user.post ? props.user.post.name : '-'}</div>
 
-            <div className={cx({'status': true, 'online': props.user.id && usersOnline.includes(props.user.id)})}
-                 title={props.user.id && usersOnline.includes(props.user.id)
+            <div className={cx({'status': true, 'online': props.user.id && onlineUsers.includes(props.user.id)})}
+                 title={props.user.id && onlineUsers.includes(props.user.id)
                      ? 'Online'
                      : `Был в сети: ${props.user.date_last_active}`
                  }
             >
-                {props.user.id && usersOnline.includes(props.user.id)
+                {props.user.id && onlineUsers.includes(props.user.id)
                     ? 'Online'
                     : 'Offline'
                 }

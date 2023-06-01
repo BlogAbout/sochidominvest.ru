@@ -10,7 +10,7 @@ import {IFilter} from '../../../@types/IFilter'
 import {IUser} from '../../../@types/IUser'
 import {IMessage, IMessenger, IMessengerMember} from '../../../@types/IMessenger'
 import {getPopupContainer, openPopup, removePopup} from '../../../helpers/popupHelper'
-import {findUser, getUserAvatar, getUserName} from '../../../helpers/userHelper'
+import {findUser, getUserAvatar, getUserFromStorage, getUserName} from '../../../helpers/userHelper'
 import {findMembersIds} from '../../../helpers/messengerHelper'
 import showBackgroundBlock from '../../ui/BackgroundBlock/BackgroundBlock'
 import {Footer, Popup} from '../Popup/Popup'
@@ -38,8 +38,7 @@ interface State {
     fetchingMessengers: boolean
     fetchingMessages: boolean
     fetchingUsers: boolean
-    userId: number
-    userRole: string
+    user: IUser
     users: IUser[]
 }
 
@@ -57,8 +56,7 @@ class PopupMessenger extends React.Component<Props, State> {
         fetchingMessengers: false,
         fetchingMessages: false,
         fetchingUsers: false,
-        userId: parseInt(localStorage.getItem('id') || '0'),
-        userRole: localStorage.getItem('role') || 'subscriber',
+        user: {} as IUser,
         users: []
     }
 
@@ -67,9 +65,17 @@ class PopupMessenger extends React.Component<Props, State> {
         // window.events.addListener('messengerCreateMessenger', this.updateMessengerHandler)
         // window.events.addListener('messengerReadMessage', this.readMessageHandler)
 
+        const user: IUser | null = getUserFromStorage()
+
+        if (!user) {
+            this.close()
+        }
+
+        this.setState({user: user} as State)
+
         this.refMessenger = React.createRef()
 
-        // this.fetchUserList()
+        this.fetchUserList()
         // this.fetchMessengerList()
         //
         // if (this.state.currentMessengerId > 0) {
@@ -151,26 +157,26 @@ class PopupMessenger extends React.Component<Props, State> {
             }
         }
 
-        const members: IMessengerMember[] = []
-        members[this.state.userId] = {
-            'userId': this.state.userId,
-            'readed': null,
-            'deleted': null,
-            'active': 1
-        }
-        members[user.id] = {
-            'userId': user.id,
-            'readed': null,
-            'deleted': null,
-            'active': 1
-        }
+        const memberIds: number[] = []
+        memberIds.push(this.state.user.id || 0)
+        memberIds.push(user.id)
+
+        const members: IMessengerMember[] = memberIds.map((userId: number) => {
+            return {
+                userId: userId,
+                readed: null,
+                deleted: null,
+                active: 1
+            }
+        })
 
         this.setState({
             currentMessengerInfo: {
                 id: null,
-                author_id: this.state.userId,
+                author_id: this.state.user.id,
                 name: '',
                 type: 'message',
+                member_ids: memberIds,
                 members: members,
                 messages: []
             } as IMessenger,
@@ -184,21 +190,31 @@ class PopupMessenger extends React.Component<Props, State> {
             return
         }
 
-        const attendees: number[] = findMembersIds(this.state.currentMessengerInfo.members)
+        const attendees: number[] = this.state.currentMessengerInfo.member_ids
+            ? this.state.currentMessengerInfo.member_ids
+            : findMembersIds(this.state.currentMessengerInfo.members)
         const message: IMessage = {
             id: null,
-            messengerId: this.state.currentMessengerInfo.id,
-            active: 1,
+            messenger_id: this.state.currentMessengerInfo.id,
+            is_active: 1,
             type: 'message',
             text: this.state.textMessage,
-            author: this.state.userId,
-            parentMessageId: null,
-            attendees: attendees
+            author_id: this.state.user.id,
+            message_id: null,
+            attendee_ids: attendees
         }
 
-        this.setState({textMessage: ''} as State)
+        MessengerService.sendMessage(message)
+            .then((response: any) => {
+                this.setState({textMessage: ''} as State)
 
-        window.events.emit('messengerSendMessage', message)
+                console.log('response', response)
+            })
+            .catch((error: any) => {
+                console.log('error', error)
+            })
+
+        // window.events.emit('messengerSendMessage', message)
     }
 
     submitReadHandler = (): void => {
@@ -206,27 +222,31 @@ class PopupMessenger extends React.Component<Props, State> {
             return
         }
 
-        const attendees: number[] = findMembersIds(this.state.currentMessengerInfo.members)
-        const message: IMessage = {
-            id: null,
-            messengerId: this.state.currentMessengerInfo.id,
-            active: 1,
-            type: 'read',
-            text: String(this.state.currentMessengerInfo.messages[this.state.currentMessengerInfo.messages.length - 1].id),
-            author: this.state.userId,
-            parentMessageId: null,
-            attendees: attendees
-        }
+        // Todo: Переделать прочтение сообщения
 
-        this.setState({textMessage: ''} as State)
-
-        window.events.emit('messengerSendMessage', message)
+        // const attendees: number[] = this.state.currentMessengerInfo.member_ids
+        //     ? this.state.currentMessengerInfo.member_ids
+        //     : findMembersIds(this.state.currentMessengerInfo.members)
+        // const message: IMessage = {
+        //     id: null,
+        //     messengerId: this.state.currentMessengerInfo.id,
+        //     active: 1,
+        //     type: 'read',
+        //     text: String(this.state.currentMessengerInfo.messages[this.state.currentMessengerInfo.messages.length - 1].id),
+        //     author: this.state.user.id,
+        //     parentMessageId: null,
+        //     attendees: attendees
+        // }
+        //
+        // this.setState({textMessage: ''} as State)
+        //
+        // window.events.emit('messengerSendMessage', message)
     }
 
     // Обновление активного чата сообщений при отправке
     updateMessagesHandler = (message: IMessage): void => {
         if (this.state.currentMessengerId <= 0 && this.state.messengers && this.state.messengers.length) {
-            const findIndex = this.state.messengers.findIndex((messenger: IMessenger) => messenger.id === message.messengerId)
+            const findIndex = this.state.messengers.findIndex((messenger: IMessenger) => messenger.id === message.messenger_id)
 
             if (findIndex !== -1) {
                 const updateMessenger: IMessenger = JSON.parse(JSON.stringify(this.state.messengers[findIndex]))
@@ -242,7 +262,7 @@ class PopupMessenger extends React.Component<Props, State> {
             }
         }
 
-        if (this.state.currentMessengerId === message.messengerId) {
+        if (this.state.currentMessengerId === message.messenger_id) {
             const updateMessengerInfo: IMessenger = JSON.parse(JSON.stringify(this.state.currentMessengerInfo))
 
             if (updateMessengerInfo.messages) {
@@ -259,9 +279,9 @@ class PopupMessenger extends React.Component<Props, State> {
 
     // Обновление данных чатов
     updateMessengerHandler = (message: IMessage): void => {
-        if (message.author === this.state.userId && this.state.currentMessengerId === -2) {
-            this.setState({currentMessengerId: message.messengerId || 0} as State)
-            this.fetchMessagesList(message.messengerId || 0)
+        if (message.author_id === this.state.user.id && this.state.currentMessengerId === -2) {
+            this.setState({currentMessengerId: message.messenger_id || 0} as State)
+            this.fetchMessagesList(message.messenger_id || 0)
         } else if (this.state.currentMessengerId <= 0) {
             this.fetchMessengerList()
         }
@@ -269,33 +289,33 @@ class PopupMessenger extends React.Component<Props, State> {
 
     // Пометка сообщений прочитанными
     readMessageHandler = (message: IMessage): void => {
-        if (message.author === this.state.userId && this.state.currentMessengerId === message.messengerId) {
-            const updateMessengerInfo: IMessenger = JSON.parse(JSON.stringify(this.state.currentMessengerInfo))
-
-            if (updateMessengerInfo.members) {
-                updateMessengerInfo.members[message.author].readed = parseInt(message.text)
-            }
-
-            this.setState({currentMessengerInfo: updateMessengerInfo} as State)
-        } else if (this.state.currentMessengerId <= 0 && this.state.messengers && this.state.messengers.length) {
-            const findIndex = this.state.messengers.findIndex((messenger: IMessenger) => messenger.id === message.id)
-
-            if (findIndex !== -1) {
-                const updateMessenger: IMessenger = JSON.parse(JSON.stringify(this.state.messengers[findIndex]))
-
-                if (message.author && updateMessenger.members) {
-                    updateMessenger.members[message.author].readed = parseInt(message.text)
-                }
-
-                this.setState({
-                    messengers: [
-                        ...this.state.messengers.slice(0, findIndex),
-                        updateMessenger,
-                        ...this.state.messengers.slice(findIndex + 1)
-                    ]
-                } as State)
-            }
-        }
+        // if (message.author === this.state.userId && this.state.currentMessengerId === message.messenger_id) {
+        //     const updateMessengerInfo: IMessenger = JSON.parse(JSON.stringify(this.state.currentMessengerInfo))
+        //
+        //     if (updateMessengerInfo.members) {
+        //         updateMessengerInfo.members[message.author].readed = parseInt(message.text)
+        //     }
+        //
+        //     this.setState({currentMessengerInfo: updateMessengerInfo} as State)
+        // } else if (this.state.currentMessengerId <= 0 && this.state.messengers && this.state.messengers.length) {
+        //     const findIndex = this.state.messengers.findIndex((messenger: IMessenger) => messenger.id === message.id)
+        //
+        //     if (findIndex !== -1) {
+        //         const updateMessenger: IMessenger = JSON.parse(JSON.stringify(this.state.messengers[findIndex]))
+        //
+        //         if (message.author_id && updateMessenger.members) {
+        //             updateMessenger.members[message.author_id].readed = parseInt(message.text)
+        //         }
+        //
+        //         this.setState({
+        //             messengers: [
+        //                 ...this.state.messengers.slice(0, findIndex),
+        //                 updateMessenger,
+        //                 ...this.state.messengers.slice(findIndex + 1)
+        //             ]
+        //         } as State)
+        //     }
+        // }
     }
 
     // Прокрутка чата к последнему сообщению
@@ -322,7 +342,7 @@ class PopupMessenger extends React.Component<Props, State> {
                                                        this.fetchMessagesList(messenger.id || 0)
                                                    }}
                                                    users={this.state.users}
-                                                   userId={this.state.userId}
+                                                   user={this.state.user}
                                     />
                                 )
                             })
@@ -348,11 +368,11 @@ class PopupMessenger extends React.Component<Props, State> {
                     <BlockingElement fetching={this.state.fetchingUsers} className={classes.list}>
                         {this.state.users && this.state.users.length ?
                             this.state.users.map((user: IUser) => {
-                                if (user.is_block || user.is_active !== 1 || user.id === this.state.userId) {
+                                if (user.is_block || user.is_active !== 1 || user.id === this.state.user.id) {
                                     return null
                                 }
 
-                                if (this.state.userRole === 'subscriber' && !checkRules([Rules.IS_MANAGER])) {
+                                if (!checkRules([Rules.IS_MANAGER])) {
                                     return null
                                 }
 
@@ -387,12 +407,12 @@ class PopupMessenger extends React.Component<Props, State> {
             this.refMessenger.current.scrollTop = this.refMessenger.current.scrollHeight
         }
 
-        const memberId: number = findMembersIds(this.state.currentMessengerInfo.members).find((id: number) => id !== this.state.userId) || 0
+        const memberId: number = findMembersIds(this.state.currentMessengerInfo.members).find((id: number) => id !== this.state.user.id) || 0
         const member = findUser(this.state.users, memberId)
         const avatarUrl = getUserAvatar(this.state.users, memberId)
         const memberName = getUserName(
             this.state.users,
-            this.state.userId === this.state.currentMessengerInfo.author_id
+            this.state.user.id === this.state.currentMessengerInfo.author_id
                 ? memberId : this.state.currentMessengerInfo.author_id
         )
 
@@ -415,10 +435,9 @@ class PopupMessenger extends React.Component<Props, State> {
                                 return (
                                     <MessageItem key={message.id}
                                                  message={message}
-                                                 userId={this.state.userId}
+                                                 userId={this.state.user.id || 0}
                                                  memberId={memberId}
                                                  messenger={this.state.currentMessengerInfo}
-                                                 users={this.state.users}
                                     />
                                 )
                             })
@@ -459,7 +478,7 @@ class PopupMessenger extends React.Component<Props, State> {
             <Popup className={classes.PopupMessenger}>
                 <div className={classes.content}>
                     <div className={classes.blockContent}>
-                        {/*{this.renderPanelByType()}*/}
+                        {this.renderPanelByType()}
                     </div>
                 </div>
 

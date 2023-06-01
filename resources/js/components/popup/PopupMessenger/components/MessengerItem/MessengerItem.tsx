@@ -11,7 +11,7 @@ import classes from './MessengerItem.module.scss'
 interface Props {
     messenger: IMessenger
     users: IUser[]
-    userId: number
+    user: IUser
 
     onClick(): void
 }
@@ -19,7 +19,7 @@ interface Props {
 const defaultProps: Props = {
     messenger: {} as IMessenger,
     users: [],
-    userId: 0,
+    user: {} as IUser,
     onClick: () => {
         console.info('MessengerItem onClick')
     }
@@ -28,13 +28,13 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const MessengerItem: React.FC<Props> = (props) => {
-    const memberId: number = findMembersIds(props.messenger.members).find((id: number) => id !== props.userId) || 0
+    const memberId: number = findMembersIds(props.messenger.members).find((id: number) => id !== props.user.id) || 0
     const member = findUser(props.users, memberId)
     const avatarUrl = getUserAvatar(props.users, memberId)
-    const memberName = getUserName(props.users, props.userId === props.messenger.author_id ? memberId : props.messenger.author_id)
-    const isNew = isNewMessage(props.userId, props.messenger.members, props.messenger.messages[0])
+    const memberName = getUserName(props.users, props.user.id === props.messenger.author_id ? memberId : props.messenger.author_id)
+    const isNew = isNewMessage(props.user.id || 0, props.messenger.members, props.messenger.messages[0])
 
-    const {usersOnline} = useTypedSelector(state => state.userReducer)
+    const {onlineUsers} = useTypedSelector(state => state.messengerReducer)
 
     return (
         <div className={classes.MessengerItem}
@@ -54,8 +54,8 @@ const MessengerItem: React.FC<Props> = (props) => {
                 <div className={classes.name}>
                     <span>{memberName}</span>
 
-                    <span className={cx({'indicator': true, 'online': usersOnline.includes(memberId)})}
-                          title={usersOnline.includes(memberId) ? 'Online' : `Был в сети: ${member?.date_last_active}`}
+                    <span className={cx({'indicator': true, 'online': onlineUsers.includes(memberId)})}
+                          title={onlineUsers.includes(memberId) ? 'Online' : `Был в сети: ${member?.date_last_active}`}
                     />
                 </div>
 

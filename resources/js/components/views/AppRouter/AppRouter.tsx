@@ -3,9 +3,10 @@ import {Route, Routes} from 'react-router-dom'
 import {RouteNames} from '../../../helpers/routerHelper'
 import {ToastContainer} from 'react-toastify'
 import {useTypedSelector} from '../../../hooks/useTypedSelector'
-import {registerEventsEmitter, registerWebsocket} from '../../../helpers/eventsHelper'
+import {registerEventsEmitter} from '../../../helpers/eventsHelper'
 import {useActions} from '../../../hooks/useActions'
 import {IUser} from '../../../@types/IUser'
+import PusherComponent from '../../ui/PusherComponent/PusherComponent'
 import MainPage from '../../pages/MainPage/MainPage'
 import AboutPage from '../../pages/AboutPage/AboutPage'
 import PolicyPage from '../../pages/PolicyPage/PolicyPage'
@@ -52,7 +53,7 @@ import 'react-toastify/dist/ReactToastify.css'
 const AppRouter: React.FC = () => {
     const {isAuth, user} = useTypedSelector(state => state.userReducer)
 
-    const {setIsAuth, setUser, setUsersOnline, fetchSettings} = useActions()
+    const {setIsAuth, setUser, fetchSettings} = useActions()
 
     useEffect(() => {
         registerEventsEmitter()
@@ -65,14 +66,7 @@ const AppRouter: React.FC = () => {
             if (userJson) {
                 const user: IUser = JSON.parse(userJson)
                 setUser(user)
-                registerWebsocket(user.id)
             }
-        }
-
-        window.events.on('messengerUpdateOnlineUsers', updateOnlineUsers)
-
-        return () => {
-            window.events.removeListener('messengerUpdateOnlineUsers', updateOnlineUsers)
         }
     }, [])
 
@@ -81,15 +75,6 @@ const AppRouter: React.FC = () => {
             fetchSettings()
         }
     }, [isAuth])
-
-    // Обновление списка пользователей онлайн
-    const updateOnlineUsers = (usersString: string): void => {
-        if (usersString.trim() !== '') {
-            const listUsersIds: number[] = JSON.parse(usersString)
-
-            setUsersOnline(listUsersIds)
-        }
-    }
 
     return (
         <div className={classes.AppRouter}>
@@ -153,6 +138,11 @@ const AppRouter: React.FC = () => {
                             hideProgressBar={true}
                             draggable={true}
             />
+
+            {isAuth ?
+                <PusherComponent/>
+                : null
+            }
         </div>
     )
 }

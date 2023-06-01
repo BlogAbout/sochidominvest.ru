@@ -41,7 +41,7 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const UserItem: React.FC<Props> = (props) => {
-    const {usersOnline} = useTypedSelector(state => state.userReducer)
+    const {onlineUsers} = useTypedSelector(state => state.messengerReducer)
 
     return (
         <div className={cx({'UserItem': true, 'block': props.user.is_block, 'disabled': !props.user.is_active})}
@@ -49,8 +49,8 @@ const UserItem: React.FC<Props> = (props) => {
              onContextMenu={(e: React.MouseEvent) => props.onContextMenu(e, props.user)}
         >
             <div className={classes.name}>
-                <Indicator color={props.user.id && usersOnline.includes(props.user.id) ? 'green' : 'red'}
-                           text={props.user.id && usersOnline.includes(props.user.id) ? 'Online' : `Был в сети: ${props.user.date_last_active}`}
+                <Indicator color={props.user.id && onlineUsers.includes(props.user.id) ? 'green' : 'red'}
+                           text={props.user.id && onlineUsers.includes(props.user.id) ? 'Online' : `Был в сети: ${props.user.date_last_active}`}
                 />
 
                 <span>{props.user.name}</span>

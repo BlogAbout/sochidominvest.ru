@@ -1,10 +1,10 @@
+import {AxiosResponse} from 'axios'
 import {UserAction, UserActionTypes} from '../@types/userTypes'
 import {RouteNames} from '../../helpers/routerHelper'
 import {IUser, IUserExternal} from '../../@types/IUser'
 import {IFilter} from '../../@types/IFilter'
 import {AppDispatch} from '../reducers'
 import UserService from '../../api/UserService'
-import {AxiosResponse} from "axios";
 
 export const UserActionCreators = {
     setIsAuth: (auth: boolean): UserAction => ({
@@ -14,10 +14,6 @@ export const UserActionCreators = {
     setUser: (user: IUser): UserAction => ({
         type: UserActionTypes.USER,
         payload: user
-    }),
-    setUsersOnline: (users: number[]): UserAction => ({
-        type: UserActionTypes.USER_ONLINE,
-        payload: users
     }),
     setUsers: (users: IUser[]): UserAction => ({
         type: UserActionTypes.USER_FETCH_LIST,

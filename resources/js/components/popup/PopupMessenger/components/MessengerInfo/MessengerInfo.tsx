@@ -28,7 +28,7 @@ const defaultProps: Props = {
 const cx = classNames.bind(classes)
 
 const MessengerInfo: React.FC<Props> = (props) => {
-    const {usersOnline} = useTypedSelector(state => state.userReducer)
+    const {onlineUsers} = useTypedSelector(state => state.messengerReducer)
 
     return (
         <div className={classes.MessengerInfo}>
@@ -47,8 +47,8 @@ const MessengerInfo: React.FC<Props> = (props) => {
 
             <div className={classes.name}>{props.memberName}</div>
 
-            <div className={cx({'indicator': true, 'online': usersOnline.includes(props.memberId)})}
-                 title={usersOnline.includes(props.memberId) ? 'Online' : `Был в сети: ${props.member?.date_last_active}`}
+            <div className={cx({'indicator': true, 'online': onlineUsers.includes(props.memberId)})}
+                 title={onlineUsers.includes(props.memberId) ? 'Online' : `Был в сети: ${props.member?.date_last_active}`}
             />
         </div>
     )

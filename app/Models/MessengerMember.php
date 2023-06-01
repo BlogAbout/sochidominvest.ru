@@ -15,7 +15,7 @@ class MessengerMember extends Model
 
     public $timestamps = false;
 
-    protected $with = ['messenger', 'user', 'messageRead', 'messageDeleted'];
+    protected $with = ['messenger', 'user'];
 
     public function messenger()
     {
@@ -26,15 +26,5 @@ class MessengerMember extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id')
             ->without(['avatar', 'post', 'role', 'tariff', 'favorites', 'bpSorting']);
-    }
-
-    public function messageRead()
-    {
-        return $this->belongsTo(Message::class, 'message_read_id', 'id');
-    }
-
-    public function messageDeleted()
-    {
-        return $this->belongsTo(Message::class, 'message_deleted_id', 'id');
     }
 }

@@ -4,7 +4,6 @@ import {IUser} from '../../@types/IUser'
 const initialState: UserState = {
     isAuth: false,
     user: {} as IUser,
-    usersOnline: [],
     users: [],
     externals: [],
     fetching: false,
@@ -17,8 +16,6 @@ export default function UserReducer(state: UserState = initialState, action: Use
             return {...state, user: action.payload, fetching: false}
         case UserActionTypes.USER_AUTH:
             return {...state, isAuth: action.payload, fetching: false}
-        case UserActionTypes.USER_ONLINE:
-            return {...state, usersOnline: action.payload}
         case UserActionTypes.USER_FETCH_LIST:
             return {...state, users: action.payload, fetching: false}
         case UserActionTypes.USER_EXTERNAL_FETCH_LIST:

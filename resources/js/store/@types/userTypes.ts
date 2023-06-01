@@ -3,7 +3,6 @@ import {IUser, IUserExternal} from '../../@types/IUser'
 export interface UserState {
     isAuth: boolean
     user: IUser
-    usersOnline: number[]
     users: IUser[]
     externals: IUserExternal[]
     fetching: boolean
@@ -13,7 +12,6 @@ export interface UserState {
 export enum UserActionTypes {
     USER = 'USER',
     USER_AUTH = 'USER_AUTH',
-    USER_ONLINE = 'USER_ONLINE',
     USER_FETCH_LIST = 'USER_FETCH_LIST',
     USER_EXTERNAL_FETCH_LIST = 'USER_EXTERNAL_FETCH_LIST',
     USER_IS_FETCHING = 'USER_IS_FETCHING',
@@ -28,11 +26,6 @@ interface UserInfoAction {
 interface UserAuthAction {
     type: UserActionTypes.USER_AUTH
     payload: boolean
-}
-
-interface UserOnlineAction {
-    type: UserActionTypes.USER_ONLINE
-    payload: number[]
 }
 
 interface UserFetchListAction {
@@ -58,7 +51,6 @@ export interface UserErrorAction {
 export type UserAction =
     UserInfoAction
     | UserAuthAction
-    | UserOnlineAction
     | UserFetchListAction
     | UserExternalFetchListAction
     | UserIsFetchingAction

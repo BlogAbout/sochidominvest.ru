@@ -27,7 +27,7 @@ const defaultProps: Props = {
 }
 
 const UserTill: React.FC<Props> = (props): React.ReactElement => {
-    const {usersOnline} = useTypedSelector(state => state.userReducer)
+    const {onlineUsers} = useTypedSelector(state => state.messengerReducer)
 
     return (
         <div className={classes.UserTill}>
@@ -41,8 +41,8 @@ const UserTill: React.FC<Props> = (props): React.ReactElement => {
                                   role={user.role ? user.role.name : ''}
                                   phone={user.phone}
                                   email={user.email}
-                                  indicatorColor={user.id && usersOnline.includes(user.id) ? 'green' : 'red'}
-                                  indicatorText={user.id && usersOnline.includes(user.id) ? 'Online' : `Был в сети: ${user.date_last_active}`}
+                                  indicatorColor={user.id && onlineUsers.includes(user.id) ? 'green' : 'red'}
+                                  indicatorText={user.id && onlineUsers.includes(user.id) ? 'Online' : `Был в сети: ${user.date_last_active}`}
                                   isDisabled={!user.is_active}
                                   isBlock={!!user.is_block}
                                   onContextMenu={(e: React.MouseEvent) => props.onContextMenu(user, e)}

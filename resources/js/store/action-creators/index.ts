@@ -15,6 +15,7 @@ import {BusinessProcessActionCreators} from './businessProcessCreators'
 import {AgentActionCreators} from './agentActionCreators'
 import {StoreActionCreators} from './storeActionCreators'
 import {TariffActionCreators} from './tariffActionCreators'
+import {MessengerActionCreators} from './messengerActionCreators'
 
 export default {
     ...UserActionCreators,
@@ -33,5 +34,6 @@ export default {
     ...BusinessProcessActionCreators,
     ...AgentActionCreators,
     ...StoreActionCreators,
-    ...TariffActionCreators
+    ...TariffActionCreators,
+    ...MessengerActionCreators
 }

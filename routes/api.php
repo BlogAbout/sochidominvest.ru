@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MessengerController;
 use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
@@ -39,12 +40,22 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     Route::get('/search', 'SearchController');
+
+    Route::group(['prefix' => 'messenger'], function () {
+        Route::get('/', [MessengerController::class, 'fetchMessengers']);
+        Route::delete('/{messenger}', [MessengerController::class, 'removeMessenger']);
+        Route::get('/{messengerId}', [MessengerController::class, 'fetchMessages']);
+        Route::post('/message', [MessengerController::class, 'sendMessage']);
+        Route::patch('/message/{message}', [MessengerController::class, 'editMessage']);
+        Route::delete('/message/{message}', [MessengerController::class, 'removeMessage']);
+    });
 });
 
 Route::group(['namespace' => 'User'], function () {
     Route::post('/auth', [UserController::class, 'authenticate']);
     Route::post('/registration', [UserController::class, 'registration']);
 });
+
 Route::apiResource('/article', 'Article\ArticleController')->only(['index', 'show']);
 Route::apiResource('/building', 'Building\BuildingController')->only(['index', 'show']);
 Route::apiResource('/feed', 'Feed\FeedController')->only(['store']);

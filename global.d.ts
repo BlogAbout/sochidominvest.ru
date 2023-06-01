@@ -34,6 +34,8 @@ interface Window {
     events?: any
     WS?: any
     location?: any
+    Pusher?: any
+    Echo?: any
 }
 
 interface Document {
