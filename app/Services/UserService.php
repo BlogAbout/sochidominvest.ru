@@ -125,7 +125,7 @@ class UserService
 
             DB::commit();
 
-            if ($data['sendMailNotification']) {
+            if (isset($data['sendMailNotification'])) {
                 Mail::to($user)->send(new CreateUserMail($data['email'], $data['password']));
             }
 

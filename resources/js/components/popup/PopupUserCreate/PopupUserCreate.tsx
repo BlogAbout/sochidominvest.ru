@@ -212,9 +212,9 @@ const PopupUserCreate: React.FC<Props> = (props) => {
                         <div className={classes.field}>
                             <Label text='Роль'/>
 
-                            <ComboBox selected={user.role_id || null}
+                            <ComboBox selected={user.role_id ? user.role_id.toString() : null}
                                       items={rolesList}
-                                      onSelect={(value: 'director' | 'administrator' | 'manager' | 'subscriber') => setUser({
+                                      onSelect={(value: string) => setUser({
                                           ...user,
                                           role_id: +value
                                       })}
