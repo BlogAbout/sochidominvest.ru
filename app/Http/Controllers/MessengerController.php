@@ -46,7 +46,7 @@ class MessengerController extends Controller
     {
         $data = $request->validated();
 
-        return $this->messageService->store($data);
+        return $this->messageService->storeAndResponse($data);
     }
 
     public function editMessage(UpdateRequest $request)

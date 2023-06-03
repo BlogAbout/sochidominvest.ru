@@ -2,8 +2,12 @@ import React, {useEffect} from 'react'
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
 import {useActions} from '../../../hooks/useActions'
+import {IMessage} from '../../../@types/IMessenger'
+import {useTypedSelector} from '../../../hooks/useTypedSelector'
 
 const PusherComponent: React.FC = (): null => {
+    const {user} = useTypedSelector(state => state.userReducer)
+
     const {joiningUsersOnline, leavingUserOnline} = useActions()
 
     useEffect(() => {
@@ -38,16 +42,38 @@ const PusherComponent: React.FC = (): null => {
             .error((error: any) => {
                 console.error('error', error)
             })
-
-        window.Echo
-            .private('messenger.*')
-            .listen('MessageEvent', (event: any) => {
-                console.log('event', event)
-            })
-            .error((error: any) => {
-                console.error('error', error)
-            })
     }, [])
+
+    useEffect(() => {
+        const webSocket = new WebSocket(`ws://${window.location.hostname}:6001/socket/messenger?appKey=${process.env.MIX_PUSHER_APP_KEY}`)
+
+        webSocket.onopen = (event: Event) => {
+            console.info('Успешное подключение к WebSocket', event)
+
+            const message: IMessage = {
+                id: null,
+                messenger_id: null,
+                is_active: 1,
+                type: 'welcome',
+                text: '',
+                author_id: user.id,
+                message_id: null,
+                attendee_ids: []
+            }
+
+            webSocket.send(JSON.stringify(message))
+        }
+
+        webSocket.onmessage = (response: MessageEvent) => {
+            console.log('onmessage', response)
+        }
+
+        window.WS = webSocket
+    })
+
+    const sendMessage = () => {
+
+    }
 
     return null
 }

@@ -5,7 +5,7 @@ use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::group(['middleware' => ['auth:sanctum', 'update.last.activity']], function () {
     Route::apiResource('/agent', 'Agent\AgentController');
     Route::apiResource('/article', 'Article\ArticleController')->only(['store', 'update', 'destroy']);
     Route::apiResource('/attachment', 'Attachment\AttachmentController');

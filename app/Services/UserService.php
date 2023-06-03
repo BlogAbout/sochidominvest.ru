@@ -182,4 +182,11 @@ class UserService
 
         return response([])->setStatusCode(200);
     }
+
+    public function updateLastActivity(int $userId)
+    {
+        DB::table('sdi_users')
+            ->where('id', $userId)
+            ->update(['last_active' => now()]);
+    }
 }

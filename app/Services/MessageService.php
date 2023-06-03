@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Events\MessengerEvent;
 use App\Http\Resources\MessageResource;
 use App\Models\Message;
 use Exception;
@@ -42,7 +41,10 @@ class MessageService
         return MessageResource::collection($messages)->response()->setStatusCode(200);
     }
 
-    public function store(array $data)
+    /**
+     * @throws \Exception
+     */
+    public function store(array $data): Message
     {
         try {
             DB::beginTransaction();
@@ -70,12 +72,21 @@ class MessageService
 
             $message->refresh();
 
-            broadcast(new MessengerEvent($message))->toOthers();
-
-            return (new MessageResource($message))->response()->setStatusCode(201);
+            return $message;
         } catch (Exception $e) {
             DB::rollBack();
 
+            throw $e;
+        }
+    }
+
+    public function storeAndResponse(array $data)
+    {
+        try {
+            $message = $this->store($data);
+
+            return (new MessageResource($message))->response()->setStatusCode(201);
+        } catch (Exception $e) {
             return response(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }
